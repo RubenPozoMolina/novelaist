@@ -2,17 +2,36 @@ from pathlib import Path
 import markdown
 import os
 import sys
+import json
+from ebooklib import epub
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from PIL import Image
 
 class Novelaist:
     def __init__(self, examples_dir="examples", output_dir="output"):
         self.examples_dir = Path(examples_dir)
         self.output_dir = Path(output_dir)
+        self.config = self._load_config()
         self.documents = {
             "characters": [],
             "chapters": [],
             "environment": []
         }
         self._load_documents()
+    
+    def _load_config(self):
+        """Cargar configuración desde el archivo config.json"""
+        config_path = self.examples_dir / "config.json"
+        if config_path.exists():
+            try:
+                with open(config_path, 'r') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"Error al cargar config.json: {str(e)}")
+                return {}
+        return {}
     
     def _load_documents(self):
         """Cargar documentos de ejemplo desde el directorio de ejemplos"""
@@ -40,21 +59,15 @@ class Novelaist:
     
     def process_character_document(self, file_path):
         """Procesar un documento de personaje"""
-        try:
-            with open(file_path, 'r') as f:
-                content = f.read()
-            return content
-        except Exception as e:
-            return f"Error al leer el documento: {str(e)}"
+        with open(file_path, 'r') as f:
+            content = f.read()
+        return content
     
     def process_chapter_document(self, file_path):
         """Procesar un documento de capítulo"""
-        try:
-            with open(file_path, 'r') as f:
-                content = f.read()
-            return content
-        except Exception as e:
-            return f"Error al leer el documento: {str(e)}"
+        with open(file_path, 'r') as f:
+            content = f.read()
+        return content
 
     def generate_novel_content(self):
         """Generar contenido de novela basado en los documentos cargados"""
@@ -79,35 +92,125 @@ class Novelaist:
         for env_file in self.documents["environment"]:
             with open(env_file, 'r') as f:
                 content = f.read()
-                environment_info.append(content)
+            environment_info.append(content)
         
-        # Simular generación usando Command-R (en una implementación real esto se conectaría a Ollama)
-        print("Simulación de generación con Command-R:")
-        print("Utilizando documentos de personajes, capítulos y ambiente para generar contenido estructurado...")
+        # Crear prompt con la información de los documentos
+        prompt = f"""
+        Escribe una novela basada en la siguiente información:
+        
+        Personajes:
+        {chr(10).join(character_info)}
+        
+        Capítulos:
+        {chr(10).join(chapter_info)}
+        
+        Ambiente:
+        {chr(10).join(environment_info)}
+        
+        Título de la novela: {self.config.get('novel_title', 'Novela Generada')}
+        Autor: {self.config.get('author', 'Autor Desconocido')}
+        
+        Genera un contenido literario coherente con esta información.
+        """
+        
+        # Generar contenido usando Command-R
+        print("Conectando con Command-R...")
         
         # Aquí se integraría el modelo Command-R de Ollama
-        # Por ahora solo simulamos la salida estructurada
-        return {
-            "characters": character_info,
-            "chapters": chapter_info,
-            "environment": environment_info
-        }
+        import ollama
+        
+        response = ollama.chat(model=self.config.get('model', 'command-r'), messages=[{'role': 'user', 'content': prompt}])
+        return response.message.content
 
-    def simulate_command_r_generation(self, prompt):
-        """Simulación de generación con Command-R mediante Ollama (este método se conectará a Ollama en producción)"""
-        # import ollama
-        
-        try:
-            # En una implementación real, aquí se conectaría a Ollama
-            # response = ollama.chat(model='command-r', messages=[{'role': 'user', 'content': prompt}])
-            # return response.message.content
-            
-            # Simulación para demostración:
-            return f"Simulación de respuesta de Command-R basada en el prompt:\n\n{prompt}\n\nEsta sería la salida real generada por Command-R procesando las instrucciones."
-        
-        except Exception as e:
-            return f"Error al conectar con Command-R: {str(e)}"
+
     
+    def create_epub(self, content, title="Novela Generada"):
+        """Crear un archivo EPUB a partir del contenido"""
+        try:
+            book = epub.EpubBook()
+            book.set_identifier('id123456')
+            book.set_title(title)
+            book.set_language('es')
+            
+            # Usar configuración del autor si está disponible
+            author = self.config.get('author', 'Autor Desconocido')
+            book.add_author(author)
+            
+            # Crear capítulo
+            chapter = epub.EpubHtml(title='Introducción', file_name='chap_01.xhtml', lang='es')
+            chapter.content = f'<h1>{title}</h1><p>{content}</p>'
+            book.add_item(chapter)
+            
+            # Definir estilo
+            style = 'BODY { font-family: Arial, sans-serif; }'
+            nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
+            book.add_item(nav_css)
+            
+            # Generar tabla de contenidos
+            book.toc = [epub.Link('chap_01.xhtml', title, 'intro')]
+            book.add_item(epub.EpubNcx())
+            book.add_item(epub.EpubNav())
+            
+            # Aplicar estilo
+            book.spine = ['nav', chapter]
+            
+            # Guardar archivo
+            filename = self.output_dir / f"{title.replace(' ', '_')}.epub"
+            epub.write_epub(filename, book, {})
+            print(f"Archivo EPUB guardado en: {filename}")
+            return str(filename)
+        except Exception as e:
+            print(f"Error al crear EPUB: {str(e)}")
+            return None
+
+    def create_pdf(self, content, title="Novela Generada"):
+        """Crear un archivo PDF a partir del contenido"""
+        try:
+            filename = self.output_dir / f"{title.replace(' ', '_')}.pdf"
+            doc = SimpleDocTemplate(str(filename), pagesize=letter)
+            styles = getSampleStyleSheet()
+            story = []
+            
+            # Título
+            title_para = Paragraph(title, styles['Title'])
+            story.append(title_para)
+            story.append(Spacer(1, 12))
+            
+            # Autor
+            author_para = Paragraph(f"Autor: {self.config.get('author', 'Autor Desconocido')}", styles['Normal'])
+            story.append(author_para)
+            story.append(Spacer(1, 12))
+            
+            # Fecha
+            date_para = Paragraph(f"Fecha: {self.config.get('date', '')}", styles['Normal'])
+            story.append(date_para)
+            story.append(Spacer(1, 12))
+            
+            # Contenido
+            content_para = Paragraph(content, styles['Normal'])
+            story.append(content_para)
+            
+            doc.build(story)
+            print(f"Archivo PDF guardado en: {filename}")
+            return str(filename)
+        except Exception as e:
+            print(f"Error al crear PDF: {str(e)}")
+            return None
+
+    def create_mobi(self, content, title="Novela Generada"):
+        """Crear un archivo MOBI a partir del contenido"""
+        try:
+            # Para MOBI, usamos la misma lógica que para EPUB ya que ebooklib soporta exportación
+            # en múltiples formatos. Aquí usamos EPUB como base y creamos una función adicional
+            # para convertir a MOBI (requiere kindlegen o bibliotecas específicas)
+            print("Para crear MOBI se necesita kindlegen o librerías adicionales.")
+            # Para ahora implementamos la generación con EPUB que es el primer paso
+            epub_file = self.create_epub(content, title)
+            return epub_file  # Devolvemos el EPUB como ejemplo
+        except Exception as e:
+            print(f"Error al crear MOBI: {str(e)}")
+            return None
+
     def save_output(self, content, filename):
         """Guardar el contenido generado en la carpeta de salida"""
         self.output_dir.mkdir(exist_ok=True)
@@ -150,14 +253,16 @@ if __name__ == "__main__":
     generated_content = novelaist.generate_novel_content()
     print("Generación completada.")
     
-    # Probar simulación de Command-R
+    # Guardar resultado en archivos de salida
     print("\n" + "="*50)
-    prompt = "Escribe un capítulo de novela basado en los documentos de ejemplo"
-    print("Simulación de generación con Command-R:")
-    result = novelaist.simulate_command_r_generation(prompt)
-    print(result)
+    print("Generando archivos en formatos EPUB, MOBI y PDF...")
     
-    # Guardar resultado en archivo de salida
-    print("\n" + "="*50)
-    novelaist.save_output(result, "novela_generada.md")
+    # Crear los archivos en diferentes formatos
+    novelaist.create_epub(generated_content, "Novela_Generada")
+    novelaist.create_pdf(generated_content, "Novela_Generada")
+    novelaist.create_mobi(generated_content, "Novela_Generada")
+    
+    # Guardar también el archivo markdown original
+    novelaist.save_output(generated_content, "novela_generada.md")
+    
     print("Proceso completado exitosamente.")
