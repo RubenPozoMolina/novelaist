@@ -1,32 +1,32 @@
-# Ejemplo de documento de personaje
+# Character Document Example
 
-# Elías
+# Elias
 
-## Descripción física
+## Physical Description
 
-- Edad: 32 años
-- Estatura: 1.80 m
-- Peso: 75 kg
-- Color de cabello: Rubio
-- Color de ojos: Azules
+- Age: 32 years
+- Height: 1.80 m
+- Weight: 75 kg
+- Hair Color: Blond
+- Eye Color: Blue
 
-## Personalidad
+## Personality
 
-- Inteligente
-- Astuto
-- Apasionado
-- Leal
-- Estratégico
+- Intelligent
+- Astute
+- Passionate
+- Loyal
+- Strategic
 
-## Historia
+## History
 
-Elías es un investigador que ha estado estudiando el artefacto antiguo desde hace años. Su conocimiento del pasado le permite entender las implicaciones de los descubrimientos de María.
+Elias is a researcher who has been studying the ancient artifact for years. His knowledge of the past allows him to understand the implications of Maria's discoveries.
 
-## Importancia en la novela
+## Importance in the novel
 
-Elías colabora con María en su investigación y se convierte en su acompañante en la exploración de los secretos del artefacto. Su experiencia en el campo es fundamental para la comprensión de los fenómenos misteriosos.
+Elias collaborates with Maria in her research and becomes her companion in exploring the artifact's secrets. His experience in the field is fundamental to the understanding of mysterious phenomena.
 
-## Relaciones
+## Relationships
 
-- María: Compañera de estudio y amor
-- Dr. Chen: Colega investigador
+- Maria: Study companion and love
+- Dr. Chen: Fellow researcher

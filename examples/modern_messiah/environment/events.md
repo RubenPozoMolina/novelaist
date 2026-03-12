@@ -1,24 +1,24 @@
-# Eventos del Mundo
+# World Events
 
-## Eventos Clave
+## Key Events
 
-- Descubrimiento del artefacto en un templo antiguo
-- Aparición misteriosa de una figura desconocida en el laboratorio
-- Primer contacto con la energía del artefacto
-- Iniciación al mundo de las conexiones temporales
+- Discovery of the artifact in an ancient temple
+- Mysterious appearance of an unknown figure in the laboratory
+- First contact with the energy of the artifact
+- Initiation into the world of temporal connections
 
-## Temporalidad
+## Temporality
 
-- El descubrimiento ocurrió hace 40 años
-- La historia ocurre actualmente, en el presente
-- Se revelan misterios del pasado que están relacionados con el futuro
+- The discovery occurred 40 years ago
+- The story takes place currently, in the present
+- Mysteries from the past are revealed that are related to the future
 
-## Importancia para la Trama
+## Importance for the Plot
 
-Los eventos definidos en este documento guían las acciones de los personajes principales y están relacionados con los conocimientos del artefacto. Cada evento tiene implicaciones que se desarrollan en diferentes capítulos.
+The events defined in this document guide the main characters' actions and are related to the artifact's knowledge. Each event has implications that unfold in different chapters.
 
-## Conexiones con Personajes
+## Character Connections
 
-- María Chen: Descubridora del artefacto
-- Elías: Investigador experimentado
-- Dr. Rodriguez: Mentor y experto
+- Maria Chen: Discoverer of the artifact
+- Elias: Experienced researcher
+- Dr. Rodriguez: Mentor and expert

@@ -1,13 +1,13 @@
-# Capítulo 1: La Descubrimiento
+# Chapter 1: The Discovery
 
-## Escena 1: El Laboratorio
+## Scene 1: The Laboratory
 
-María Chen se encuentra en su laboratorio de investigación, revisando datos complejos del artefacto que encontró en el antiguo templo. El resplandor azul del objeto se intensifica cada vez que estudia sus propiedades. Su mente está llena de dudas sobre la naturaleza del descubrimiento.
+Maria Chen is in her research laboratory, reviewing complex data from the artifact she found in the ancient temple. The object's blue glow intensifies every time she studies its properties. Her mind is filled with doubts about the nature of the discovery.
 
-## Escena 2: El Confrontación
+## Scene 2: The Confrontation
 
-De repente, una figura aparece en la entrada del laboratorio. Es el Sr. Rodriguez, su mentor, quien viene a investigar las extrañas señales detectadas por el equipo de investigación. Al ver cómo se comporta el artefacto, comprende que la naturaleza del hallazgo supera sus expectativas.
+Suddenly, a figure appears at the laboratory entrance. It is Mr. Rodriguez, her mentor, who comes to investigate the strange signals detected by the research team. Upon seeing how the artifact behaves, he realizes that the nature of the find exceeds his expectations.
 
-## Escena 3: Primer Contacto
+## Scene 3: First Contact
 
-La tensión se eleva cuando el artefacto comienza a emitir una frecuencia que afecta directamente a los sistemas de la instalación. María y Elías deben tomar decisiones rápidas para asegurar su seguridad y proteger el secreto.
+The tension rises when the artifact begins to emit a frequency that directly affects the facility's systems. Maria and Elias must make quick decisions to ensure their safety and protect the secret.

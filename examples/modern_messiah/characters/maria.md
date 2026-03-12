@@ -1,32 +1,32 @@
-# Ejemplo de documento de personaje
+# Character Document Example
 
-# María
+# Maria
 
-## Descripción física
+## Physical Description
 
-- Edad: 28 años
-- Estatura: 1.65 m
-- Peso: 55 kg
-- Color de cabello: Oscuro, con mechones plateados
-- Color de ojos: Verdes
+- Age: 28 years
+- Height: 1.65 m
+- Weight: 55 kg
+- Hair Color: Dark, with silver streaks
+- Eye Color: Green
 
-## Personalidad
+## Personality
 
-- Inteligente
-- Compasiva
-- Determinada
-- Amable
-- Cautelosa
+- Intelligent
+- Compassionate
+- Determined
+- Kind
+- Cautious
 
-## Historia
+## History
 
-María es una científica que descubre un artefacto antiguo que le permite comunicarse con seres del futuro. Su curiosidad la lleva a explorar los misterios del pasado y a luchar por proteger el futuro.
+Maria is a scientist who discovers an ancient artifact that allows her to communicate with beings from the future. Her curiosity leads her to explore the mysteries of the past and to fight to protect the future.
 
-## Importancia en la novela
+## Importance in the novel
 
-María es la protagonista principal que lleva a cabo la mayor parte de la investigación. Su capacidad para comprender y traducir conocimiento ancestral determina el destino de varios personajes.
+Maria is the main protagonist who carries out most of the research. Her ability to understand and translate ancestral knowledge determines the fate of several characters.
 
-## Relaciones
+## Relationships
 
-- Elias: Compañero de estudio y amor
+- Elias: Study companion and love
 - Dr. Rodriguez: Mentor
