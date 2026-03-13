@@ -8,8 +8,9 @@ Elias arrives in Monterrey, his hometown. The city's contrast between industrial
 ## Scene 2: The Business Incubator
 Elias joins a local business incubator, seeking a platform to launch his vision. He meets Simon, Andrew, James, and John. The scene describes their initial interactions, their skepticism, and the moment they are won over by Elias's revolutionary ideas and his quiet, authoritative presence.
 
-## Scene 3: The Birth of NanoVita
-Elias and his new partners found "NanoVita." They work in a modest office, but the atmosphere is charged with the energy of a world-changing project. Elias explains the new paradigm: a world where wealth isn't built on the suffering of others, but on collective well-being made possible by advanced technology.
+## Scene 3: The Metal Festival of Monterrey
+Elias's new companions—Simon, Andrew, James, and John—are excited about a major metal music festival happening just outside Monterrey. They see it as a chance to unwind after the intense start at the incubator. They invite Elias, who accepts, seeing it as another opportunity to observe human collective energy and emotion in a raw form.
 
-## Scene 4: The First Miracle
-Elias uses a prototype of his medical nanobots to treat a terminal patient that everyone else had given up on. The "miracle" is not magic, but the pinnacle of science guided by a higher purpose. This event solidifies his partners' faith in him and starts his public journey as the Modern Messiah.
+## Scene 4: The Miracle at the Gates
+The festival is threatened with closure due to sudden extreme weather and controversial political decisions aimed at controlling the large gathering. As thousands of frustrated fans face locked gates and a lack of supplies, Elias steps forward. To the amazement of his friends and the crowd, he peacefully manages to open the festival gates. Seeing the lack of refreshments in the heat, he uses his control over matter to transform the available water into various beverages for the attendees, allowing the festival to proceed in a peaceful, celebratory atmosphere.
+

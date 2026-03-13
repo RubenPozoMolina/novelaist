@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import ollama
 import subprocess
 from pathlib import Path
@@ -8,11 +9,16 @@ try:
 except ImportError:
     from cover_generator import CoverGenerator
 
-from ebooklib import epub
+try:
+    from src.converters import HtmlConverter, EpubConverter, PdfConverter, MobiConverter
+except ImportError:
+    from converters import HtmlConverter, EpubConverter, PdfConverter, MobiConverter
+
 from PIL import Image as PILImage, ImageDraw, ImageFont
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
 
 
 def process_character_document(file_path):
@@ -46,7 +52,17 @@ class Novelaist:
         }
         self._load_documents()
         self.cover_generator = CoverGenerator()
-        self.cover_path = None
+        self.cover_path = self._discover_cover()
+    
+    def _discover_cover(self):
+        """Try to find an existing cover in the output directory."""
+        title = self.config.get('novel_title', 'Generated Novel')
+        cover_filename = f"{title.replace(' ', '_')}_cover.png"
+        potential_path = self.output_dir / cover_filename
+        if potential_path.exists():
+            print(f"Discovered existing cover at: {potential_path}")
+            return str(potential_path)
+        return None
     
     def _load_config(self):
         """Load configuration from the config.json file"""
@@ -372,262 +388,25 @@ class Novelaist:
         except Exception as e:
             print(f"Error adding text to cover: {str(e)}")
 
+    def create_html(self, content, title="Generated Novel"):
+        """Create a single HTML file from the content for debugging/preview"""
+        converter = HtmlConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, title)
+
     def create_epub(self, content, title="Generated Novel"):
         """Create an EPUB file from the content with Table of Contents"""
-        try:
-            book = epub.EpubBook()
-            book.set_identifier('id123456')
-            book.set_title(title)
-            
-            # Use language configuration if available
-            language_map = {
-                'English': 'en',
-                'Spanish': 'es',
-                'French': 'fr',
-                'German': 'de',
-                'Italian': 'it',
-                'Portuguese': 'pt'
-            }
-            config_lang = self.config.get('language', 'English')
-            lang_code = language_map.get(config_lang, 'en')
-            book.set_language(lang_code)
-            
-            # Use author configuration if available
-            author = self.config.get('author', 'Unknown Author')
-            book.add_author(author)
-            
-            # Define common style
-            style = 'BODY { font-family: "Times New Roman", Times, serif; line-height: 1.5; text-align: justify; } h1 { text-align: center; } h2 { text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; }'
-            nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
-            book.add_item(nav_css)
-
-            # Add cover if available
-            spine = ['nav']
-            if self.cover_path and Path(self.cover_path).exists():
-                book.set_cover("cover.png", open(self.cover_path, 'rb').read())
-                
-                # Add a cover page at the beginning of the spine
-                cover_page = epub.EpubHtml(title='Cover', file_name='cover.xhtml', lang=lang_code)
-                cover_page.content = f'<div style="text-align: center;"><img src="cover.png" alt="Cover" style="max-width: 100%;"/></div>'
-                book.add_item(cover_page)
-                spine.append(cover_page)
-
-            # Split content by chapters (assuming # Chapter X or similar header)
-            import re
-            # Split by # at the beginning of the line, keeping the # for processing
-            content_stripped = content.strip()
-            # Handle both # Chapter Title and just # Title
-            chapters_data = re.split(r'^(?=#\s+)', content_stripped, flags=re.MULTILINE)
-            
-            # Filter out empty or whitespace only strings at the beginning
-            if chapters_data and not chapters_data[0].strip().startswith('#'):
-                # But keep if it's content (might be an introduction)
-                if chapters_data[0].strip():
-                    pass # Keep it, it will be handled as "Introduction"
-                else:
-                    chapters_data.pop(0)
-            
-            # Ensure we have at least one chapter if content was not empty
-            if not chapters_data and content_stripped:
-                chapters_data = [content_stripped]
-            
-            epub_chapters = []
-            toc = []
-            
-            for i, chapter_text in enumerate(chapters_data):
-                if not chapter_text.strip():
-                    continue
-                
-                lines = chapter_text.strip().split('\n')
-                # If it starts with #, the first line is the title
-                if lines[0].strip().startswith('# '):
-                    chapter_title = lines[0].strip().strip('# ').strip()
-                    chapter_body = '\n'.join(lines[1:]).strip()
-                else:
-                    # Content before the first # Chapter
-                    chapter_title = "Introduction" if i == 0 else f"Chapter {i}"
-                    chapter_body = chapter_text.strip()
-                
-                # Format body to HTML paragraphs
-                formatted_body = ""
-                paragraphs = chapter_body.split('\n')
-                for p in paragraphs:
-                    if p.strip():
-                        if p.strip().startswith('## '):
-                            formatted_body += f'<h2>{p.strip()[3:]}</h2>'
-                        elif p.strip().startswith('### '):
-                            formatted_body += f'<h3>{p.strip()[4:]}</h3>'
-                        else:
-                            formatted_body += f'<p>{p.strip()}</p>'
-                    else:
-                        formatted_body += '<br/>'
-                
-                file_name = f'chap_{i:02d}.xhtml'
-                chapter_item = epub.EpubHtml(title=chapter_title, file_name=file_name, lang=lang_code)
-                chapter_item.content = f'<h1>{chapter_title}</h1>{formatted_body}'
-                chapter_item.add_item(nav_css)
-                book.add_item(chapter_item)
-                
-                epub_chapters.append(chapter_item)
-                toc.append(epub.Link(file_name, chapter_title, f'chap_{i:02d}'))
-                spine.append(chapter_item)
-
-            # Set table of contents and navigation items
-            book.toc = toc
-            book.add_item(epub.EpubNcx())
-            book.add_item(epub.EpubNav())
-            book.spine = spine
-            
-            # Save file
-            filename = self.output_dir / f"{title.replace(' ', '_')}.epub"
-            epub.write_epub(filename, book, {})
-            print(f"EPUB file saved at: {filename}")
-            return str(filename)
-        except Exception as e:
-            print(f"Error creating EPUB: {str(e)}")
-            return None
+        converter = EpubConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, title)
 
     def create_pdf(self, content, novel_title="Generated Novel"):
         """Create a PDF file from the content with Table of Contents"""
-        try:
-            filename = self.output_dir / f"{novel_title.replace(' ', '_')}.pdf"
-            doc = SimpleDocTemplate(str(filename), pagesize=letter)
-            styles = getSampleStyleSheet()
-            
-            # Custom styles for headers
-            styles.add(ParagraphStyle(name='ChapterTitle', parent=styles['Heading1'], alignment=1, spaceAfter=20))
-            styles.add(ParagraphStyle(name='SceneTitle', parent=styles['Heading2'], alignment=1, spaceAfter=10))
-            
-            story = []
-            toc_entries = []
-            
-            # Add a cover image if available
-            if self.cover_path and Path(self.cover_path).exists():
-                img = Image(self.cover_path)
-                # Scale the image to fit page width while maintaining an aspect ratio
-                page_width, page_height = letter
-                img.drawHeight = page_height * 0.7
-                img.drawWidth = page_width * 0.8
-                story.append(img)
-                story.append(PageBreak())
-            
-            # Title Page
-            story.append(Spacer(1, 100))
-            story.append(Paragraph(novel_title, styles['Title']))
-            story.append(Spacer(1, 24))
-            story.append(Paragraph(f"Author: {self.config.get('author', 'Unknown Author')}", styles['Normal']))
-            story.append(Paragraph(f"Date: {self.config.get('date', '')}", styles['Normal']))
-            story.append(PageBreak())
-            
-            # Table of Contents placeholder
-            story.append(Paragraph("Table of Contents", styles['Heading1']))
-            story.append(Spacer(1, 12))
-            
-            # Split content by chapters to build TOC and story
-            import re
-            # Split by # at the beginning of the line, keeping the # for processing
-            content_stripped = content.strip()
-            chapters_data = re.split(r'^(?=#\s+)', content_stripped, flags=re.MULTILINE)
-            
-            # Filter out empty or whitespace only strings at the beginning
-            if chapters_data and not chapters_data[0].strip().startswith('#'):
-                chapters_data.pop(0)
-
-            # Ensure we have at least one chapter if content was not empty
-            if not chapters_data and content_stripped:
-                chapters_data = [content_stripped]
-            
-            for i, chapter_text in enumerate(chapters_data):
-                if not chapter_text.strip():
-                    continue
-                
-                lines = chapter_text.strip().split('\n')
-                # If it starts with #, the first line is the title
-                if lines[0].startswith('# '):
-                    chapter_title = lines[0].strip('# ').strip()
-                    chapter_body = '\n'.join(lines[1:]).strip()
-                else:
-                    chapter_title = lines[0].strip()
-                    chapter_body = '\n'.join(lines[1:]).strip()
-                
-                # Add to TOC
-                toc_entries.append(chapter_title)
-                
-                # Add to story
-                story.append(Paragraph(chapter_title, styles['ChapterTitle']))
-                story.append(Spacer(1, 12))
-                
-                paragraphs = chapter_body.split('\n')
-                for p in paragraphs:
-                    if p.strip():
-                        if p.strip().startswith('## '):
-                            story.append(Paragraph(p.strip()[3:], styles['SceneTitle']))
-                        elif p.strip().startswith('### '):
-                            story.append(Paragraph(p.strip()[4:], styles['Heading3']))
-                        else:
-                            story.append(Paragraph(p.strip(), styles['Normal']))
-                        story.append(Spacer(1, 6))
-                    else:
-                        story.append(Spacer(1, 12))
-                
-                story.append(PageBreak())
-
-            # For PDF, generating a clickable TOC at the beginning is complex with SimpleDocTemplate.
-            # We will just list the chapters for now in the "Table of Contents" section we created.
-            toc_story = []
-            for title in toc_entries:
-                toc_story.append(Paragraph(title, styles['Normal']))
-                toc_story.append(Spacer(1, 6))
-            
-            # We insert the TOC items after the "Table of Contents" header (index 3 or 4 depending on cover)
-            toc_index = 3 if self.cover_path and Path(self.cover_path).exists() else 1
-            # Wait, story is a list, so we can insert. 
-            # cover(0), PageBreak(1), TitlePage(2,3,4,5), PageBreak(6), TOC Header(7), Spacer(8)
-            # Without cover: TitlePage(0,1,2,3), PageBreak(4), TOC Header(5), Spacer(6)
-            
-            # Rebuilding story to insert TOC properly
-            final_story = []
-            # Find TOC Header
-            for idx, item in enumerate(story):
-                final_story.append(item)
-                if isinstance(item, Paragraph) and item.text == "Table of Contents":
-                    final_story.extend(toc_story)
-                    final_story.append(PageBreak())
-            
-            doc.build(final_story)
-            print(f"PDF file saved at: {filename}")
-            return str(filename)
-        except Exception as e:
-            print(f"Error creating PDF: {str(e)}")
-            return None
+        converter = PdfConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, novel_title)
 
     def create_mobi(self, content, novel_title="Generated Novel"):
         """Create a MOBI file from the content using ebook-convert (Calibre)"""
-        try:
-            # First, create the EPUB to use as a base
-            epub_path = self.create_epub(content, novel_title)
-            if not epub_path:
-                print("Error: Could not create EPUB base for MOBI conversion.")
-                return None
-                
-            mobi_filename = self.output_dir / f"{novel_title.replace(' ', '_')}.mobi"
-            
-            print(f"Converting EPUB to MOBI for '{novel_title}'...")
-            # Use ebook-convert from Calibre
-            try:
-                subprocess.run(['ebook-convert', epub_path, str(mobi_filename)], 
-                               check=True, capture_output=True, text=True)
-                print(f"MOBI file saved at: {mobi_filename}")
-                return str(mobi_filename)
-            except subprocess.CalledProcessError as e:
-                print(f"Error in ebook-convert: {e.stderr}")
-                return None
-            except FileNotFoundError:
-                print("Error: 'ebook-convert' not found. Please install Calibre to support MOBI output.")
-                return None
-        except Exception as e:
-            print(f"Error creating MOBI: {str(e)}")
-            return None
+        converter = MobiConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, novel_title)
 
     def save_output(self, content, filename):
         """Save generated content in the output folder with Markdown Table of Contents"""
@@ -704,6 +483,7 @@ if __name__ == "__main__":
     
     # Create files in different formats
     title = novelaist.config.get('novel_title', 'Generated Novel')
+    novelaist.create_html(generated_content, title)
     novelaist.create_epub(generated_content, title)
     novelaist.create_pdf(generated_content, title)
     novelaist.create_mobi(generated_content, title)
