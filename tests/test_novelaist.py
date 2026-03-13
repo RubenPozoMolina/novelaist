@@ -85,6 +85,41 @@ def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
     assert "approximately 250 words" in prompt # 500 / 2
     assert "Markdown formatting" in prompt
 
+def test_dynamic_section_count_from_outline(mock_examples_dir, output_dir):
+    import ollama
+    # Create a dummy chapter file with 3 scenes
+    outline = "# Chapter 1\n\n## Scene 1\nContent 1\n## Scene 2\nContent 2\n## Scene 3\nContent 3"
+    (mock_examples_dir / "chapters" / "001_dynamic.md").write_text(outline)
+    
+    novelaist = Novelaist(mock_examples_dir, output_dir)
+    
+    # Mock ollama.Client
+    mock_client_instance = MagicMock()
+    ollama.Client = MagicMock(return_value=mock_client_instance)
+    
+    # Mock response
+    mock_response = {'message': {'content': 'Generated Section Content'}}
+    mock_client_instance.chat.return_value = mock_response
+    
+    # Generate content
+    novelaist.generate_novel_content()
+    
+    # Check if chat was called 3 times (for 3 scenes), ignoring the 2 calls from test_language_and_constraints_in_prompt if they were in the same session, but here it's a fresh run
+    # Actually, generate_novel_content processes all files in chapters dir
+    # So it will process 001_dynamic.md (3 sections) AND 001_intro.md (0 headers, fallback to 2 from config)
+    # Total calls: 3 + 2 = 5 if both files exist. 
+    # To be safe, let's look only at calls related to 001_dynamic
+    
+    # Get all prompts
+    prompts = [call.kwargs['messages'][0]['content'] for call in mock_client_instance.chat.call_args_list]
+    
+    # Count how many prompts mention "section X of 3"
+    dynamic_calls = [p for p in prompts if "of 3" in p]
+    assert len(dynamic_calls) == 3
+    
+    # Check word count for 3 sections: 500 // 3 = 166
+    assert "approximately 166 words" in dynamic_calls[0]
+
 def test_skip_generation_if_chapter_exists(mock_examples_dir, output_dir):
     import ollama
     # Create a dummy chapter file

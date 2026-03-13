@@ -22,4 +22,8 @@
 ## The Modern Messiah Emerges
 - **2036-06-06**: Elias begins working at NanoTechIA under Mateo Reyes.
 - **2036-12-06**: Elias travels to Moscow/Belarus and meets Ivan Krestitel, leading to the creation of construction nanobots.
-- **2036-02-07**: Elias retreats to the Rub al-Khali desert for 40 days of reflection.
+- **2037-01-07**: Elias retreats to the Rub al-Khali desert for 40 days of reflection.
+- **2037-02-18**: Elias returns to his hometown, Monterrey, Mexico.
+- **2037-03-12**: Elias joins a business incubator in Monterrey and meets Simon, Andrew, James, and John.
+- **2037-04-15**: Founding of "NanoVita," a revolutionary startup focused on medical nanobots and ethical AI.
+- **2037-06-01**: Elias performs the first "miracle" by curing a terminal patient using NanoVita technology, beginning the spread of his new paradigm.
