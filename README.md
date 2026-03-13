@@ -27,7 +27,7 @@ novelaist/
 
 ## Requirements
 
-- **Python**: ^3.8.1
+- **Python**: ^3.12
 - **Poetry**: For dependency management.
 - **Ollama**: Installed and running on your local machine.
 - **Command-R Model**: Available in Ollama (`ollama pull command-r`).

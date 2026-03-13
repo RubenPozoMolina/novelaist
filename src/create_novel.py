@@ -2,11 +2,16 @@ import argparse
 import json
 import ollama
 from pathlib import Path
+try:
+    from src.cover_generator import CoverGenerator
+except ImportError:
+    from cover_generator import CoverGenerator
 
 from ebooklib import epub
+from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 
 
 def process_character_document(file_path):
@@ -39,6 +44,8 @@ class Novelaist:
             "environment": []
         }
         self._load_documents()
+        self.cover_generator = CoverGenerator()
+        self.cover_path = None
     
     def _load_config(self):
         """Load configuration from the config.json file"""
@@ -147,6 +154,92 @@ class Novelaist:
 
 
     
+    def generate_cover(self):
+        """Generate a cover for the novel and add text (title, author, model)."""
+        title = self.config.get('novel_title', 'Generated Novel')
+        author = self.config.get('author', 'Unknown Author')
+        model = self.config.get('model', 'command-r')
+        
+        # Simple description based on environmental documents if available
+        description = ""
+        if self.documents["environment"]:
+            with open(self.documents["environment"][0], 'r') as f:
+                description = f.read()[:200].replace('\n', ' ')
+        
+        cover_filename = f"{title.replace(' ', '_')}_cover.png"
+        output_path = self.output_dir / cover_filename
+        
+        # Check if cover already exists
+        if output_path.exists():
+            print(f"Cover already exists at: {output_path}. Skipping generation.")
+            self.cover_path = str(output_path)
+            return self.cover_path
+            
+        # Generate the background image
+        generated_path = self.cover_generator.generate_cover(title, description, output_path)
+        
+        if generated_path:
+            # Add text to the generated image
+            self._add_text_to_cover(generated_path, title, author, model)
+            self.cover_path = generated_path
+            
+        return self.cover_path
+
+    def _add_text_to_cover(self, image_path, title, author, model):
+        """Add title, author, and model text to the cover image."""
+        try:
+            img = PILImage.open(image_path)
+            draw = ImageDraw.Draw(img)
+            width, height = img.size
+            
+            # Try to load a font, fallback to default
+            try:
+                # Common paths for fonts in Linux
+                font_paths = [
+                    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                    "DejaVuSans-Bold.ttf"
+                ]
+                font_title = None
+                for path in font_paths:
+                    if Path(path).exists():
+                        font_title = ImageFont.truetype(path, int(height * 0.08))
+                        font_author = ImageFont.truetype(path, int(height * 0.04))
+                        font_model = ImageFont.truetype(path, int(height * 0.02))
+                        break
+                
+                if not font_title:
+                    font_title = ImageFont.load_default()
+                    font_author = ImageFont.load_default()
+                    font_model = ImageFont.load_default()
+            except Exception:
+                font_title = ImageFont.load_default()
+                font_author = ImageFont.load_default()
+                font_model = ImageFont.load_default()
+
+            # Add Title (top)
+            title_text = title.upper()
+            left, top, right, bottom = draw.textbbox((0, 0), title_text, font=font_title)
+            w, h = right - left, bottom - top
+            draw.text(((width - w) / 2, height * 0.1), title_text, font=font_title, fill="white", stroke_width=2, stroke_fill="black")
+            
+            # Add Author (bottom-ish)
+            author_text = f"By {author}"
+            left, top, right, bottom = draw.textbbox((0, 0), author_text, font=font_author)
+            w, h = right - left, bottom - top
+            draw.text(((width - w) / 2, height * 0.8), author_text, font=font_author, fill="white", stroke_width=1, stroke_fill="black")
+            
+            # Add Model (bottom)
+            model_text = f"Generated with {model}"
+            left, top, right, bottom = draw.textbbox((0, 0), model_text, font=font_model)
+            w, h = right - left, bottom - top
+            draw.text(((width - w) / 2, height * 0.9), model_text, font=font_model, fill="lightgray", stroke_width=1, stroke_fill="black")
+            
+            img.save(image_path)
+            print(f"Text added to cover: {image_path}")
+        except Exception as e:
+            print(f"Error adding text to cover: {str(e)}")
+
     def create_epub(self, content, title="Generated Novel"):
         """Create an EPUB file from the content"""
         try:
@@ -180,23 +273,50 @@ class Novelaist:
                 else:
                     formatted_content += '<br/>'
 
-            # Create chapter
-            chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang=lang_code)
-            chapter.content = f'<h1>{title}</h1>{formatted_content}'
-            book.add_item(chapter)
-            
-            # Define style - ensure a readable serif font for novels
-            style = 'BODY { font-family: "Times New Roman", Times, serif; line-height: 1.5; text-align: justify; }'
-            nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
-            book.add_item(nav_css)
-            
-            # Generate table of contents
-            book.toc = [epub.Link('chap_01.xhtml', title, 'intro')]
-            book.add_item(epub.EpubNcx())
-            book.add_item(epub.EpubNav())
-            
-            # Apply style
-            book.spine = ['nav', chapter]
+            # Add cover if available
+            if self.cover_path and Path(self.cover_path).exists():
+                book.set_cover("cover.png", open(self.cover_path, 'rb').read())
+                
+                # Add a cover page at the beginning of the spine
+                cover_page = epub.EpubHtml(title='Cover', file_name='cover.xhtml', lang=lang_code)
+                cover_page.content = f'<div style="text-align: center;"><img src="cover.png" alt="Cover" style="max-width: 100%;"/></div>'
+                book.add_item(cover_page)
+                
+                # Define style - ensure a readable serif font for novels
+                style = 'BODY { font-family: "Times New Roman", Times, serif; line-height: 1.5; text-align: justify; }'
+                nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
+                book.add_item(nav_css)
+                
+                # Create chapter
+                chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang=lang_code)
+                chapter.content = f'<h1>{title}</h1>{formatted_content}'
+                book.add_item(chapter)
+                
+                # Generate table of contents
+                book.toc = [epub.Link('chap_01.xhtml', title, 'intro')]
+                book.add_item(epub.EpubNcx())
+                book.add_item(epub.EpubNav())
+                
+                # Apply style
+                book.spine = ['nav', cover_page, chapter]
+            else:
+                # Define style - ensure a readable serif font for novels
+                style = 'BODY { font-family: "Times New Roman", Times, serif; line-height: 1.5; text-align: justify; }'
+                nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
+                book.add_item(nav_css)
+                
+                # Create chapter
+                chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang=lang_code)
+                chapter.content = f'<h1>{title}</h1>{formatted_content}'
+                book.add_item(chapter)
+                
+                # Generate table of contents
+                book.toc = [epub.Link('chap_01.xhtml', title, 'intro')]
+                book.add_item(epub.EpubNcx())
+                book.add_item(epub.EpubNav())
+                
+                # Apply style
+                book.spine = ['nav', chapter]
             
             # Save file
             filename = self.output_dir / f"{title.replace(' ', '_')}.epub"
@@ -214,6 +334,16 @@ class Novelaist:
             doc = SimpleDocTemplate(str(filename), pagesize=letter)
             styles = getSampleStyleSheet()
             story = []
+            
+            # Add cover image if available
+            if self.cover_path and Path(self.cover_path).exists():
+                img = Image(self.cover_path)
+                # Scale image to fit page width while maintaining aspect ratio
+                page_width, page_height = letter
+                img.drawHeight = page_height * 0.7
+                img.drawWidth = page_width * 0.8
+                story.append(img)
+                story.append(Spacer(1, 36))
             
             # Title
             title_para = Paragraph(novel_title, styles['Title'])
@@ -265,6 +395,11 @@ class Novelaist:
         """Save generated content in the output folder"""
         output_file = self.output_dir / filename
         try:
+            # Include cover in Markdown if it exists
+            if filename.endswith('.md') and self.cover_path:
+                cover_rel_path = Path(self.cover_path).name
+                content = f"![Cover]({cover_rel_path})\n\n# {self.config.get('novel_title', 'Generated Novel')}\n\n{content}"
+                
             with open(output_file, 'w') as f:
                 f.write(content)
             print(f"Content saved at: {output_file}")
@@ -297,6 +432,11 @@ if __name__ == "__main__":
     
     # Test generation
     print("\n" + "="*50)
+    
+    # Generate cover
+    print("Generating cover...")
+    novelaist.generate_cover()
+    
     generated_content = novelaist.generate_novel_content()
     print("Generation completed.")
     
