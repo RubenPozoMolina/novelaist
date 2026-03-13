@@ -1,0 +1,7 @@
+{
+    "novel_title": "Modern Messiah",
+    "author": "Rubén Pozo",
+    "model": "llama3",
+    "host": "http://localhost:11434",
+    "language": "Spanish"
+}

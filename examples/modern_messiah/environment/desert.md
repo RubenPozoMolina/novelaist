@@ -1,27 +1,27 @@
-# Entorno: El Desierto
+# Environment: The Desert
 
-## Descripción General
+## General Description
 
-El desierto es un lugar seco y distante, con una vasta extensión de arena dorada y rocas erosionadas. El paisaje es imponente, con formaciones geológicas singulares que parecen observar la historia.
+The desert is a dry and distant place, with a vast expanse of golden sand and eroded rocks. The landscape is imposing, with unique geological formations that seem to observe history.
 
-## Características del Lugar
+## Site Characteristics
 
-- Temperatura extremadamente alta durante el día
-- Temperatura fría por la noche
-- Ausencia de vegetación significativa
-- Presencia de antiguas estructuras de piedra
+- Extremely high temperature during the day
+- Cold temperature at night
+- Absence of significant vegetation
+- Presence of ancient stone structures
 
-## Importancia en la Novela
+## Importance in the Novel
 
-El desierto es el lugar donde se encuentran las antiguas ruinas donde se esconden los secretos del artefacto. Su simbolismo de aislamiento y tiempo perdido se relaciona con los misterios del pasado que se descubren.
+The desert is the location where the ancient ruins that hide the artifact's secrets are found. Its symbolism of isolation and lost time relates to the mysteries of the past that are discovered.
 
-## Elementos Específicos
+## Specific Elements
 
-- Los restos antiguos del templo
-- Pistas de la historia del artefacto
-- Puntos de conexión con el futuro del mundo
+- The ancient remains of the temple
+- Clues to the history of the artifact
+- Connection points with the future of the world
 
-## Conexiones con Personajes
+## Character Connections
 
-- María y Elías buscan el templo en el desierto para encontrar respuestas.
-- La ubicación del templo es crucial para el desarrollo de la trama.
+- Maria and Elias search for the temple in the desert to find answers.
+- The location of the temple is crucial for the plot development.

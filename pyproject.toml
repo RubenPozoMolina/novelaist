@@ -1,16 +1,18 @@
 [tool.poetry]
 name = "novelaist"
 version = "0.1.0"
-description = "Aplicación de escritura de novelas con IA local"
-authors = ["Tu Nombre <tu.correo@ejemplo.com>"]
+package-mode = false
+description = "Novel writing application with local AI"
+authors = ["Rubén Pozo <rubenpozomolina@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.1"
 ollama = "^0.1.0"
 ebooklib = "^0.18"
 reportlab = "^4.0"
 pillow = "^9.0"
+markdown = "^3.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
