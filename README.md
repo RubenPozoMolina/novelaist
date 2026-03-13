@@ -58,11 +58,19 @@ For MOBI support, install Calibre:
    cd novelaist
    ```
 
-2. **Install Python dependencies with Poetry**:
+2. **Install Python dependencies**:
+
+   #### Option A: Using Poetry (Recommended)
    ```bash
    poetry install
    ```
    *Note: If you have issues with `torch` or `diffusers`, ensure you have a compatible Cuda environment or install the CPU versions manually.*
+
+   #### Option B: Using Pip (Manual Installation)
+   If you don't want to use Poetry, you can install the dependencies using `pip`:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 3. **Prepare configuration**:
    Copy the example configuration file to `config.json` inside your project directory:
@@ -82,10 +90,18 @@ For MOBI support, install Calibre:
 1. **Prepare your documents**: Organize your novel's Markdown files in the `examples/` directory following the established structure (see `Document Details` below).
 
 2. **Run the generator**:
+
+   **Using Poetry:**
    ```bash
    poetry run python src/create_novel.py <project_path> <output_dir>
    ```
-   *Example:*
+
+   **Using Pip:**
+   ```bash
+   python src/create_novel.py <project_path> <output_dir>
+   ```
+
+   *Example (Poetry):*
    ```bash
    poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah
    ```
@@ -105,19 +121,16 @@ The project expects a specific folder structure to build the context for the AI:
 To contribute or run tests:
 
 1. **Install dev dependencies**:
-   ```bash
-   poetry install
-   ```
+   - **Poetry**: `poetry install`
+   - **Pip**: `pip install -r requirements.txt`
 
 2. **Run tests**:
-   ```bash
-   poetry run pytest
-   ```
+   - **Poetry**: `poetry run pytest`
+   - **Pip**: `pytest`
 
 3. **Format code**:
-   ```bash
-   poetry run black .
-   ```
+   - **Poetry**: `poetry run black .`
+   - **Pip**: `black .`
 
 ## License
 
