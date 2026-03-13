@@ -25,7 +25,9 @@ def mock_examples_dir(tmp_path):
         "author": "Test Author",
         "model": "test-model",
         "host": "http://test-host:11434",
-        "language": "Spanish"
+        "language": "Spanish",
+        "minimum_chapter_words_number": "500",
+        "chapter_sections": 2
     }
     
     import json
@@ -53,25 +55,57 @@ def test_novelaist_initialization(mock_examples_dir, output_dir):
     assert novelaist.config["host"] == "http://test-host:11434"
     assert novelaist.config["language"] == "Spanish"
 
-def test_language_in_prompt(mock_examples_dir, output_dir):
+def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
     import ollama
+    # Create a dummy chapter file
+    (mock_examples_dir / "chapters" / "001_intro.md").write_text("Chapter intro outline")
+    
     novelaist = Novelaist(mock_examples_dir, output_dir)
     
     # Mock ollama.Client for host connections
     mock_client_instance = MagicMock()
     ollama.Client = MagicMock(return_value=mock_client_instance)
     
+    # Mock response
+    mock_response = {'message': {'content': 'Generated Chapter Content'}}
+    mock_client_instance.chat.return_value = mock_response
+    
     # Generate content
-    try:
-        novelaist.generate_novel_content()
-    except Exception:
-        pass
+    novelaist.generate_novel_content()
         
-    # Check if prompt contains the language
-    args, kwargs = mock_client_instance.chat.call_args
+    # Check if prompt contains the language and constraints
+    # With section-by-section, chat is called once per section
+    assert mock_client_instance.chat.call_count == 2 # 2 sections in mock config
+    
+    # Check the first call
+    args, kwargs = mock_client_instance.chat.call_args_list[0]
     prompt = kwargs['messages'][0]['content']
     assert "Spanish" in prompt
-    assert "Write a novel in Spanish" in prompt
+    assert "Write section 1 of 2" in prompt
+    assert "approximately 250 words" in prompt # 500 / 2
+    assert "Markdown formatting" in prompt
+
+def test_skip_generation_if_chapter_exists(mock_examples_dir, output_dir):
+    import ollama
+    # Create a dummy chapter file
+    (mock_examples_dir / "chapters" / "001_intro.md").write_text("Chapter intro outline")
+    
+    # Create the generated chapter file beforehand
+    existing_content = "Existing Chapter Content"
+    (output_dir / "001_intro_generated.md").write_text(existing_content)
+    
+    novelaist = Novelaist(mock_examples_dir, output_dir)
+    
+    # Mock ollama.Client
+    mock_client_instance = MagicMock()
+    ollama.Client = MagicMock(return_value=mock_client_instance)
+    
+    # Generate content
+    content = novelaist.generate_novel_content()
+    
+    # Verify ollama was NOT called
+    mock_client_instance.chat.assert_not_called()
+    assert existing_content in content
 
 def test_epub_language(mock_examples_dir, output_dir):
     from ebooklib import epub

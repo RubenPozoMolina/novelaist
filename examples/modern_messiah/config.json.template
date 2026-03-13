@@ -3,5 +3,7 @@
     "author": "Rubén Pozo",
     "model": "llama3",
     "host": "http://localhost:11434",
-    "language": "Spanish"
+    "language": "Spanish",
+    "minimum_chapter_words_number": "2500",
+    "chapter_sections:": 4
 }

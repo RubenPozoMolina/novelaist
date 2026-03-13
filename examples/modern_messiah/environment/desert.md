@@ -1,27 +1,16 @@
-# Environment: The Desert
+# Key Global Locations
 
-## General Description
+## Colorado Mountains, USA
+A high-altitude, isolated region where Dr. Maria Vasquez lives in a remote cabin. It represents seclusion and a separation from the crumbling civilization below. 
 
-The desert is a dry and distant place, with a vast expanse of golden sand and eroded rocks. The landscape is imposing, with unique geological formations that seem to observe history.
+## Moscow & Belarus, Eastern Europe
+Centers for advanced technological research. Following regional conflicts, these nations focused heavily on technology for independence and protection, creating a sterile and highly advanced scientific environment.
 
-## Site Characteristics
+## Rub al-Khali Desert (The Empty Quarter)
+One of the largest continuous sand deserts in the world, located in the southern Arabian Peninsula.
+- **Physical Characteristics**: Vast expanses of shifting sand dunes, extreme heat during the day, and cold at night. 
+- **Symbolism**: It represents isolation, tests of endurance, and spiritual awakening. It's the site where Elias confronts his dual nature (machine/divine vs. animal/human).
+- **Historical Significance**: It's an ancient land that has witnessed the rise and fall of civilizations, now holding a modern "Messiah" figure.
 
-- Extremely high temperature during the day
-- Cold temperature at night
-- Absence of significant vegetation
-- Presence of ancient stone structures
-
-## Importance in the Novel
-
-The desert is the location where the ancient ruins that hide the artifact's secrets are found. Its symbolism of isolation and lost time relates to the mysteries of the past that are discovered.
-
-## Specific Elements
-
-- The ancient remains of the temple
-- Clues to the history of the artifact
-- Connection points with the future of the world
-
-## Character Connections
-
-- Maria and Elias search for the temple in the desert to find answers.
-- The location of the temple is crucial for the plot development.
+## NanoTechIA HQ
+A tech startup based in a modern urban center. It represents the intersection of capital, innovation, and the ethical dilemmas of human-centric technology.

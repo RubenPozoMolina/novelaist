@@ -85,12 +85,11 @@ class Novelaist:
         return self.documents
 
     def generate_novel_content(self):
-        """Generate novel content based on loaded documents"""
+        """Generate novel content based on loaded documents, chapter by chapter."""
         print("Generating novel content...")
         
-        # Process documents to create prompts
+        # Process documents to create context
         character_info = []
-        chapter_info = []
         environment_info = []
         
         # Process characters
@@ -98,37 +97,32 @@ class Novelaist:
             content = process_character_document(character_file)
             character_info.append(content)
         
-        # Process chapters
-        for chapter_file in self.documents["chapters"]:
-            content = process_chapter_document(chapter_file)
-            chapter_info.append(content)
-        
         # Process environment
         for env_file in self.documents["environment"]:
             with open(env_file, 'r') as f:
                 content = f.read()
             environment_info.append(content)
         
-        # Create a prompt with information from documents
-        language = self.config.get('language', 'English')
-        prompt = f"""
-        Write a novel in {language} based on the following information:
-        
+        context = f"""
         Characters:
         {chr(10).join(character_info)}
-        
-        Chapters:
-        {chr(10).join(chapter_info)}
         
         Environment:
         {chr(10).join(environment_info)}
         
         Novel title: {self.config.get('novel_title', 'Generated Novel')}
         Author: {self.config.get('author', 'Unknown Author')}
-        Language: {language}
-        
-        Generate literary content consistent with this information in {language}.
         """
+        
+        language = self.config.get('language', 'English')
+        min_words = int(self.config.get('minimum_chapter_words_number', '1000'))
+        sections_count = int(self.config.get('chapter_sections', 3))
+        words_per_section = min_words // sections_count
+        
+        # Sort chapters to ensure they are processed in order
+        sorted_chapters = sorted(self.documents["chapters"])
+        
+        full_novel_content = []
         
         # Generate content using the configured model
         model_name = self.config.get('model', 'command-r')
@@ -137,21 +131,75 @@ class Novelaist:
         if host:
             print(f"Connecting to {model_name} on {host}...")
             client = ollama.Client(host=host)
-            response = client.chat(
-                model=model_name,
-                messages=[{'role': 'user', 'content': prompt}]
-            )
         else:
             print(f"Connecting to {model_name}...")
-            response = ollama.chat(
-                model=model_name,
-                messages=[{'role': 'user', 'content': prompt}]
-            )
-        
-        # In ollama-python 0.1.x, response is a dict with ['message']['content']
-        if isinstance(response, dict):
-            return response['message']['content']
-        return response.message.content
+            client = ollama
+            
+        for chapter_index, chapter_file in enumerate(sorted_chapters, 1):
+            chapter_name = chapter_file.stem
+            output_chapter_file = self.output_dir / f"{chapter_name}_generated.md"
+            
+            if output_chapter_file.exists():
+                print(f"Chapter {chapter_name} ({chapter_index}/{len(sorted_chapters)}) already exists. Loading from file...")
+                with open(output_chapter_file, 'r') as f:
+                    chapter_content = f.read()
+                full_novel_content.append(chapter_content)
+                continue
+                
+            print(f"Generating chapter: {chapter_name} ({chapter_index}/{len(sorted_chapters)})...")
+            chapter_outline = process_chapter_document(chapter_file)
+            
+            chapter_sections_content = []
+            
+            for section_num in range(1, sections_count + 1):
+                print(f"  - Generating section {section_num} of {sections_count}...")
+                
+                previous_sections_context = ""
+                if chapter_sections_content:
+                    previous_sections_context = "\n\nContext from previous sections of this chapter:\n" + "\n\n".join(chapter_sections_content[-2:]) # Keep last 2 sections for context
+
+                prompt = f"""
+                {context}
+                
+                Language: {language}
+                
+                Current Chapter Outline:
+                {chapter_outline}
+                
+                {previous_sections_context}
+                
+                Instructions:
+                1. Write section {section_num} of {sections_count} for this chapter in {language}.
+                2. This section should have approximately {words_per_section} words.
+                3. Maintain consistency with the provided Characters, Environment, and previous sections.
+                4. Use Markdown formatting for this section (### Section Title).
+                5. Focus ONLY on the part of the outline corresponding to this section.
+                
+                Generate the literary content for this section now.
+                """
+                
+                response = client.chat(
+                    model=model_name,
+                    messages=[{'role': 'user', 'content': prompt}]
+                )
+                
+                # In ollama-python 0.1.x, response is a dict with ['message']['content']
+                if isinstance(response, dict):
+                    section_content = response['message']['content']
+                else:
+                    section_content = response.message.content
+                
+                chapter_sections_content.append(section_content)
+            
+            chapter_content = "\n\n".join(chapter_sections_content)
+                
+            # Save individual chapter
+            with open(output_chapter_file, 'w') as f:
+                f.write(chapter_content)
+                
+            full_novel_content.append(chapter_content)
+            
+        return "\n\n".join(full_novel_content)
 
 
     

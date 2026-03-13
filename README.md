@@ -64,7 +64,14 @@ For MOBI support, install Calibre:
    ```
    *Note: If you have issues with `torch` or `diffusers`, ensure you have a compatible Cuda environment or install the CPU versions manually.*
 
-3. **Verify Ollama**:
+3. **Prepare configuration**:
+   Copy the example configuration file to `config.json` inside your project directory:
+   ```bash
+   cp examples/modern_messiah/config.json.template examples/modern_messiah/config.json
+   ```
+   *Note: Edit `config.json` to set your preferred model and Ollama host.*
+
+4. **Verify Ollama**:
    Ensure Ollama is running and the Command-R model is downloaded:
    ```bash
    ollama list
