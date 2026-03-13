@@ -27,12 +27,30 @@ novelaist/
 
 ## Requirements
 
-- **Python**: ^3.12
-- **Poetry**: For dependency management.
-- **Ollama**: Installed and running on your local machine.
-- **Command-R Model**: Available in Ollama (`ollama pull command-r`).
+- **Python**: ^3.12 (specifically tested on 3.12.3)
+- **Poetry**: For Python dependency management.
+- **Ollama**: Installed and running on your local machine for text generation.
+- **Calibre**: Specifically the `ebook-convert` CLI tool for MOBI output.
+- **Cuda (Optional)**: Recommended for faster cover generation with Stable Diffusion.
 
 ## Installation
+
+### 1. External Dependencies
+
+#### Ollama
+Download and install from [ollama.com](https://ollama.com/). After installing, pull the model used in the examples:
+```bash
+ollama pull llama3
+```
+*(Note: You can change the model in the project's `config.json`)*
+
+#### Calibre
+For MOBI support, install Calibre:
+- **Linux**: `sudo apt install calibre` (or your distribution's package manager)
+- **macOS**: `brew install --cask calibre`
+- **Windows**: Download from [calibre-ebook.com](https://calibre-ebook.com/download)
+
+### 2. Project Setup
 
 1. **Clone the repository**:
    ```bash
@@ -40,10 +58,11 @@ novelaist/
    cd novelaist
    ```
 
-2. **Install dependencies**:
+2. **Install Python dependencies with Poetry**:
    ```bash
    poetry install
    ```
+   *Note: If you have issues with `torch` or `diffusers`, ensure you have a compatible Cuda environment or install the CPU versions manually.*
 
 3. **Verify Ollama**:
    Ensure Ollama is running and the Command-R model is downloaded:
@@ -64,7 +83,7 @@ novelaist/
    poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah
    ```
 
-3. **Check the results**: The generated files (Markdown, EPUB, PDF) will be available in the specified output directory.
+3. **Check the results**: The generated files (Markdown, EPUB, PDF, MOBI) will be available in the specified output directory.
 
 ## Document Details
 

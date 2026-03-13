@@ -116,6 +116,22 @@ def test_epub_language(mock_examples_dir, output_dir):
     _, html_kwargs = epub.EpubHtml.call_args
     assert html_kwargs['lang'] == 'es'
 
+def test_mobi_generation(mock_examples_dir, output_dir):
+    from ebooklib import epub
+    with patch('subprocess.run') as mock_run:
+        novelaist = Novelaist(mock_examples_dir, output_dir)
+        
+        # Mock create_epub to return a dummy path
+        with patch.object(Novelaist, 'create_epub', return_value="/tmp/test.epub"):
+            novelaist.create_mobi("Some content", "Test Title")
+            
+            # Check if subprocess.run was called with ebook-convert
+            mock_run.assert_called_once()
+            args = mock_run.call_args[0][0]
+            assert 'ebook-convert' in args
+            assert "/tmp/test.epub" in args
+            assert str(output_dir / "Test_Title.mobi") in args
+
 def test_markdown_filename_generation(mock_examples_dir, output_dir):
     novelaist = Novelaist(mock_examples_dir, output_dir)
     title = novelaist.config.get('novel_title', 'Generated Novel')
