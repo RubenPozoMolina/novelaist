@@ -24,23 +24,15 @@ def process_chapter_document(file_path):
 
 
 class Novelaist:
-    def __init__(self, examples_directory="examples", output_directory="output", model=None, host=None):
+    def __init__(self, examples_directory="examples", output_directory="output"):
         self.examples_dir = Path(examples_directory)
         self.output_dir = Path(output_directory)
         
-        # Ensure output directory exists from the start
+        # Ensure the output directory exists from the start
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         self.config = self._load_config()
         
-        # Override the config model if a model is provided
-        if model:
-            self.config['model'] = model
-            
-        # Override the config host if a host is provided
-        if host:
-            self.config['host'] = host
-            
         self.documents = {
             "characters": [],
             "chapters": [],
@@ -110,8 +102,9 @@ class Novelaist:
             environment_info.append(content)
         
         # Create a prompt with information from documents
+        language = self.config.get('language', 'English')
         prompt = f"""
-        Write a novel based on the following information:
+        Write a novel in {language} based on the following information:
         
         Characters:
         {chr(10).join(character_info)}
@@ -124,8 +117,9 @@ class Novelaist:
         
         Novel title: {self.config.get('novel_title', 'Generated Novel')}
         Author: {self.config.get('author', 'Unknown Author')}
+        Language: {language}
         
-        Generate literary content consistent with this information.
+        Generate literary content consistent with this information in {language}.
         """
         
         # Generate content using the configured model
@@ -159,7 +153,19 @@ class Novelaist:
             book = epub.EpubBook()
             book.set_identifier('id123456')
             book.set_title(title)
-            book.set_language('en')
+            
+            # Use language configuration if available
+            language_map = {
+                'English': 'en',
+                'Spanish': 'es',
+                'French': 'fr',
+                'German': 'de',
+                'Italian': 'it',
+                'Portuguese': 'pt'
+            }
+            config_lang = self.config.get('language', 'English')
+            lang_code = language_map.get(config_lang, 'en')
+            book.set_language(lang_code)
             
             # Use author configuration if available
             author = self.config.get('author', 'Unknown Author')
@@ -175,7 +181,7 @@ class Novelaist:
                     formatted_content += '<br/>'
 
             # Create chapter
-            chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang='en')
+            chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang=lang_code)
             chapter.content = f'<h1>{title}</h1>{formatted_content}'
             book.add_item(chapter)
             
@@ -201,16 +207,16 @@ class Novelaist:
             print(f"Error creating EPUB: {str(e)}")
             return None
 
-    def create_pdf(self, content, title="Generated Novel"):
+    def create_pdf(self, content, novel_title="Generated Novel"):
         """Create a PDF file from the content"""
         try:
-            filename = self.output_dir / f"{title.replace(' ', '_')}.pdf"
+            filename = self.output_dir / f"{novel_title.replace(' ', '_')}.pdf"
             doc = SimpleDocTemplate(str(filename), pagesize=letter)
             styles = getSampleStyleSheet()
             story = []
             
             # Title
-            title_para = Paragraph(title, styles['Title'])
+            title_para = Paragraph(novel_title, styles['Title'])
             story.append(title_para)
             story.append(Spacer(1, 12))
             
@@ -241,7 +247,7 @@ class Novelaist:
             print(f"Error creating PDF: {str(e)}")
             return None
 
-    def create_mobi(self, content, title="Generated Novel"):
+    def create_mobi(self, content, novel_title="Generated Novel"):
         """Create a MOBI file from the content"""
         try:
             # For MOBI, we use the same logic as for EPUB since ebooklib supports export
@@ -249,7 +255,7 @@ class Novelaist:
             # for converting to MOBI (requires Kindle or specific libraries)
             print("To create MOBI, kindle or additional libraries are needed.")
             # For now, we implement generation with EPUB, which is the first step
-            epub_file = self.create_epub(content, title)
+            epub_file = self.create_epub(content, novel_title)
             return epub_file  # We return the EPUB as an example
         except Exception as e:
             print(f"Error creating MOBI: {str(e)}")
@@ -270,13 +276,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a novel using local AI.")
     parser.add_argument("examples_dir", help="Path to the directory containing example documents.")
     parser.add_argument("output_dir", help="Path to the directory where output files will be saved.")
-    parser.add_argument("--model", help="AI model to use (default: command-r or from config.json).")
-    parser.add_argument("--host", help="Ollama server URL (default: from config.json or local).")
     
     args = parser.parse_args()
     
     # Create a Novelaist instance with input parameters
-    novelaist = Novelaist(args.examples_dir, args.output_dir, args.model, args.host)
+    novelaist = Novelaist(args.examples_dir, args.output_dir)
     
     # Show document structure
     print("Document structure:")
@@ -307,6 +311,7 @@ if __name__ == "__main__":
     novelaist.create_mobi(generated_content, title)
     
     # Also save the original Markdown file
-    novelaist.save_output(generated_content, "generated_novel.md")
+    markdown_filename = f"{title.replace(' ', '_')}.md"
+    novelaist.save_output(generated_content, markdown_filename)
     
     print("Process completed successfully.")

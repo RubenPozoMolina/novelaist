@@ -57,11 +57,11 @@ novelaist/
 
 2. **Run the generator**:
    ```bash
-   poetry run python src/create_novel.py <project_path> <output_dir> [--model <model_name>] [--host <ollama_host>]
+   poetry run python src/create_novel.py <project_path> <output_dir>
    ```
    *Example:*
    ```bash
-   poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah --model command-r --host http://localhost:11434
+   poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah
    ```
 
 3. **Check the results**: The generated files (Markdown, EPUB, PDF) will be available in the specified output directory.
