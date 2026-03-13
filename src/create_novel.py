@@ -1,6 +1,7 @@
 import argparse
 import json
 import ollama
+import subprocess
 from pathlib import Path
 try:
     from src.cover_generator import CoverGenerator
@@ -335,10 +336,10 @@ class Novelaist:
             styles = getSampleStyleSheet()
             story = []
             
-            # Add cover image if available
+            # Add a cover image if available
             if self.cover_path and Path(self.cover_path).exists():
                 img = Image(self.cover_path)
-                # Scale image to fit page width while maintaining aspect ratio
+                # Scale the image to fit page width while maintaining an aspect ratio
                 page_width, page_height = letter
                 img.drawHeight = page_height * 0.7
                 img.drawWidth = page_width * 0.8
@@ -378,15 +379,29 @@ class Novelaist:
             return None
 
     def create_mobi(self, content, novel_title="Generated Novel"):
-        """Create a MOBI file from the content"""
+        """Create a MOBI file from the content using ebook-convert (Calibre)"""
         try:
-            # For MOBI, we use the same logic as for EPUB since ebooklib supports export
-            # in multiple formats. Here we use EPUB as a base and create an additional function
-            # for converting to MOBI (requires Kindle or specific libraries)
-            print("To create MOBI, kindle or additional libraries are needed.")
-            # For now, we implement generation with EPUB, which is the first step
-            epub_file = self.create_epub(content, novel_title)
-            return epub_file  # We return the EPUB as an example
+            # First, create the EPUB to use as a base
+            epub_path = self.create_epub(content, novel_title)
+            if not epub_path:
+                print("Error: Could not create EPUB base for MOBI conversion.")
+                return None
+                
+            mobi_filename = self.output_dir / f"{novel_title.replace(' ', '_')}.mobi"
+            
+            print(f"Converting EPUB to MOBI for '{novel_title}'...")
+            # Use ebook-convert from Calibre
+            try:
+                subprocess.run(['ebook-convert', epub_path, str(mobi_filename)], 
+                               check=True, capture_output=True, text=True)
+                print(f"MOBI file saved at: {mobi_filename}")
+                return str(mobi_filename)
+            except subprocess.CalledProcessError as e:
+                print(f"Error in ebook-convert: {e.stderr}")
+                return None
+            except FileNotFoundError:
+                print("Error: 'ebook-convert' not found. Please install Calibre to support MOBI output.")
+                return None
         except Exception as e:
             print(f"Error creating MOBI: {str(e)}")
             return None
