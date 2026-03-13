@@ -35,9 +35,11 @@ def test_generate_cover(mock_sd_pipeline, tmp_path):
     assert mock_sd_pipeline.from_pretrained.call_args[0][0] == "Lykon/DreamShaper"
     mock_pipe.assert_called()
     # Check if prompt contains instructions for no text
-    prompt = mock_pipe.call_args[0][0]
+    prompt = mock_pipe.call_args[1]['prompt']
     assert "no text" in prompt
     assert "no letters" in prompt
+    assert "512" == str(mock_pipe.call_args[1]['width'])
+    assert "768" == str(mock_pipe.call_args[1]['height'])
     mock_image.save.assert_called_with(output_path)
 
 def test_cover_integration_in_novelaist(tmp_path):

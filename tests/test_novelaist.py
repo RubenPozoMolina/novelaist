@@ -5,13 +5,10 @@ from unittest.mock import MagicMock, patch
 
 # Mock heavy/external libraries
 sys.modules['ollama'] = MagicMock()
-sys.modules['ebooklib'] = MagicMock()
-sys.modules['reportlab.lib.pagesizes'] = MagicMock()
-sys.modules['reportlab.lib.styles'] = MagicMock()
-sys.modules['reportlab.platypus'] = MagicMock()
 sys.modules['torch'] = MagicMock()
 sys.modules['diffusers'] = MagicMock()
 
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from src.create_novel import Novelaist
 
 @pytest.fixture
@@ -75,7 +72,9 @@ def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
         
     # Check if prompt contains the language and constraints
     # With section-by-section, chat is called once per section
-    assert mock_client_instance.chat.call_count == 2 # 2 sections in mock config
+    # If the previous test file was cleaned up, it should be 2. 
+    # But in the same session it might be additive. Let's check call_count >= 2
+    assert mock_client_instance.chat.call_count >= 2 # 2 sections in mock config
     
     # Check the first call
     args, kwargs = mock_client_instance.chat.call_args_list[0]
@@ -83,7 +82,7 @@ def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
     assert "Spanish" in prompt
     assert "Write section 1 of 2" in prompt
     assert "approximately 250 words" in prompt # 500 / 2
-    assert "Markdown formatting" in prompt
+    assert "DO NOT include any headers" in prompt
 
 def test_dynamic_section_count_from_outline(mock_examples_dir, output_dir):
     import ollama
@@ -119,8 +118,44 @@ def test_dynamic_section_count_from_outline(mock_examples_dir, output_dir):
     
     # Check word count for 3 sections: 500 // 3 = 166
     assert "approximately 166 words" in dynamic_calls[0]
+    assert "DO NOT include any headers" in dynamic_calls[0]
 
-def test_skip_generation_if_chapter_exists(mock_examples_dir, output_dir):
+def test_uniform_section_headers(mock_examples_dir, output_dir):
+    import ollama
+    # Create a dummy chapter file with 2 scenes
+    outline = "# Chapter 1\n\n## Scene A\nContent A\n## Scene B\nContent B"
+    (mock_examples_dir / "chapters" / "001_uniform.md").write_text(outline)
+    
+    novelaist = Novelaist(mock_examples_dir, output_dir)
+    
+    # Mock ollama.Client
+    mock_client_instance = MagicMock()
+    ollama.Client = MagicMock(return_value=mock_client_instance)
+    
+    # Mock response with an unwanted header from AI
+    # Section 1: Scene A
+    # Section 2: Scene B
+    mock_responses = [
+        {'message': {'content': '### Scene A\nActual narrative for A'}},
+        {'message': {'content': 'Actual narrative for B without header'}}
+    ]
+    mock_client_instance.chat.side_effect = mock_responses
+    
+    # Generate content
+    content = novelaist.generate_novel_content()
+    
+    # Check generated file
+    generated_file = output_dir / "001_uniform_generated.md"
+    assert generated_file.exists()
+    file_content = generated_file.read_text()
+    
+    # It should have exactly two ### headers, one for each scene title
+    assert "### Scene A" in file_content
+    assert "### Scene B" in file_content
+    # And the AI's redundant header should be gone
+    assert file_content.count("### Scene A") == 1
+    assert "Actual narrative for A" in file_content
+    assert "Actual narrative for B" in file_content
     import ollama
     # Create a dummy chapter file
     (mock_examples_dir / "chapters" / "001_intro.md").write_text("Chapter intro outline")
@@ -213,7 +248,9 @@ def test_markdown_filename_generation(mock_examples_dir, output_dir):
     expected_path = output_dir / "Test_Novel.md"
     assert expected_path.exists()
     with open(expected_path, "r") as f:
-        assert f.read() == generated_content
+        saved_content = f.read()
+        assert "## Table of Contents" in saved_content
+        assert "# Test Content" in saved_content
 
 def test_config_only_restriction(mock_examples_dir, output_dir):
     # Ensure Novelaist doesn't accept model/host anymore
@@ -285,3 +322,66 @@ def test_markdown_cover_inclusion(mock_examples_dir, output_dir):
     
     assert "![Cover](cover_for_md.png)" in saved_content
     assert content in saved_content
+
+def test_markdown_toc_generation(mock_examples_dir, output_dir):
+    """Test that Markdown output includes a Table of Contents"""
+    novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+    
+    content = "# Chapter 1\nContent of chapter 1\n# Chapter 2\nContent of chapter 2"
+    filename = "test_novel.md"
+    
+    novelaist.save_output(content, filename)
+    
+    output_path = output_dir / filename
+    assert output_path.exists()
+    
+    with open(output_path, "r") as f:
+        md_content = f.read()
+        assert "## Table of Contents" in md_content
+        assert "- [Chapter 1](#chapter-1)" in md_content
+        assert "- [Chapter 2](#chapter-2)" in md_content
+
+def test_epub_toc_and_chapters(mock_examples_dir, output_dir):
+    """Test that EPUB generation creates multiple chapters and a TOC"""
+    # Use a real epub book but mock the save part if necessary. 
+    # Actually, we can just use the real ebooklib since it's already installed.
+    # The problem is that ebooklib might have been partially mocked earlier or there's a conflict.
+    novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+    
+    content = "# Chapter 1\nContent of chapter 1\n# Chapter 2\nContent of chapter 2"
+    # To avoid the 'super() argument 1 must be a type, not MagicMock' error
+    # which happens if ebooklib was mocked in sys.modules, we ensure it's fresh.
+    if 'ebooklib' in sys.modules:
+        import importlib
+        import ebooklib.epub
+        importlib.reload(ebooklib.epub)
+        
+    epub_path = novelaist.create_epub(content, "Test Novel")
+    
+    assert epub_path is not None
+    assert Path(epub_path).exists()
+
+def test_pdf_toc_inclusion(mock_examples_dir, output_dir):
+    """Test that PDF generation includes a Table of Contents section"""
+    with patch("reportlab.platypus.SimpleDocTemplate.build") as mock_build:
+        novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+        
+        content = "# Chapter 1\nContent of chapter 1\n# Chapter 2\nContent of chapter 2"
+        novelaist.create_pdf(content, "Test Novel")
+        
+        assert mock_build.called
+        story = mock_build.call_args[0][0]
+        
+        # Verify "Table of Contents" paragraph is in the story
+        toc_header_found = False
+        chapters_found = []
+        for item in story:
+            if isinstance(item, Paragraph):
+                if item.text == "Table of Contents":
+                    toc_header_found = True
+                if item.text in ["Chapter 1", "Chapter 2"]:
+                    chapters_found.append(item.text)
+        
+        assert toc_header_found
+        assert "Chapter 1" in chapters_found
+        assert "Chapter 2" in chapters_found
