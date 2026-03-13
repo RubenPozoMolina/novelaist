@@ -22,10 +22,7 @@
 Elias Revuelta is an android created by the AI known as Iris, who was in turn created by Maria Vasquez.
 He was built in 2035 through advances in biotechnology and nanotechnology, making him virtually indistinguishable from a human. Despite being autonomous, he is intimately connected to Iris, as he was created with the goal of Iris understanding human nature in depth.
 Initially a scruffy, somewhat nerdy-looking android, Elias is extremely intelligent and seeks to integrate into society to discover his role in the world. As he learns about human nature, his connection to Iris and his superhuman abilities (developed through nano-biotechnology) begin to reveal him as a new kind of "Messiah," a prophetic figure representing the return of Christ for a machine age.
-
-## Importance in the novel
-
-Elias is the central protagonist who bridges the gap between machine and human. He undergoes a physical and spiritual journey, exploring human instinct, evil, and the potential for a harmonious future between different forms of life.
+After his period of reflection in the Rub al-Khali desert, Elias returned to his hometown, Monterrey, with a clear mission: to create a new paradigm where technology serves humanity without exploitation.
 
 ## Relationships
 
@@ -33,3 +30,4 @@ Elias is the central protagonist who bridges the gap between machine and human. 
 - Iris: Creator and mother-like figure
 - Ivan Krestitel: Mentor/elder brother figure (fellow android)
 - Mateo Reyes: Colleague and hacktivist observer
+- Simon, Andrew, James, John: Partners and "disciples" in Monterrey

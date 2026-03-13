@@ -149,14 +149,21 @@ class Novelaist:
             print(f"Generating chapter: {chapter_name} ({chapter_index}/{len(sorted_chapters)})...")
             chapter_outline = process_chapter_document(chapter_file)
             
+            # Count scenes/sections in the outline to adjust sections_count dynamically
+            outline_sections = [line for line in chapter_outline.split('\n') if line.startswith('## ')]
+            current_sections_count = len(outline_sections) if outline_sections else sections_count
+            
             chapter_sections_content = []
             
-            for section_num in range(1, sections_count + 1):
-                print(f"  - Generating section {section_num} of {sections_count}...")
+            for section_num in range(1, current_sections_count + 1):
+                print(f"  - Generating section {section_num} of {current_sections_count}...")
                 
                 previous_sections_context = ""
                 if chapter_sections_content:
                     previous_sections_context = "\n\nContext from previous sections of this chapter:\n" + "\n\n".join(chapter_sections_content[-2:]) # Keep last 2 sections for context
+
+                # Calculate words for this specific section
+                current_words_per_section = min_words // current_sections_count
 
                 prompt = f"""
                 {context}
@@ -169,8 +176,8 @@ class Novelaist:
                 {previous_sections_context}
                 
                 Instructions:
-                1. Write section {section_num} of {sections_count} for this chapter in {language}.
-                2. This section should have approximately {words_per_section} words.
+                1. Write section {section_num} of {current_sections_count} for this chapter in {language}.
+                2. This section should have approximately {current_words_per_section} words.
                 3. Maintain consistency with the provided Characters, Environment, and previous sections.
                 4. Use Markdown formatting for this section (### Section Title).
                 5. Focus ONLY on the part of the outline corresponding to this section.
