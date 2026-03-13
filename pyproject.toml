@@ -9,7 +9,6 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = ">=3.12,<3.15"
 ollama = "^0.1.9"
-ebooklib = "^0.18"
 reportlab = "^4.4.3"
 pillow = "^9.5.0"
 markdown = "^3.7"
@@ -17,6 +16,7 @@ diffusers = "^0.37.0"
 torch = ">=2.10.0"
 accelerate = "^1.13.0"
 transformers = "^5.3.0"
+xml2epub = "^2.6.11"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.4"

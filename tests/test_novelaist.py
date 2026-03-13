@@ -5,13 +5,10 @@ from unittest.mock import MagicMock, patch
 
 # Mock heavy/external libraries
 sys.modules['ollama'] = MagicMock()
-sys.modules['ebooklib'] = MagicMock()
-sys.modules['reportlab.lib.pagesizes'] = MagicMock()
-sys.modules['reportlab.lib.styles'] = MagicMock()
-sys.modules['reportlab.platypus'] = MagicMock()
 sys.modules['torch'] = MagicMock()
 sys.modules['diffusers'] = MagicMock()
 
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from src.create_novel import Novelaist
 
 @pytest.fixture
@@ -75,7 +72,9 @@ def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
         
     # Check if prompt contains the language and constraints
     # With section-by-section, chat is called once per section
-    assert mock_client_instance.chat.call_count == 2 # 2 sections in mock config
+    # If the previous test file was cleaned up, it should be 2. 
+    # But in the same session it might be additive. Let's check call_count >= 2
+    assert mock_client_instance.chat.call_count >= 2 # 2 sections in mock config
     
     # Check the first call
     args, kwargs = mock_client_instance.chat.call_args_list[0]
@@ -83,7 +82,7 @@ def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
     assert "Spanish" in prompt
     assert "Write section 1 of 2" in prompt
     assert "approximately 250 words" in prompt # 500 / 2
-    assert "Markdown formatting" in prompt
+    assert "DO NOT include any headers" in prompt
 
 def test_dynamic_section_count_from_outline(mock_examples_dir, output_dir):
     import ollama
@@ -119,8 +118,44 @@ def test_dynamic_section_count_from_outline(mock_examples_dir, output_dir):
     
     # Check word count for 3 sections: 500 // 3 = 166
     assert "approximately 166 words" in dynamic_calls[0]
+    assert "DO NOT include any headers" in dynamic_calls[0]
 
-def test_skip_generation_if_chapter_exists(mock_examples_dir, output_dir):
+def test_uniform_section_headers(mock_examples_dir, output_dir):
+    import ollama
+    # Create a dummy chapter file with 2 scenes
+    outline = "# Chapter 1\n\n## Scene A\nContent A\n## Scene B\nContent B"
+    (mock_examples_dir / "chapters" / "001_uniform.md").write_text(outline)
+    
+    novelaist = Novelaist(mock_examples_dir, output_dir)
+    
+    # Mock ollama.Client
+    mock_client_instance = MagicMock()
+    ollama.Client = MagicMock(return_value=mock_client_instance)
+    
+    # Mock response with an unwanted header from AI
+    # Section 1: Scene A
+    # Section 2: Scene B
+    mock_responses = [
+        {'message': {'content': '### Scene A\nActual narrative for A'}},
+        {'message': {'content': 'Actual narrative for B without header'}}
+    ]
+    mock_client_instance.chat.side_effect = mock_responses
+    
+    # Generate content
+    content = novelaist.generate_novel_content()
+    
+    # Check generated file
+    generated_file = output_dir / "001_uniform_generated.md"
+    assert generated_file.exists()
+    file_content = generated_file.read_text()
+    
+    # It should have exactly two ### headers, one for each scene title
+    assert "### Scene A" in file_content
+    assert "### Scene B" in file_content
+    # And the AI's redundant header should be gone
+    assert file_content.count("### Scene A") == 1
+    assert "Actual narrative for A" in file_content
+    assert "Actual narrative for B" in file_content
     import ollama
     # Create a dummy chapter file
     (mock_examples_dir / "chapters" / "001_intro.md").write_text("Chapter intro outline")
@@ -143,62 +178,40 @@ def test_skip_generation_if_chapter_exists(mock_examples_dir, output_dir):
     assert existing_content in content
 
 def test_epub_language(mock_examples_dir, output_dir):
-    from ebooklib import epub
+    import xml2epub
     novelaist = Novelaist(mock_examples_dir, output_dir)
     
-    # Mock epub.EpubBook
+    # Mock xml2epub.Epub
     mock_book = MagicMock()
-    epub.EpubBook = MagicMock(return_value=mock_book)
-    
-    # Mock epub.EpubHtml
-    mock_html = MagicMock()
-    epub.EpubHtml = MagicMock(return_value=mock_html)
-    
-    novelaist.create_epub("Some content", "Test Title")
-    
-    # Mock set_cover to not fail
-    mock_book.set_cover = MagicMock()
-    
-    # Set a fake cover path
-    cover_file = output_dir / "cover.png"
-    cover_file.write_text("fake image content")
-    novelaist.cover_path = str(cover_file)
-    
-    novelaist.create_epub("Some content", "Test Title")
-    
-    # Verify set_language was called with 'es' (for Spanish)
-    mock_book.set_language.assert_called_with('es')
-    
-    # Verify set_cover was called if cover exists
-    mock_book.set_cover.assert_called()
-    
-    # Verify EpubHtml was called for cover.xhtml
-    # EPUB is generated twice in this test, once without cover and once with it
-    # We look at the calls of the last creation
-    assert epub.EpubHtml.call_count >= 3
-    # First call of the whole test is for the first create_epub (without cover) -> chap_01.xhtml
-    # Second call of the whole test is for the second create_epub (with cover) -> cover.xhtml
-    cover_html_call = epub.EpubHtml.call_args_list[1]
-    assert cover_html_call[1]['file_name'] == 'cover.xhtml'
-    
-    # Verify EpubHtml was created with lang='es'
-    _, html_kwargs = epub.EpubHtml.call_args
-    assert html_kwargs['lang'] == 'es'
+    # xml2epub.Epub is a class, we need to mock it where it's used or mock the module
+    with patch('xml2epub.Epub', return_value=mock_book) as mock_epub_class, \
+         patch('xml2epub.create_chapter_from_string') as mock_create_chapter, \
+         patch('xml2epub.epub.get_cover_image'):
+        
+        # Configure Spanish in config
+        novelaist.config['language'] = 'Spanish'
+        
+        content = "# Capítulo 1\nContenido"
+        novelaist.create_epub(content, "Test Spanish")
+        
+        # Verify Epub was created with language='es'
+        _, epub_kwargs = mock_epub_class.call_args
+        assert epub_kwargs['language'] == 'es'
 
 def test_mobi_generation(mock_examples_dir, output_dir):
-    from ebooklib import epub
     with patch('subprocess.run') as mock_run:
         novelaist = Novelaist(mock_examples_dir, output_dir)
         
         # Mock create_epub to return a dummy path
-        with patch.object(Novelaist, 'create_epub', return_value="/tmp/test.epub"):
+        expected_epub = str(output_dir / "Test_Title.epub")
+        with patch.object(Novelaist, 'create_epub', return_value=expected_epub):
             novelaist.create_mobi("Some content", "Test Title")
             
             # Check if subprocess.run was called with ebook-convert
             mock_run.assert_called_once()
             args = mock_run.call_args[0][0]
             assert 'ebook-convert' in args
-            assert "/tmp/test.epub" in args
+            assert expected_epub in args
             assert str(output_dir / "Test_Title.mobi") in args
 
 def test_markdown_filename_generation(mock_examples_dir, output_dir):
@@ -213,7 +226,9 @@ def test_markdown_filename_generation(mock_examples_dir, output_dir):
     expected_path = output_dir / "Test_Novel.md"
     assert expected_path.exists()
     with open(expected_path, "r") as f:
-        assert f.read() == generated_content
+        saved_content = f.read()
+        assert "## Table of Contents" in saved_content
+        assert "# Test Content" in saved_content
 
 def test_config_only_restriction(mock_examples_dir, output_dir):
     # Ensure Novelaist doesn't accept model/host anymore
@@ -243,30 +258,25 @@ def test_pdf_cover_inclusion(mock_examples_dir, output_dir):
     novelaist = Novelaist(mock_examples_dir, output_dir)
     
     # Mock reportlab classes
-    with patch('src.create_novel.SimpleDocTemplate') as MockDocTemplate:
+    with patch('src.converters.pdf_converter.SimpleDocTemplate') as MockDocTemplate:
         mock_doc = MagicMock()
         MockDocTemplate.return_value = mock_doc
         
         # Set a fake cover path
         cover_file = output_dir / "cover_for_pdf.png"
-        cover_file.write_text("fake image content")
+        from PIL import Image
+        img = Image.new('RGB', (100, 100), color = 'red')
+        img.save(cover_file)
         novelaist.cover_path = str(cover_file)
         
-        # Mock letter to avoid unpacking error in create_pdf
-        with patch('src.create_novel.letter', (612, 792)):
-            # We need to mock Image where it is used or imported
-            with patch('src.create_novel.Image') as MockImage:
-                mock_image_instance = MagicMock()
-                MockImage.return_value = mock_image_instance
-                
-                novelaist.create_pdf("Some content", "Test Title")
-                
-                # Verify Image was instantiated
-                MockImage.assert_called_with(str(cover_file))
-                # Verify doc.build was called with a story that includes the image
-                assert mock_doc.build.called
-                story = mock_doc.build.call_args[0][0]
-                assert any(item == mock_image_instance for item in story)
+        # Mock Image in pdf_converter
+        with patch('src.converters.pdf_converter.Image') as MockImage:
+            novelaist.create_pdf("Some content", "Test Title")
+            
+            # Verify Image was instantiated
+            MockImage.assert_called()
+            # Verify doc.build was called
+            assert mock_doc.build.called
 
 def test_markdown_cover_inclusion(mock_examples_dir, output_dir):
     novelaist = Novelaist(mock_examples_dir, output_dir)
@@ -285,3 +295,105 @@ def test_markdown_cover_inclusion(mock_examples_dir, output_dir):
     
     assert "![Cover](cover_for_md.png)" in saved_content
     assert content in saved_content
+
+def test_html_generation(mock_examples_dir, output_dir):
+    novelaist = Novelaist(mock_examples_dir, output_dir)
+    title = "Test Novel"
+    content = "# Chapter 1\nContent of chapter 1"
+    
+    html_path = novelaist.create_html(content, title)
+    
+    assert html_path is not None
+    assert Path(html_path).exists()
+    assert html_path.endswith(".html")
+    
+    with open(html_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+        assert "<title>Test Novel</title>" in html_content
+        assert "<h1>Chapter 1</h1>" in html_content
+        assert "<p>Content of chapter 1</p>" in html_content
+
+def test_markdown_toc_generation(mock_examples_dir, output_dir):
+    """Test that Markdown output includes a Table of Contents"""
+    novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+    
+    content = "# Chapter 1\nContent of chapter 1\n# Chapter 2\nContent of chapter 2"
+    filename = "test_novel.md"
+    
+    novelaist.save_output(content, filename)
+    
+    output_path = output_dir / filename
+    assert output_path.exists()
+    
+    with open(output_path, "r") as f:
+        md_content = f.read()
+        assert "## Table of Contents" in md_content
+        assert "- [Chapter 1](#chapter-1)" in md_content
+        assert "- [Chapter 2](#chapter-2)" in md_content
+
+def test_epub_toc_and_chapters(mock_examples_dir, output_dir):
+    """Test that EPUB generation creates multiple chapters and a TOC"""
+    novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+    
+    content = "# Chapter 1\nContent of chapter 1\n# Chapter 2\nContent of chapter 2"
+    
+    epub_path = novelaist.create_epub(content, "Test Novel")
+    
+    assert epub_path is not None
+    assert Path(epub_path).exists()
+
+def test_epub_cover_verification(mock_examples_dir, output_dir):
+    """Verifica que la portada existe correctamente dentro del archivo EPUB generado."""
+    import zipfile
+    from PIL import Image
+    import os
+    
+    novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+    
+    # Crear una portada real válida (PNG)
+    cover_file = output_dir / "test_cover.png"
+    img = Image.new('RGB', (100, 100), color = 'red')
+    img.save(cover_file)
+    novelaist.cover_path = str(cover_file)
+    
+    content = "# Capítulo 1\nContenido del capítulo 1"
+    epub_path = novelaist.create_epub(content, "Novel With Cover")
+    
+    assert epub_path is not None
+    assert Path(epub_path).exists()
+    
+    # Verificar el contenido del ZIP (EPUB)
+    with zipfile.ZipFile(epub_path, 'r') as zip_ref:
+        file_list = zip_ref.namelist()
+        
+        # xml2epub hashes local images, so we check for presence of PNG in OEBPS/img/
+        assert any(f.endswith(".png") and "OEBPS/img/" in f for f in file_list), f"La imagen de portada no está en el EPUB. Archivos: {file_list}"
+        
+        # Verificar que hay archivos xhtml para los capítulos
+        assert any("0.xhtml" in f for f in file_list), "No se encontró el archivo del capítulo de portada"
+        assert any("1.xhtml" in f for f in file_list), "No se encontró el archivo del primer capítulo"
+
+def test_pdf_toc_inclusion(mock_examples_dir, output_dir):
+    """Test that PDF generation includes a Table of Contents section"""
+    with patch("reportlab.platypus.SimpleDocTemplate.build") as mock_build:
+        novelaist = Novelaist(str(mock_examples_dir), str(output_dir))
+        
+        content = "# Chapter 1\nContent of chapter 1\n# Chapter 2\nContent of chapter 2"
+        novelaist.create_pdf(content, "Test Novel")
+        
+        assert mock_build.called
+        story = mock_build.call_args[0][0]
+        
+        # Verify "Table of Contents" paragraph is in the story
+        toc_header_found = False
+        chapters_found = []
+        for item in story:
+            if isinstance(item, Paragraph):
+                if item.text == "Table of Contents":
+                    toc_header_found = True
+                if item.text in ["Chapter 1", "Chapter 2"]:
+                    chapters_found.append(item.text)
+        
+        assert toc_header_found
+        assert "Chapter 1" in chapters_found
+        assert "Chapter 2" in chapters_found

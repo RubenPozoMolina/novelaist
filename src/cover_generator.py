@@ -25,16 +25,23 @@ class CoverGenerator:
                 print(f"Error loading model: {str(e)}")
                 raise
 
-    def generate_cover(self, title, description, output_path):
-        """Generate a book cover based on title and description."""
+    def generate_cover(self, title, description, output_path, width=512, height=768):
+        """Generate a book cover based on the title and description."""
         self._load_pipeline()
         
         # We explicitly ask for no text in the generated image
-        prompt = f"Background for a book cover. {description}. High quality, detailed, professional digital art, no text, no letters, no words."
+        prompt = f"Professional book cover art for '{title}'. {description}. High quality, detailed, professional digital art, cinematic lighting, masterpiece, no text, no letters, no words."
+        negative_prompt = "text, letters, words, watermark, signature, blurry, low quality, distorted, watermark, deformed, ugly, bad anatomy, poorly drawn face"
         
-        print(f"Generating cover background for '{title}'...")
+        print(f"Generating cover background for '{title}' ({width}x{height})...")
         try:
-            image = self.pipeline(prompt).images[0]
+            # Use width and height for the generation
+            image = self.pipeline(
+                prompt=prompt, 
+                negative_prompt=negative_prompt,
+                width=width, 
+                height=height
+            ).images[0]
             
             output_file = Path(output_path)
             output_file.parent.mkdir(parents=True, exist_ok=True)

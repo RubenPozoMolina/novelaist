@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import ollama
 import subprocess
 from pathlib import Path
@@ -8,11 +9,16 @@ try:
 except ImportError:
     from cover_generator import CoverGenerator
 
-from ebooklib import epub
+try:
+    from src.converters import HtmlConverter, EpubConverter, PdfConverter, MobiConverter
+except ImportError:
+    from converters import HtmlConverter, EpubConverter, PdfConverter, MobiConverter
+
 from PIL import Image as PILImage, ImageDraw, ImageFont
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib import colors
 
 
 def process_character_document(file_path):
@@ -46,7 +52,17 @@ class Novelaist:
         }
         self._load_documents()
         self.cover_generator = CoverGenerator()
-        self.cover_path = None
+        self.cover_path = self._discover_cover()
+    
+    def _discover_cover(self):
+        """Try to find an existing cover in the output directory."""
+        title = self.config.get('novel_title', 'Generated Novel')
+        cover_filename = f"{title.replace(' ', '_')}_cover.png"
+        potential_path = self.output_dir / cover_filename
+        if potential_path.exists():
+            print(f"Discovered existing cover at: {potential_path}")
+            return str(potential_path)
+        return None
     
     def _load_config(self):
         """Load configuration from the config.json file"""
@@ -153,7 +169,22 @@ class Novelaist:
             outline_sections = [line for line in chapter_outline.split('\n') if line.startswith('## ')]
             current_sections_count = len(outline_sections) if outline_sections else sections_count
             
+            # Get the chapter title from the outline or file name
+            # If the first line of outline is # Chapter X: Title, use that
+            first_line = chapter_outline.strip().split('\n')[0]
+            if first_line.startswith('# '):
+                chapter_header_title = first_line.replace('# ', '').strip()
+            else:
+                # Format chapter_name (e.g., 001_The_awakening_of_iris -> The Awakening of Iris)
+                chapter_header_title = chapter_name.replace('_', ' ').title()
+                # Remove leading numbers if any
+                import re
+                chapter_header_title = re.sub(r'^\d+\s+', '', chapter_header_title)
+
             chapter_sections_content = []
+            
+            # Add chapter title as H1
+            chapter_sections_content.append(f"# {chapter_header_title}")
             
             for section_num in range(1, current_sections_count + 1):
                 print(f"  - Generating section {section_num} of {current_sections_count}...")
@@ -164,6 +195,11 @@ class Novelaist:
 
                 # Calculate words for this specific section
                 current_words_per_section = min_words // current_sections_count
+
+                # Get the section title from the outline if available
+                current_section_title = f"Section {section_num}"
+                if outline_sections and section_num <= len(outline_sections):
+                    current_section_title = outline_sections[section_num-1].replace('## ', '').strip()
 
                 prompt = f"""
                 {context}
@@ -176,10 +212,10 @@ class Novelaist:
                 {previous_sections_context}
                 
                 Instructions:
-                1. Write section {section_num} of {current_sections_count} for this chapter in {language}.
+                1. Write section {section_num} of {current_sections_count} (Title: {current_section_title}) for this chapter in {language}.
                 2. This section should have approximately {current_words_per_section} words.
                 3. Maintain consistency with the provided Characters, Environment, and previous sections.
-                4. Use Markdown formatting for this section (### Section Title).
+                4. DO NOT include any headers (like #, ##, or ###) in your response. The section title will be added automatically.
                 5. Focus ONLY on the part of the outline corresponding to this section.
                 
                 Generate the literary content for this section now.
@@ -196,7 +232,18 @@ class Novelaist:
                 else:
                     section_content = response.message.content
                 
-                chapter_sections_content.append(section_content)
+                # Clean up any potential AI-generated headers to maintain uniformity
+                lines = section_content.strip().split('\n')
+                cleaned_lines = []
+                for line in lines:
+                    if not line.strip().startswith('#'):
+                        cleaned_lines.append(line)
+                
+                section_body = '\n'.join(cleaned_lines).strip()
+                
+                # Add a uniform header
+                uniform_section_content = f"### {current_section_title}\n\n{section_body}"
+                chapter_sections_content.append(uniform_section_content)
             
             chapter_content = "\n\n".join(chapter_sections_content)
                 
@@ -216,11 +263,23 @@ class Novelaist:
         author = self.config.get('author', 'Unknown Author')
         model = self.config.get('model', 'command-r')
         
-        # Simple description based on environmental documents if available
+        # Enhanced description based on environmental documents if available
         description = ""
+        # 1. Try to get environment info
         if self.documents["environment"]:
-            with open(self.documents["environment"][0], 'r') as f:
-                description = f.read()[:200].replace('\n', ' ')
+            for env_doc in self.documents["environment"]:
+                with open(env_doc, 'r') as f:
+                    description += f.read()[:100] + " "
+        
+        # 2. Try to get main character info
+        if self.documents["characters"]:
+            # Typically Elias in our examples
+            with open(self.documents["characters"][0], 'r') as f:
+                description += f.read()[:100]
+        
+        description = description.replace('\n', ' ').strip()
+        if not description:
+            description = f"A book about {title}"
         
         cover_filename = f"{title.replace(' ', '_')}_cover.png"
         output_path = self.output_dir / cover_filename
@@ -231,8 +290,14 @@ class Novelaist:
             self.cover_path = str(output_path)
             return self.cover_path
             
-        # Generate the background image
-        generated_path = self.cover_generator.generate_cover(title, description, output_path)
+        # Generate the background image with 512x768 (standard portrait ratio)
+        generated_path = self.cover_generator.generate_cover(
+            title, 
+            description, 
+            output_path,
+            width=512,
+            height=768
+        )
         
         if generated_path:
             # Add text to the generated image
@@ -275,8 +340,35 @@ class Novelaist:
 
             # Add Title (top)
             title_text = title.upper()
-            left, top, right, bottom = draw.textbbox((0, 0), title_text, font=font_title)
-            w, h = right - left, bottom - top
+            # If title is too long, wrap it or scale it down
+            max_title_width = width * 0.9
+            current_font_size = int(height * 0.08)
+            
+            # Use font_paths[0] if it was found, otherwise fall back to default font
+            selected_font_path = None
+            for path in font_paths:
+                if Path(path).exists():
+                    selected_font_path = path
+                    break
+
+            # Initialize w and h to avoid "local variable 'w' referenced before assignment"
+            w, h = 0, 0
+            
+            while current_font_size > 10:
+                try:
+                    if selected_font_path:
+                        font_title = ImageFont.truetype(selected_font_path, current_font_size)
+                    else:
+                        font_title = ImageFont.load_default()
+                except:
+                    font_title = ImageFont.load_default()
+                
+                left, top, right, bottom = draw.textbbox((0, 0), title_text, font=font_title)
+                w, h = right - left, bottom - top
+                if w <= max_title_width or not selected_font_path:
+                    break
+                current_font_size -= 5
+
             draw.text(((width - w) / 2, height * 0.1), title_text, font=font_title, fill="white", stroke_width=2, stroke_fill="black")
             
             # Add Author (bottom-ish)
@@ -296,179 +388,54 @@ class Novelaist:
         except Exception as e:
             print(f"Error adding text to cover: {str(e)}")
 
-    def create_epub(self, content, title="Generated Novel"):
-        """Create an EPUB file from the content"""
-        try:
-            book = epub.EpubBook()
-            book.set_identifier('id123456')
-            book.set_title(title)
-            
-            # Use language configuration if available
-            language_map = {
-                'English': 'en',
-                'Spanish': 'es',
-                'French': 'fr',
-                'German': 'de',
-                'Italian': 'it',
-                'Portuguese': 'pt'
-            }
-            config_lang = self.config.get('language', 'English')
-            lang_code = language_map.get(config_lang, 'en')
-            book.set_language(lang_code)
-            
-            # Use author configuration if available
-            author = self.config.get('author', 'Unknown Author')
-            book.add_author(author)
-            
-            # Convert newlines to paragraphs for basic HTML formatting
-            formatted_content = ""
-            paragraphs = content.split('\n')
-            for p in paragraphs:
-                if p.strip():
-                    formatted_content += f'<p>{p.strip()}</p>'
-                else:
-                    formatted_content += '<br/>'
+    def create_html(self, content, title="Generated Novel"):
+        """Create a single HTML file from the content for debugging/preview"""
+        converter = HtmlConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, title)
 
-            # Add cover if available
-            if self.cover_path and Path(self.cover_path).exists():
-                book.set_cover("cover.png", open(self.cover_path, 'rb').read())
-                
-                # Add a cover page at the beginning of the spine
-                cover_page = epub.EpubHtml(title='Cover', file_name='cover.xhtml', lang=lang_code)
-                cover_page.content = f'<div style="text-align: center;"><img src="cover.png" alt="Cover" style="max-width: 100%;"/></div>'
-                book.add_item(cover_page)
-                
-                # Define style - ensure a readable serif font for novels
-                style = 'BODY { font-family: "Times New Roman", Times, serif; line-height: 1.5; text-align: justify; }'
-                nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
-                book.add_item(nav_css)
-                
-                # Create chapter
-                chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang=lang_code)
-                chapter.content = f'<h1>{title}</h1>{formatted_content}'
-                book.add_item(chapter)
-                
-                # Generate table of contents
-                book.toc = [epub.Link('chap_01.xhtml', title, 'intro')]
-                book.add_item(epub.EpubNcx())
-                book.add_item(epub.EpubNav())
-                
-                # Apply style
-                book.spine = ['nav', cover_page, chapter]
-            else:
-                # Define style - ensure a readable serif font for novels
-                style = 'BODY { font-family: "Times New Roman", Times, serif; line-height: 1.5; text-align: justify; }'
-                nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
-                book.add_item(nav_css)
-                
-                # Create chapter
-                chapter = epub.EpubHtml(title='Introduction', file_name='chap_01.xhtml', lang=lang_code)
-                chapter.content = f'<h1>{title}</h1>{formatted_content}'
-                book.add_item(chapter)
-                
-                # Generate table of contents
-                book.toc = [epub.Link('chap_01.xhtml', title, 'intro')]
-                book.add_item(epub.EpubNcx())
-                book.add_item(epub.EpubNav())
-                
-                # Apply style
-                book.spine = ['nav', chapter]
-            
-            # Save file
-            filename = self.output_dir / f"{title.replace(' ', '_')}.epub"
-            epub.write_epub(filename, book, {})
-            print(f"EPUB file saved at: {filename}")
-            return str(filename)
-        except Exception as e:
-            print(f"Error creating EPUB: {str(e)}")
-            return None
+    def create_epub(self, content, title="Generated Novel"):
+        """Create an EPUB file from the content with Table of Contents"""
+        converter = EpubConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, title)
 
     def create_pdf(self, content, novel_title="Generated Novel"):
-        """Create a PDF file from the content"""
-        try:
-            filename = self.output_dir / f"{novel_title.replace(' ', '_')}.pdf"
-            doc = SimpleDocTemplate(str(filename), pagesize=letter)
-            styles = getSampleStyleSheet()
-            story = []
-            
-            # Add a cover image if available
-            if self.cover_path and Path(self.cover_path).exists():
-                img = Image(self.cover_path)
-                # Scale the image to fit page width while maintaining an aspect ratio
-                page_width, page_height = letter
-                img.drawHeight = page_height * 0.7
-                img.drawWidth = page_width * 0.8
-                story.append(img)
-                story.append(Spacer(1, 36))
-            
-            # Title
-            title_para = Paragraph(novel_title, styles['Title'])
-            story.append(title_para)
-            story.append(Spacer(1, 12))
-            
-            # Author
-            author_para = Paragraph(f"Author: {self.config.get('author', 'Unknown Author')}", styles['Normal'])
-            story.append(author_para)
-            story.append(Spacer(1, 12))
-            
-            # Date
-            date_para = Paragraph(f"Date: {self.config.get('date', '')}", styles['Normal'])
-            story.append(date_para)
-            story.append(Spacer(1, 12))
-            
-            # Content - split into paragraphs for PDF
-            paragraphs = content.split('\n')
-            for p in paragraphs:
-                if p.strip():
-                    content_para = Paragraph(p.strip(), styles['Normal'])
-                    story.append(content_para)
-                    story.append(Spacer(1, 6))
-                else:
-                    story.append(Spacer(1, 12))
-            
-            doc.build(story)
-            print(f"PDF file saved at: {filename}")
-            return str(filename)
-        except Exception as e:
-            print(f"Error creating PDF: {str(e)}")
-            return None
+        """Create a PDF file from the content with Table of Contents"""
+        converter = PdfConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, novel_title)
 
     def create_mobi(self, content, novel_title="Generated Novel"):
         """Create a MOBI file from the content using ebook-convert (Calibre)"""
-        try:
-            # First, create the EPUB to use as a base
-            epub_path = self.create_epub(content, novel_title)
-            if not epub_path:
-                print("Error: Could not create EPUB base for MOBI conversion.")
-                return None
-                
-            mobi_filename = self.output_dir / f"{novel_title.replace(' ', '_')}.mobi"
-            
-            print(f"Converting EPUB to MOBI for '{novel_title}'...")
-            # Use ebook-convert from Calibre
-            try:
-                subprocess.run(['ebook-convert', epub_path, str(mobi_filename)], 
-                               check=True, capture_output=True, text=True)
-                print(f"MOBI file saved at: {mobi_filename}")
-                return str(mobi_filename)
-            except subprocess.CalledProcessError as e:
-                print(f"Error in ebook-convert: {e.stderr}")
-                return None
-            except FileNotFoundError:
-                print("Error: 'ebook-convert' not found. Please install Calibre to support MOBI output.")
-                return None
-        except Exception as e:
-            print(f"Error creating MOBI: {str(e)}")
-            return None
+        converter = MobiConverter(self.output_dir, self.config, self.cover_path)
+        return converter.convert(content, novel_title)
 
     def save_output(self, content, filename):
-        """Save generated content in the output folder"""
+        """Save generated content in the output folder with Markdown Table of Contents"""
         output_file = self.output_dir / filename
         try:
             # Include cover in Markdown if it exists
-            if filename.endswith('.md') and self.cover_path:
-                cover_rel_path = Path(self.cover_path).name
-                content = f"![Cover]({cover_rel_path})\n\n# {self.config.get('novel_title', 'Generated Novel')}\n\n{content}"
+            if filename.endswith('.md'):
+                novel_title = self.config.get('novel_title', 'Generated Novel')
+                header = ""
+                if self.cover_path:
+                    cover_rel_path = Path(self.cover_path).name
+                    header += f"![Cover]({cover_rel_path})\n\n"
+                
+                header += f"# {novel_title}\n\n"
+                
+                # Generate Markdown Table of Contents
+                header += "## Table of Contents\n\n"
+                import re
+                # Find all # titles
+                chapters = re.findall(r'^#\s+(.*)', content.strip(), flags=re.MULTILINE)
+                for chapter in chapters:
+                    if chapter == novel_title: # Skip if it's the main title
+                        continue
+                    # Create a slug for the link
+                    slug = chapter.lower().replace(' ', '-').replace(':', '').replace('.', '')
+                    header += f"- [{chapter}](#{slug})\n"
+                
+                header += "\n---\n\n"
+                content = header + content.strip()
                 
             with open(output_file, 'w') as f:
                 f.write(content)
@@ -516,6 +483,7 @@ if __name__ == "__main__":
     
     # Create files in different formats
     title = novelaist.config.get('novel_title', 'Generated Novel')
+    novelaist.create_html(generated_content, title)
     novelaist.create_epub(generated_content, title)
     novelaist.create_pdf(generated_content, title)
     novelaist.create_mobi(generated_content, title)
