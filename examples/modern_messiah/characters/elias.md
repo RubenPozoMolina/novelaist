@@ -30,4 +30,4 @@ After his period of reflection in the Rub al-Khali desert, Elias returned to his
 - Iris: Creator and mother-like figure
 - Ivan Krestitel: Mentor/elder brother figure (fellow android)
 - Mateo Reyes: Colleague and hacktivist observer
-- Simon, Andrew, James, John: Partners and "disciples" in Monterrey
+- Peter, Andrew, James, John: Partners and "disciples" in Monterrey

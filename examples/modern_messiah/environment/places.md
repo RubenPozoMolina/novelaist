@@ -19,3 +19,9 @@ One of the largest continuous sand deserts in the world, located in the southern
 
 ## NanoTechIA HQ
 A tech startup based in a modern urban center. It represents the intersection of capital, innovation, and the ethical dilemmas of human-centric technology.
+
+## Jerusalem, Israel
+The historic Old City with its narrow streets and ancient stone walls. A place of deep religious and historical significance where NanoVita expands its healthcare reach.
+
+## Mount Tabor, Lower Galilee
+A prominent dome-shaped mountain rising from the Plain of Esdraelon. It's the site where Elias chooses to reveal his physical mutability to his disciples, mirroring the biblical Transfiguration.

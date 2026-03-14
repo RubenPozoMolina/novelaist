@@ -16,4 +16,4 @@ John was a student of philosophy and computer science at the Monterrey Institute
 ## Relationships
 - James: Older brother.
 - Elias: Beloved teacher and leader.
-- Simon and Andrew: Respected partners.
+- Peter and Andrew: Respected partners.

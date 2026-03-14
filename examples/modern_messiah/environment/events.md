@@ -24,7 +24,7 @@
 - **2036-12-06**: Elias travels to Moscow/Belarus and meets Ivan Krestitel, leading to the creation of construction nanobots.
 - **2037-01-07**: Elias retreats to the Rub al-Khali desert for 40 days of reflection.
 - **2037-02-18**: Elias returns to his hometown, Monterrey, Mexico.
-- **2037-03-12**: Elias joins a business incubator in Monterrey and meets Simon, Andrew, James, and John.
+- **2037-03-12**: Elias joins a business incubator in Monterrey and meets Peter, Andrew, James, and John.
 - **2037-04-15**: Founding of "NanoVita," a revolutionary startup focused on medical nanobots and ethical AI.
 - **2037-06-01**: Elias performs the first "miracle" by curing a terminal patient using NanoVita technology, beginning the spread of his new paradigm.
 - **2037-08-15**: Outbreak of the Great Eastern War. Russia invades Eastern Europe to eliminate technological competitors.
@@ -32,3 +32,6 @@
 - **2037-10-20**: Elias retreats to the "Lake of Sorrows" in a remote, depressed region of the Andes, South America.
 - **2037-11-05**: The Miracle of the Fertile Desert. Elias uses nanobots to feed his followers in the Andean highlands.
 - **2037-11-06**: Elias walks on the waters of the lake using specialized nanobots.
+- **2037-12-15**: NanoVita travel to Jerusalem to sign a healthcare contract with an Israeli firm.
+- **2037-12-16**: Elias predicts his death and resurrection to his partners in the Old City.
+- **2037-12-17**: The Transfiguration on Mount Tabor. Elias demonstrates his ability to change his physical appearance to his inner circle.
