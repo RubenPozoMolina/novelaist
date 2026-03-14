@@ -3,6 +3,7 @@ import json
 import logging
 import ollama
 import subprocess
+import datetime
 from pathlib import Path
 try:
     from src.cover_generator import CoverGenerator
@@ -151,6 +152,17 @@ class Novelaist:
             print(f"Connecting to {model_name}...")
             client = ollama
             
+        translations = {
+            'English': {'by': 'By', 'generated_with': 'Generated with', 'toc': 'Table of Contents'},
+            'Spanish': {'by': 'Por', 'generated_with': 'Generado con', 'toc': 'Índice'},
+            'French': {'by': 'Par', 'generated_with': 'Généré con', 'toc': 'Table des matières'},
+            'German': {'by': 'Von', 'generated_with': 'Generiert mit', 'toc': 'Inhaltsverzeichnis'},
+            'Italian': {'by': 'Di', 'generated_with': 'Generato con', 'toc': 'Indice'},
+            'Portuguese': {'by': 'Por', 'generated_with': 'Gerado com', 'toc': 'Índice'}
+        }
+        trans = translations.get(language, translations['English'])
+        chapter_prefix = trans.get('chapter', 'Chapter')
+
         for chapter_index, chapter_file in enumerate(sorted_chapters, 1):
             chapter_name = chapter_file.stem
             output_chapter_file = self.output_dir / f"{chapter_name}_generated.md"
@@ -173,13 +185,33 @@ class Novelaist:
             # If the first line of outline is # Chapter X: Title, use that
             first_line = chapter_outline.strip().split('\n')[0]
             if first_line.startswith('# '):
-                chapter_header_title = first_line.replace('# ', '').strip()
+                raw_title = first_line.replace('# ', '').strip()
+                if language != 'English':
+                    # Ask AI to translate the chapter title if it's not in English (likely extracted from MD)
+                    print(f"  - Requesting chapter title translation for: {raw_title}")
+                    title_prompt = f"Translate this chapter title into {language}: '{raw_title}'. Return ONLY the translated title text, nothing else."
+                    title_response = client.chat(
+                        model=model_name,
+                        messages=[{'role': 'user', 'content': title_prompt}]
+                    )
+                    if isinstance(title_response, dict):
+                        chapter_header_title = title_response['message']['content'].strip().strip('"')
+                    else:
+                        chapter_header_title = title_response.message.content.strip().strip('"')
+                else:
+                    chapter_header_title = raw_title
             else:
-                # Format chapter_name (e.g., 001_The_awakening_of_iris -> The Awakening of Iris)
-                chapter_header_title = chapter_name.replace('_', ' ').title()
-                # Remove leading numbers if any
-                import re
-                chapter_header_title = re.sub(r'^\d+\s+', '', chapter_header_title)
+                # Ask AI to generate/translate the chapter title in the target language
+                print(f"  - Requesting chapter title translation for: {chapter_name}")
+                title_prompt = f"Translate or generate a creative chapter title in {language} for a chapter with the filename '{chapter_name}'. Return ONLY the title text, nothing else."
+                title_response = client.chat(
+                    model=model_name,
+                    messages=[{'role': 'user', 'content': title_prompt}]
+                )
+                if isinstance(title_response, dict):
+                    chapter_header_title = title_response['message']['content'].strip().strip('"')
+                else:
+                    chapter_header_title = title_response.message.content.strip().strip('"')
 
             chapter_sections_content = []
             
@@ -264,18 +296,21 @@ class Novelaist:
         model = self.config.get('model', 'command-r')
         
         # Enhanced description based on environmental documents if available
-        description = ""
-        # 1. Try to get environment info
-        if self.documents["environment"]:
-            for env_doc in self.documents["environment"]:
-                with open(env_doc, 'r') as f:
-                    description += f.read()[:100] + " "
+        description = self.config.get('cover_prompt', '')
+        negative_prompt = self.config.get('negative_prompt', None)
         
-        # 2. Try to get main character info
-        if self.documents["characters"]:
-            # Typically Elias in our examples
-            with open(self.documents["characters"][0], 'r') as f:
-                description += f.read()[:100]
+        if not description:
+            # 1. Try to get environment info
+            if self.documents["environment"]:
+                for env_doc in self.documents["environment"]:
+                    with open(env_doc, 'r') as f:
+                        description += f.read()[:100] + " "
+            
+            # 2. Try to get main character info
+            if self.documents["characters"]:
+                # Typically Elias in our examples
+                with open(self.documents["characters"][0], 'r') as f:
+                    description += f.read()[:100]
         
         description = description.replace('\n', ' ').strip()
         if not description:
@@ -296,19 +331,31 @@ class Novelaist:
             description, 
             output_path,
             width=512,
-            height=768
+            height=768,
+            negative_prompt=negative_prompt
         )
         
+        language = self.config.get('language', 'English')
         if generated_path:
             # Add text to the generated image
-            self._add_text_to_cover(generated_path, title, author, model)
+            self._add_text_to_cover(generated_path, title, author, model, language)
             self.cover_path = generated_path
             
         return self.cover_path
 
-    def _add_text_to_cover(self, image_path, title, author, model):
+    def _add_text_to_cover(self, image_path, title, author, model, language='English'):
         """Add title, author, and model text to the cover image."""
         try:
+            translations = {
+                'English': {'by': 'By', 'generated_with': 'Generated with'},
+                'Spanish': {'by': 'Por', 'generated_with': 'Generado con'},
+                'French': {'by': 'Par', 'generated_with': 'Généré con'},
+                'German': {'by': 'Von', 'generated_with': 'Generiert mit'},
+                'Italian': {'by': 'Di', 'generated_with': 'Generato con'},
+                'Portuguese': {'by': 'Por', 'generated_with': 'Gerado com'}
+            }
+            trans = translations.get(language, translations['English'])
+            
             img = PILImage.open(image_path)
             draw = ImageDraw.Draw(img)
             width, height = img.size
@@ -372,13 +419,13 @@ class Novelaist:
             draw.text(((width - w) / 2, height * 0.1), title_text, font=font_title, fill="white", stroke_width=2, stroke_fill="black")
             
             # Add Author (bottom-ish)
-            author_text = f"By {author}"
+            author_text = f"{trans['by']} {author}"
             left, top, right, bottom = draw.textbbox((0, 0), author_text, font=font_author)
             w, h = right - left, bottom - top
             draw.text(((width - w) / 2, height * 0.8), author_text, font=font_author, fill="white", stroke_width=1, stroke_fill="black")
             
             # Add Model (bottom)
-            model_text = f"Generated with {model}"
+            model_text = f"{trans['generated_with']} {model}"
             left, top, right, bottom = draw.textbbox((0, 0), model_text, font=font_model)
             w, h = right - left, bottom - top
             draw.text(((width - w) / 2, height * 0.9), model_text, font=font_model, fill="lightgray", stroke_width=1, stroke_fill="black")
@@ -409,7 +456,18 @@ class Novelaist:
         return converter.convert(content, novel_title)
 
     def save_output(self, content, filename):
-        """Save generated content in the output folder with Markdown Table of Contents"""
+        """Save generated content in the output folder with Markdown Table of Contents."""
+        language = self.config.get('language', 'English')
+        translations = {
+            'English': {'toc': 'Table of Contents', 'credits': 'Credits', 'project_url': 'Project URL', 'created_at': 'Created at'},
+            'Spanish': {'toc': 'Índice', 'credits': 'Créditos', 'project_url': 'URL del proyecto', 'created_at': 'Creado el'},
+            'French': {'toc': 'Table des matières', 'credits': 'Crédits', 'project_url': 'URL du projet', 'created_at': 'Créé le'},
+            'German': {'toc': 'Inhaltsverzeichnis', 'credits': 'Credits', 'project_url': 'Projekt-URL', 'created_at': 'Erstellt am'},
+            'Italian': {'toc': 'Indice', 'credits': 'Crediti', 'project_url': 'URL del progetto', 'created_at': 'Creato il'},
+            'Portuguese': {'toc': 'Índice', 'credits': 'Créditos', 'project_url': 'URL do projeto', 'created_at': 'Criado em'}
+        }
+        trans = translations.get(language, translations['English'])
+        
         output_file = self.output_dir / filename
         try:
             # Include cover in Markdown if it exists
@@ -423,19 +481,46 @@ class Novelaist:
                 header += f"# {novel_title}\n\n"
                 
                 # Generate Markdown Table of Contents
-                header += "## Table of Contents\n\n"
+                header += f"## {trans['toc']}\n\n"
                 import re
                 # Find all # titles
+                # Standardize slug creation for TOC links
+                def create_slug(text):
+                    import re
+                    import unicodedata
+                    # Normalize and remove accents
+                    nfkd_form = unicodedata.normalize('NFKD', text.lower())
+                    only_ascii = nfkd_form.encode('ascii', 'ignore').decode('ascii')
+                    # Keep alphanumeric and replace spaces with hyphens
+                    slug = re.sub(r'[^a-z0-9]+', '-', only_ascii).strip('-')
+                    return slug
+
                 chapters = re.findall(r'^#\s+(.*)', content.strip(), flags=re.MULTILINE)
                 for chapter in chapters:
                     if chapter == novel_title: # Skip if it's the main title
                         continue
                     # Create a slug for the link
-                    slug = chapter.lower().replace(' ', '-').replace(':', '').replace('.', '')
+                    slug = create_slug(chapter)
+                    
+                    # Also update the chapter headers in the content to include the anchor
+                    content = re.sub(f"^# {re.escape(chapter)}$", f"# {chapter} <a name='{slug}'></a>", content, flags=re.MULTILINE)
+                    
                     header += f"- [{chapter}](#{slug})\n"
                 
                 header += "\n---\n\n"
                 content = header + content.strip()
+                
+                # Add Credits to Markdown
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                project_url = "https://github.com/RubenPozoMolina/novelaist"
+                project_name = "Novelaist"
+                project_version = "0.1.0"
+                
+                content += "\n\n---\n\n"
+                content += f"## {trans['credits']}\n\n"
+                content += f"- **{project_name} v{project_version}**\n"
+                content += f"- **{trans['project_url']}:** {project_url}\n"
+                content += f"- **{trans['created_at']}:** {timestamp}\n"
                 
             with open(output_file, 'w') as f:
                 f.write(content)

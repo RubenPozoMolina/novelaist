@@ -1,4 +1,5 @@
 import re
+import datetime
 from pathlib import Path
 from .base_converter import BaseConverter
 
@@ -14,7 +15,7 @@ class HtmlConverter(BaseConverter):
             # Add cover if available
             if self.cover_path and Path(self.cover_path).exists():
                 cover_rel_path = Path(self.cover_path).name
-                html_content += f'<div class="cover-page"><img src="{cover_rel_path}" alt="Cover" class="cover" /><h1>{title}</h1><p>By {author}</p></div>'
+                html_content += f'<div class="cover-page"><img src="{cover_rel_path}" alt="{self.translations["cover"]}" class="cover" /><h1>{title}</h1><p>{self.translations["by"]} {author}</p></div>'
 
             # Split content by chapters
             content_stripped = content.strip()
@@ -30,7 +31,7 @@ class HtmlConverter(BaseConverter):
                     chapter_title = lines[0].strip().strip('# ').strip()
                     chapter_body = '\n'.join(lines[1:]).strip()
                 else:
-                    chapter_title = "Introduction" if i == 0 else f"Chapter {i}"
+                    chapter_title = self.translations["introduction"] if i == 0 else f"{self.translations['chapter']} {i}"
                     chapter_body = chapter_text.strip()
                 
                 html_content += f'<h1>{chapter_title}</h1>'
@@ -48,6 +49,19 @@ class HtmlConverter(BaseConverter):
                         html_content += '<p>&nbsp;</p>'
                 
                 html_content += '<hr>'
+
+            # Add Credits section
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            project_url = "https://github.com/RubenPozoMolina/novelaist"
+            project_name = "Novelaist"
+            project_version = "0.1.0"
+            
+            html_content += f'<div style="margin-top: 50px; padding: 20px; border-top: 1px solid #eee; font-size: 0.8em; color: #666;">'
+            html_content += f'<h2>{self.translations["credits"]}</h2>'
+            html_content += f'<p><strong>{project_name} v{project_version}</strong></p>'
+            html_content += f'<p><strong>{self.translations["project_url"]}:</strong> <a href="{project_url}">{project_url}</a></p>'
+            html_content += f'<p><strong>{self.translations["created_at"]}:</strong> {timestamp}</p>'
+            html_content += '</div>'
 
             html_content += '</body></html>'
             

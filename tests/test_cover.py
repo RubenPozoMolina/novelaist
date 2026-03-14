@@ -152,3 +152,89 @@ def test_add_text_to_cover(tmp_path):
                 
                 # Check if image was saved
                 mock_img_instance.save.assert_called_with(str(img_path))
+
+def test_cover_prompt_preference(tmp_path):
+    # Mock cover generator
+    with patch('src.create_novel.CoverGenerator') as MockCoverGen:
+        from src.create_novel import Novelaist
+        
+        # Setup mock examples dir
+        examples_dir = tmp_path / "examples"
+        examples_dir.mkdir()
+        # Include cover_prompt in config
+        config_content = {
+            "novel_title": "Prompt Novel",
+            "cover_prompt": "A very specific prompt for the cover"
+        }
+        import json
+        (examples_dir / "config.json").write_text(json.dumps(config_content))
+        
+        # Create character and environment files that SHOULD be ignored
+        characters_dir = examples_dir / "characters"
+        characters_dir.mkdir()
+        (characters_dir / "hero.md").write_text("This character info should be ignored")
+        
+        environment_dir = examples_dir / "environment"
+        environment_dir.mkdir()
+        (environment_dir / "world.md").write_text("This environment info should be ignored")
+        
+        (examples_dir / "chapters").mkdir()
+        
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+        
+        # Mock generator instance
+        mock_gen_instance = MockCoverGen.return_value
+        mock_gen_instance.generate_cover.return_value = str(output_dir / "Prompt_Novel_cover.png")
+        
+        novelaist = Novelaist(examples_dir, output_dir)
+        
+        # Run cover generation
+        novelaist.generate_cover()
+        
+        # Verify that generate_cover was called with the cover_prompt
+        # The arguments are: title, description, output_path, width, height
+        mock_gen_instance.generate_cover.assert_called_once()
+        args, kwargs = mock_gen_instance.generate_cover.call_args
+        
+        assert args[0] == "Prompt Novel"
+        # The description should match the cover_prompt exactly
+        assert args[1] == "A very specific prompt for the cover"
+
+def test_negative_prompt_preference(tmp_path):
+    # Mock cover generator
+    with patch('src.create_novel.CoverGenerator') as MockCoverGen:
+        from src.create_novel import Novelaist
+        import json
+        
+        # Setup mock examples dir
+        examples_dir = tmp_path / "examples"
+        examples_dir.mkdir()
+        
+        # Include negative_prompt in config
+        config_content = {
+            "novel_title": "Negative Prompt Novel",
+            "negative_prompt": "no robots, no space, no sci-fi"
+        }
+        (examples_dir / "config.json").write_text(json.dumps(config_content))
+        
+        (examples_dir / "characters").mkdir()
+        (examples_dir / "environment").mkdir()
+        (examples_dir / "chapters").mkdir()
+        
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+        
+        # Mock generator instance
+        mock_gen_instance = MockCoverGen.return_value
+        
+        novelaist = Novelaist(examples_dir, output_dir)
+        
+        # Run cover generation
+        novelaist.generate_cover()
+        
+        # Verify that generate_cover was called with the negative_prompt
+        mock_gen_instance.generate_cover.assert_called_once()
+        kwargs = mock_gen_instance.generate_cover.call_args[1]
+        
+        assert kwargs['negative_prompt'] == "no robots, no space, no sci-fi"

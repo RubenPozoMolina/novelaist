@@ -54,7 +54,7 @@ For MOBI support, install Calibre:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/novelaist.git
+   git clone https://github.com/RubenPozoMolina/novelaist.git
    cd novelaist
    ```
 
@@ -77,7 +77,7 @@ For MOBI support, install Calibre:
    ```bash
    cp examples/modern_messiah/config.json.template examples/modern_messiah/config.json
    ```
-   *Note: Edit `config.json` to set your preferred model and Ollama host.*
+   *Note: Edit `config.json` to set your preferred model, Ollama host, and optional parameters like `cover_prompt` or `negative_prompt`.*
 
 4. **Verify Ollama**:
    Ensure Ollama is running and the Command-R model is downloaded:
@@ -107,6 +107,18 @@ For MOBI support, install Calibre:
    ```
 
 3. **Check the results**: The generated files (Markdown, EPUB, PDF, MOBI) will be available in the specified output directory.
+
+## Troubleshooting
+
+If you encounter an error like:
+`RuntimeError: html5-parser and lxml are using different versions of libxml2.`
+
+This usually happens when `lxml` is installed from a binary wheel that conflicts with another library using a different version of `libxml2`. To fix it, reinstall `lxml` by compiling it from source:
+
+```bash
+pip install --no-binary lxml lxml
+```
+*Note: This may require development tools (like `gcc`, `libxml2-dev`, and `libxslt-dev`) to be installed on your system.*
 
 ## Document Details
 

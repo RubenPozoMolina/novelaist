@@ -1,6 +1,7 @@
 import logging
 import re
 import os
+import datetime
 from pathlib import Path
 from unittest.mock import patch
 from PIL import Image
@@ -38,9 +39,9 @@ class EpubConverter(BaseConverter):
             if self.cover_path and Path(self.cover_path).exists():
                 # xml2epub handles cover by looking for an image in a chapter or generating one.
                 # To ensure our cover is used, we create a cover chapter.
-                cover_content = f'<html><head><style>{style}</style></head><body><div style="text-align:center;"><img src="{self.cover_path}" alt="Cover" class="cover" /><h1>{title}</h1><p>By {author}</p></div></body></html>'
+                cover_content = f'<html><head><style>{style}</style></head><body><div style="text-align:center;"><img src="{self.cover_path}" alt="{self.translations["cover"]}" class="cover" /><h1>{title}</h1><p>{self.translations["by"]} {author}</p></div></body></html>'
                 # Use local=True to ensure it copies the local image
-                cover_chapter = xml2epub.create_chapter_from_string(cover_content, title='Cover', local=True)
+                cover_chapter = xml2epub.create_chapter_from_string(cover_content, title=self.translations["cover"], local=True)
                 book.add_chapter(cover_chapter)
 
             # Split content by chapters
@@ -57,7 +58,7 @@ class EpubConverter(BaseConverter):
                     chapter_title = lines[0].strip().strip('# ').strip()
                     chapter_body = '\n'.join(lines[1:]).strip()
                 else:
-                    chapter_title = "Introduction" if i == 0 else f"Chapter {i}"
+                    chapter_title = self.translations["introduction"] if i == 0 else f"{self.translations['chapter']} {i}"
                     chapter_body = chapter_text.strip()
                 
                 # Create HTML content for this chapter
@@ -81,6 +82,23 @@ class EpubConverter(BaseConverter):
                 # Create xml2epub chapter
                 chapter = xml2epub.create_chapter_from_string(html_content, title=chapter_title)
                 book.add_chapter(chapter)
+
+            # Add Credits chapter
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            project_url = "https://github.com/RubenPozoMolina/novelaist"
+            project_name = "Novelaist"
+            project_version = "0.1.0"
+            credits_title = self.translations["credits"]
+            
+            credits_content = f'<html><head><style>{style}</style></head><body>'
+            credits_content += f'<h1>{credits_title}</h1>'
+            credits_content += f'<p><strong>{project_name} v{project_version}</strong></p>'
+            credits_content += f'<p><strong>{self.translations["project_url"]}:</strong> {project_url}</p>'
+            credits_content += f'<p><strong>{self.translations["created_at"]}:</strong> {timestamp}</p>'
+            credits_content += '</body></html>'
+            
+            credits_chapter = xml2epub.create_chapter_from_string(credits_content, title=credits_title)
+            book.add_chapter(credits_chapter)
             
             # Save EPUB
             # We need to patch get_cover_image because of a bug in xml2epub with Pillow 9.5.0+

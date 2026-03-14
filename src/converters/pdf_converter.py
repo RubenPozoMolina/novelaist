@@ -1,4 +1,5 @@
 import re
+import datetime
 from pathlib import Path
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -32,12 +33,12 @@ class PdfConverter(BaseConverter):
             story.append(Spacer(1, 100))
             story.append(Paragraph(title.upper(), styles['Title']))
             story.append(Spacer(1, 48))
-            story.append(Paragraph(f"Author: {self.config.get('author', 'Unknown Author')}", styles['Normal']))
-            story.append(Paragraph(f"Date: {self.config.get('date', '')}", styles['Normal']))
+            story.append(Paragraph(f"{self.translations['author']}: {self.config.get('author', 'Unknown Author')}", styles['Normal']))
+            story.append(Paragraph(f"{self.translations['date']}: {self.config.get('date', '')}", styles['Normal']))
             story.append(PageBreak())
             
             # Table of Contents placeholder
-            story.append(Paragraph("Table of Contents", styles['TOCHeader']))
+            story.append(Paragraph(self.translations['toc'], styles['TOCHeader']))
             story.append(Spacer(1, 12))
             
             # Split content by chapters to build TOC and story
@@ -82,6 +83,19 @@ class PdfConverter(BaseConverter):
                 
                 story.append(PageBreak())
 
+            # Add Credits section at the end
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            project_url = "https://github.com/RubenPozoMolina/novelaist"
+            project_name = "Novelaist"
+            project_version = "0.1.0"
+            
+            story.append(Spacer(1, 48))
+            story.append(Paragraph(self.translations['credits'], styles['ChapterTitle']))
+            story.append(Spacer(1, 24))
+            story.append(Paragraph(f"<b>{project_name} v{project_version}</b>", styles['Normal']))
+            story.append(Paragraph(f"<b>{self.translations['project_url']}:</b> {project_url}", styles['Normal']))
+            story.append(Paragraph(f"<b>{self.translations['created_at']}:</b> {timestamp}", styles['Normal']))
+            
             # Building TOC story
             toc_story = []
             for t in toc_entries:
@@ -92,7 +106,7 @@ class PdfConverter(BaseConverter):
             final_story = []
             for item in story:
                 final_story.append(item)
-                if isinstance(item, Paragraph) and item.text == "Table of Contents" and item.style.name == 'TOCHeader':
+                if isinstance(item, Paragraph) and item.text == self.translations['toc'] and item.style.name == 'TOCHeader':
                     final_story.extend(toc_story)
                     final_story.append(PageBreak())
             
