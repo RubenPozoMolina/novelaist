@@ -1,4 +1,4 @@
-# Chapter 7: The Sacrifice of Ivan and the Miracle of the Lake
+# Chapter 7: Philip's request
 
 ## Scene 1: The Fall of the First Observer
 Russia launches a sudden and devastating offensive against Eastern Europe, targeting technological centers and key figures who threaten their AI supremacy. Ivan Krestitel, the first advanced prototype, is captured during the siege of his research facility. Identified as a "cybernetic threat" to Russian corporate power, he is brought to a foundry. In a brutal display of technological elimination, Ivan is cast into a vat of molten steel, his analytical consciousness meeting a fiery end as his mechanical body dissolves.

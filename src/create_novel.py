@@ -52,7 +52,10 @@ class Novelaist:
             "environment": []
         }
         self._load_documents()
-        self.cover_generator = CoverGenerator()
+        
+        # Load cover model from config or use default
+        cover_model = self.config.get('cover_model', "Lykon/DreamShaper")
+        self.cover_generator = CoverGenerator(model_id=cover_model)
         self.cover_path = self._discover_cover()
     
     def _discover_cover(self):
@@ -297,7 +300,7 @@ class Novelaist:
         
         # Enhanced description based on environmental documents if available
         description = self.config.get('cover_prompt', '')
-        negative_prompt = self.config.get('negative_prompt', None)
+        negative_prompt = self.config.get('cover_negative_prompt', None)
         
         if not description:
             # 1. Try to get environment info

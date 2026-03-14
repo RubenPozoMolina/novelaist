@@ -30,7 +30,7 @@ class CoverGenerator:
         self._load_pipeline()
         
         # We explicitly ask for no text in the generated image
-        prompt = f"Professional book cover art for '{title}'. {description}. High quality, detailed, professional digital art, cinematic lighting, masterpiece"
+        prompt = f"Professional book cover art for '{title}'. {description}. High quality, detailed, professional digital art, cinematic lighting, masterpiece, no text, no letters"
         
         if negative_prompt is None:
             negative_prompt = "text, letters, words, watermark, signature, blurry, low quality, distorted, watermark, deformed, ugly, bad anatomy, poorly drawn face"
