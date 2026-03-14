@@ -201,7 +201,7 @@ def test_cover_prompt_preference(tmp_path):
         # The description should match the cover_prompt exactly
         assert args[1] == "A very specific prompt for the cover"
 
-def test_negative_prompt_preference(tmp_path):
+def test_cover_negative_prompt_preference(tmp_path):
     # Mock cover generator
     with patch('src.create_novel.CoverGenerator') as MockCoverGen:
         from src.create_novel import Novelaist
@@ -211,10 +211,10 @@ def test_negative_prompt_preference(tmp_path):
         examples_dir = tmp_path / "examples"
         examples_dir.mkdir()
         
-        # Include negative_prompt in config
+        # Include cover_negative_prompt in config
         config_content = {
             "novel_title": "Negative Prompt Novel",
-            "negative_prompt": "no robots, no space, no sci-fi"
+            "cover_negative_prompt": "no robots, no space, no sci-fi"
         }
         (examples_dir / "config.json").write_text(json.dumps(config_content))
         
