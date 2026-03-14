@@ -5,5 +5,7 @@
     "host": "http://localhost:11434",
     "language": "Spanish",
     "minimum_chapter_words_number": "500",
-    "chapter_sections:": 4
+    "chapter_sections:": 4,
+    "cover_prompt": "Jesus returns to Earth in the form of a cyborg. Half in Heaven and half on Earth.",
+    "negative_prompt": "cartoon, anime, low quality, bad anatomy, naked, text, letters, watermark, words, typography, signature, storyboard, label, quote, heading, script, writing"
 }

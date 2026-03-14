@@ -10,6 +10,7 @@ sys.modules['diffusers'] = MagicMock()
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from src.create_novel import Novelaist
+from src.converters import EpubConverter
 
 @pytest.fixture
 def mock_examples_dir(tmp_path):
@@ -71,13 +72,16 @@ def test_language_and_constraints_in_prompt(mock_examples_dir, output_dir):
     novelaist.generate_novel_content()
         
     # Check if prompt contains the language and constraints
-    # With section-by-section, chat is called once per section
-    # If the previous test file was cleaned up, it should be 2. 
-    # But in the same session it might be additive. Let's check call_count >= 2
-    assert mock_client_instance.chat.call_count >= 2 # 2 sections in mock config
-    
-    # Check the first call
+    # With section-by-section, chat is called once per section + once for chapter title
+    assert mock_client_instance.chat.call_count >= 3 
+
+    # Check the first call (now chapter title request)
     args, kwargs = mock_client_instance.chat.call_args_list[0]
+    prompt = kwargs['messages'][0]['content']
+    assert "Translate or generate a creative chapter title in Spanish" in prompt
+        
+    # Check the second call (now section 1)
+    args, kwargs = mock_client_instance.chat.call_args_list[1]
     prompt = kwargs['messages'][0]['content']
     assert "Spanish" in prompt
     assert "Write section 1 of 2" in prompt
@@ -197,6 +201,11 @@ def test_epub_language(mock_examples_dir, output_dir):
         # Verify Epub was created with language='es'
         _, epub_kwargs = mock_epub_class.call_args
         assert epub_kwargs['language'] == 'es'
+        
+        # Verify translations are correctly set
+        converter = EpubConverter(output_dir, novelaist.config)
+        assert converter.translations['chapter'] == 'Capítulo'
+        assert converter.translations['toc'] == 'Índice'
 
 def test_mobi_generation(mock_examples_dir, output_dir):
     with patch('subprocess.run') as mock_run:
@@ -227,7 +236,7 @@ def test_markdown_filename_generation(mock_examples_dir, output_dir):
     assert expected_path.exists()
     with open(expected_path, "r") as f:
         saved_content = f.read()
-        assert "## Table of Contents" in saved_content
+        assert "## Índice" in saved_content
         assert "# Test Content" in saved_content
 
 def test_config_only_restriction(mock_examples_dir, output_dir):
@@ -324,10 +333,10 @@ def test_markdown_toc_generation(mock_examples_dir, output_dir):
     
     output_path = output_dir / filename
     assert output_path.exists()
-    
+        
     with open(output_path, "r") as f:
         md_content = f.read()
-        assert "## Table of Contents" in md_content
+        assert "## Índice" in md_content
         assert "- [Chapter 1](#chapter-1)" in md_content
         assert "- [Chapter 2](#chapter-2)" in md_content
 
@@ -384,12 +393,12 @@ def test_pdf_toc_inclusion(mock_examples_dir, output_dir):
         assert mock_build.called
         story = mock_build.call_args[0][0]
         
-        # Verify "Table of Contents" paragraph is in the story
+        # Verify "Índice" paragraph is in the story
         toc_header_found = False
         chapters_found = []
         for item in story:
             if isinstance(item, Paragraph):
-                if item.text == "Table of Contents":
+                if item.text == "Índice":
                     toc_header_found = True
                 if item.text in ["Chapter 1", "Chapter 2"]:
                     chapters_found.append(item.text)

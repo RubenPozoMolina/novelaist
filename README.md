@@ -54,22 +54,30 @@ For MOBI support, install Calibre:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/novelaist.git
+   git clone https://github.com/RubenPozoMolina/novelaist.git
    cd novelaist
    ```
 
-2. **Install Python dependencies with Poetry**:
+2. **Install Python dependencies**:
+
+   #### Option A: Using Poetry (Recommended)
    ```bash
    poetry install
    ```
    *Note: If you have issues with `torch` or `diffusers`, ensure you have a compatible Cuda environment or install the CPU versions manually.*
+
+   #### Option B: Using Pip (Manual Installation)
+   If you don't want to use Poetry, you can install the dependencies using `pip`:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 3. **Prepare configuration**:
    Copy the example configuration file to `config.json` inside your project directory:
    ```bash
    cp examples/modern_messiah/config.json.template examples/modern_messiah/config.json
    ```
-   *Note: Edit `config.json` to set your preferred model and Ollama host.*
+   *Note: Edit `config.json` to set your preferred model, Ollama host, and optional parameters like `cover_prompt` or `negative_prompt`.*
 
 4. **Verify Ollama**:
    Ensure Ollama is running and the Command-R model is downloaded:
@@ -82,15 +90,35 @@ For MOBI support, install Calibre:
 1. **Prepare your documents**: Organize your novel's Markdown files in the `examples/` directory following the established structure (see `Document Details` below).
 
 2. **Run the generator**:
+
+   **Using Poetry:**
    ```bash
    poetry run python src/create_novel.py <project_path> <output_dir>
    ```
-   *Example:*
+
+   **Using Pip:**
+   ```bash
+   python src/create_novel.py <project_path> <output_dir>
+   ```
+
+   *Example (Poetry):*
    ```bash
    poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah
    ```
 
 3. **Check the results**: The generated files (Markdown, EPUB, PDF, MOBI) will be available in the specified output directory.
+
+## Troubleshooting
+
+If you encounter an error like:
+`RuntimeError: html5-parser and lxml are using different versions of libxml2.`
+
+This usually happens when `lxml` is installed from a binary wheel that conflicts with another library using a different version of `libxml2`. To fix it, reinstall `lxml` by compiling it from source:
+
+```bash
+pip install --no-binary lxml lxml
+```
+*Note: This may require development tools (like `gcc`, `libxml2-dev`, and `libxslt-dev`) to be installed on your system.*
 
 ## Document Details
 
@@ -105,19 +133,16 @@ The project expects a specific folder structure to build the context for the AI:
 To contribute or run tests:
 
 1. **Install dev dependencies**:
-   ```bash
-   poetry install
-   ```
+   - **Poetry**: `poetry install`
+   - **Pip**: `pip install -r requirements.txt`
 
 2. **Run tests**:
-   ```bash
-   poetry run pytest
-   ```
+   - **Poetry**: `poetry run pytest`
+   - **Pip**: `pytest`
 
 3. **Format code**:
-   ```bash
-   poetry run black .
-   ```
+   - **Poetry**: `poetry run black .`
+   - **Pip**: `black .`
 
 ## License
 
