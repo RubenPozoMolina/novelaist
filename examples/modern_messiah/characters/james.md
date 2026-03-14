@@ -16,4 +16,4 @@ James was an entrepreneur who had failed multiple times but refused to give up. 
 ## Relationships
 - John: Younger brother.
 - Elias: Mentor.
-- Simon and Andrew: Fellow partners.
+- Peter and Andrew: Fellow partners.
