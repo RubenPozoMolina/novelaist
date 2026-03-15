@@ -1,19 +1,30 @@
 import argparse
 import json
 import logging
+import sys
 import ollama
 import subprocess
 import datetime
 from pathlib import Path
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger("novelaist")
 try:
     from src.cover_generator import CoverGenerator
 except ImportError:
     from cover_generator import CoverGenerator
 
 try:
-    from src.converters import HtmlConverter, EpubConverter, PdfConverter, MobiConverter
+    from src.converters import HtmlConverter, EpubConverter, PdfConverter
 except ImportError:
-    from converters import HtmlConverter, EpubConverter, PdfConverter, MobiConverter
+    from converters import HtmlConverter, EpubConverter, PdfConverter
 
 from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
@@ -64,7 +75,7 @@ class Novelaist:
         cover_filename = f"{title.replace(' ', '_')}_cover.png"
         potential_path = self.output_dir / cover_filename
         if potential_path.exists():
-            print(f"Discovered existing cover at: {potential_path}")
+            logger.info(f"Discovered existing cover at: {potential_path}")
             return str(potential_path)
         return None
     
@@ -76,7 +87,7 @@ class Novelaist:
                 with open(config_path, 'r') as f:
                     return json.load(f)
             except Exception as e:
-                print(f"Error loading config.json: {str(e)}")
+                logger.error(f"Error loading config.json: {str(e)}")
                 return {}
         return {}
     
@@ -106,8 +117,9 @@ class Novelaist:
 
     def generate_novel_content(self):
         """Generate novel content based on loaded documents, chapter by chapter."""
-        print("Generating novel content...")
+        logger.info("Generating novel content...")
         
+        start_total_time = datetime.datetime.now()
         # Process documents to create context
         character_info = []
         environment_info = []
@@ -149,10 +161,10 @@ class Novelaist:
         host = self.config.get('host')
         
         if host:
-            print(f"Connecting to {model_name} on {host}...")
+            logger.info(f"Connecting to {model_name} on {host}...")
             client = ollama.Client(host=host)
         else:
-            print(f"Connecting to {model_name}...")
+            logger.info(f"Connecting to {model_name}...")
             client = ollama
             
         translations = {
@@ -170,14 +182,15 @@ class Novelaist:
             chapter_name = chapter_file.stem
             output_chapter_file = self.output_dir / f"{chapter_name}_generated.md"
             
+            start_chapter_time = datetime.datetime.now()
             if output_chapter_file.exists():
-                print(f"Chapter {chapter_name} ({chapter_index}/{len(sorted_chapters)}) already exists. Loading from file...")
+                logger.info(f"Chapter {chapter_name} ({chapter_index}/{len(sorted_chapters)}) already exists. Loading from file...")
                 with open(output_chapter_file, 'r') as f:
                     chapter_content = f.read()
                 full_novel_content.append(chapter_content)
                 continue
                 
-            print(f"Generating chapter: {chapter_name} ({chapter_index}/{len(sorted_chapters)})...")
+            logger.info(f"Generating chapter: {chapter_name} ({chapter_index}/{len(sorted_chapters)})...")
             chapter_outline = process_chapter_document(chapter_file)
             
             # Count scenes/sections in the outline to adjust sections_count dynamically
@@ -191,7 +204,7 @@ class Novelaist:
                 raw_title = first_line.replace('# ', '').strip()
                 if language != 'English':
                     # Ask AI to translate the chapter title if it's not in English (likely extracted from MD)
-                    print(f"  - Requesting chapter title translation for: {raw_title}")
+                    logger.info(f"  - Requesting chapter title translation for: {raw_title}")
                     title_prompt = f"Translate this chapter title into {language}: '{raw_title}'. Return ONLY the translated title text, nothing else."
                     title_response = client.chat(
                         model=model_name,
@@ -205,7 +218,7 @@ class Novelaist:
                     chapter_header_title = raw_title
             else:
                 # Ask AI to generate/translate the chapter title in the target language
-                print(f"  - Requesting chapter title translation for: {chapter_name}")
+                logger.info(f"  - Requesting chapter title translation for: {chapter_name}")
                 title_prompt = f"Translate or generate a creative chapter title in {language} for a chapter with the filename '{chapter_name}'. Return ONLY the title text, nothing else."
                 title_response = client.chat(
                     model=model_name,
@@ -222,7 +235,7 @@ class Novelaist:
             chapter_sections_content.append(f"# {chapter_header_title}")
             
             for section_num in range(1, current_sections_count + 1):
-                print(f"  - Generating section {section_num} of {current_sections_count}...")
+                logger.info(f"  - Generating section {section_num} of {current_sections_count}...")
                 
                 previous_sections_context = ""
                 if chapter_sections_content:
@@ -286,8 +299,15 @@ class Novelaist:
             with open(output_chapter_file, 'w') as f:
                 f.write(chapter_content)
                 
+            end_chapter_time = datetime.datetime.now()
+            chapter_duration = end_chapter_time - start_chapter_time
+            logger.info(f"  - Chapter generated in {chapter_duration}")
+
             full_novel_content.append(chapter_content)
             
+        end_total_time = datetime.datetime.now()
+        total_duration = end_total_time - start_total_time
+        logger.info(f"Total generation time: {total_duration}")
         return "\n\n".join(full_novel_content)
 
 
@@ -324,7 +344,7 @@ class Novelaist:
         
         # Check if cover already exists
         if output_path.exists():
-            print(f"Cover already exists at: {output_path}. Skipping generation.")
+            logger.info(f"Cover already exists at: {output_path}. Skipping generation.")
             self.cover_path = str(output_path)
             return self.cover_path
             
@@ -434,9 +454,9 @@ class Novelaist:
             draw.text(((width - w) / 2, height * 0.9), model_text, font=font_model, fill="lightgray", stroke_width=1, stroke_fill="black")
             
             img.save(image_path)
-            print(f"Text added to cover: {image_path}")
+            logger.info(f"Text added to cover: {image_path}")
         except Exception as e:
-            print(f"Error adding text to cover: {str(e)}")
+            logger.error(f"Error adding text to cover: {str(e)}")
 
     def create_html(self, content, title="Generated Novel"):
         """Create a single HTML file from the content for debugging/preview"""
@@ -451,11 +471,6 @@ class Novelaist:
     def create_pdf(self, content, novel_title="Generated Novel"):
         """Create a PDF file from the content with Table of Contents"""
         converter = PdfConverter(self.output_dir, self.config, self.cover_path)
-        return converter.convert(content, novel_title)
-
-    def create_mobi(self, content, novel_title="Generated Novel"):
-        """Create a MOBI file from the content using ebook-convert (Calibre)"""
-        converter = MobiConverter(self.output_dir, self.config, self.cover_path)
         return converter.convert(content, novel_title)
 
     def save_output(self, content, filename):
@@ -527,9 +542,9 @@ class Novelaist:
                 
             with open(output_file, 'w') as f:
                 f.write(content)
-            print(f"Content saved at: {output_file}")
+            logger.info(f"Content saved at: {output_file}")
         except Exception as e:
-            print(f"Error saving file: {str(e)}")
+            logger.error(f"Error saving file: {str(e)}")
 
 if __name__ == "__main__":
     # Process input parameters
@@ -543,41 +558,40 @@ if __name__ == "__main__":
     novelaist = Novelaist(args.examples_dir, args.output_dir)
     
     # Show document structure
-    print("Document structure:")
+    logger.info("Document structure:")
     docs = novelaist.get_document_structure()
     for category, files in docs.items():
-        print(f"  {category}: {len(files)} files")
+        logger.info(f"  {category}: {len(files)} files")
         for file in files:
-            print(f"    - {file.name}")
+            logger.info(f"    - {file.name}")
     
     # Test processing of a document
     if docs["characters"]:
-        print("\nContent of first character document:")
-        print(process_character_document(docs["characters"][0]))
+        logger.info("\nContent of first character document:")
+        logger.info(process_character_document(docs["characters"][0]))
     
     # Test generation
-    print("\n" + "="*50)
+    logger.info("\n" + "="*50)
     
     # Generate cover
-    print("Generating cover...")
+    logger.info("Generating cover...")
     novelaist.generate_cover()
     
     generated_content = novelaist.generate_novel_content()
-    print("Generation completed.")
+    logger.info("Generation completed.")
     
     # Save result in output files
-    print("\n" + "="*50)
-    print("Generating files in EPUB, MOBI and PDF formats...")
+    logger.info("\n" + "="*50)
+    logger.info("Generating files in EPUB and PDF formats...")
     
     # Create files in different formats
     title = novelaist.config.get('novel_title', 'Generated Novel')
     novelaist.create_html(generated_content, title)
     novelaist.create_epub(generated_content, title)
     novelaist.create_pdf(generated_content, title)
-    novelaist.create_mobi(generated_content, title)
     
     # Also save the original Markdown file
     markdown_filename = f"{title.replace(' ', '_')}.md"
     novelaist.save_output(generated_content, markdown_filename)
     
-    print("Process completed successfully.")
+    logger.info("Process completed successfully.")

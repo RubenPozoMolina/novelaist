@@ -140,6 +140,7 @@ def test_uniform_section_headers(mock_examples_dir, output_dir):
     # Section 1: Scene A
     # Section 2: Scene B
     mock_responses = [
+        {'message': {'content': 'Translated Title'}}, # Title translation
         {'message': {'content': '### Scene A\nActual narrative for A'}},
         {'message': {'content': 'Actual narrative for B without header'}}
     ]
@@ -160,6 +161,8 @@ def test_uniform_section_headers(mock_examples_dir, output_dir):
     assert file_content.count("### Scene A") == 1
     assert "Actual narrative for A" in file_content
     assert "Actual narrative for B" in file_content
+
+def test_caching_mechanism(mock_examples_dir, output_dir):
     import ollama
     # Create a dummy chapter file
     (mock_examples_dir / "chapters" / "001_intro.md").write_text("Chapter intro outline")
@@ -207,21 +210,6 @@ def test_epub_language(mock_examples_dir, output_dir):
         assert converter.translations['chapter'] == 'Capítulo'
         assert converter.translations['toc'] == 'Índice'
 
-def test_mobi_generation(mock_examples_dir, output_dir):
-    with patch('subprocess.run') as mock_run:
-        novelaist = Novelaist(mock_examples_dir, output_dir)
-        
-        # Mock create_epub to return a dummy path
-        expected_epub = str(output_dir / "Test_Title.epub")
-        with patch.object(Novelaist, 'create_epub', return_value=expected_epub):
-            novelaist.create_mobi("Some content", "Test Title")
-            
-            # Check if subprocess.run was called with ebook-convert
-            mock_run.assert_called_once()
-            args = mock_run.call_args[0][0]
-            assert 'ebook-convert' in args
-            assert expected_epub in args
-            assert str(output_dir / "Test_Title.mobi") in args
 
 def test_markdown_filename_generation(mock_examples_dir, output_dir):
     novelaist = Novelaist(mock_examples_dir, output_dir)

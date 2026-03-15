@@ -1,6 +1,9 @@
 import torch
+import logging
 from diffusers import StableDiffusionPipeline
 from pathlib import Path
+
+logger = logging.getLogger("novelaist.cover_generator")
 
 class CoverGenerator:
     def __init__(self, model_id="Lykon/DreamShaper"):
@@ -10,7 +13,7 @@ class CoverGenerator:
     def _load_pipeline(self):
         """Lazy load the pipeline to avoid heavy initialization if not needed."""
         if self.pipeline is None:
-            print(f"Loading cover generation model: {self.model_id}...")
+            logger.info(f"Loading cover generation model: {self.model_id}...")
             # Use float16 for speed and lower memory usage if CUDA is available
             device = "cuda" if torch.cuda.is_available() else "cpu"
             torch_dtype = torch.float16 if device == "cuda" else torch.float32
@@ -22,7 +25,7 @@ class CoverGenerator:
                 )
                 self.pipeline.to(device)
             except Exception as e:
-                print(f"Error loading model: {str(e)}")
+                logger.error(f"Error loading model: {str(e)}")
                 raise
 
     def generate_cover(self, title, description, output_path, width=512, height=768, negative_prompt=None):
@@ -35,7 +38,7 @@ class CoverGenerator:
         if negative_prompt is None:
             negative_prompt = "text, letters, words, watermark, signature, blurry, low quality, distorted, watermark, deformed, ugly, bad anatomy, poorly drawn face"
         
-        print(f"Generating cover background for '{title}' ({width}x{height})...")
+        logger.info(f"Generating cover background for '{title}' ({width}x{height})...")
         try:
             # Use width and height for the generation
             image = self.pipeline(
@@ -51,8 +54,8 @@ class CoverGenerator:
             output_file.parent.mkdir(parents=True, exist_ok=True)
             
             image.save(output_file)
-            print(f"Cover saved at: {output_file}")
+            logger.info(f"Cover saved at: {output_file}")
             return str(output_file)
         except Exception as e:
-            print(f"Error generating cover: {str(e)}")
+            logger.error(f"Error generating cover: {str(e)}")
             return None

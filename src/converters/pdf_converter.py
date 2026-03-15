@@ -1,10 +1,13 @@
 import re
 import datetime
+import logging
 from pathlib import Path
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from .base_converter import BaseConverter
+
+logger = logging.getLogger("novelaist.converters.pdf")
 
 class PdfConverter(BaseConverter):
     def convert(self, content, title="Generated Novel"):
@@ -111,8 +114,8 @@ class PdfConverter(BaseConverter):
                     final_story.append(PageBreak())
             
             doc.build(final_story)
-            print(f"PDF file saved at: {filename}")
+            logger.info(f"PDF file saved at: {filename}")
             return str(filename)
         except Exception as e:
-            print(f"Error creating PDF: {str(e)}")
+            logger.error(f"Error creating PDF: {str(e)}")
             return None

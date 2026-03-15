@@ -1,7 +1,10 @@
 import re
 import datetime
+import logging
 from pathlib import Path
 from .base_converter import BaseConverter
+
+logger = logging.getLogger("novelaist.converters.html")
 
 class HtmlConverter(BaseConverter):
     def convert(self, content, title="Generated Novel"):
@@ -68,8 +71,8 @@ class HtmlConverter(BaseConverter):
             filename = self.output_dir / f"{title.replace(' ', '_')}.html"
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write(html_content)
-            print(f"HTML file saved at: {filename}")
+            logger.info(f"HTML file saved at: {filename}")
             return str(filename)
         except Exception as e:
-            print(f"Error creating HTML: {str(e)}")
+            logger.error(f"Error creating HTML: {str(e)}")
             return None
