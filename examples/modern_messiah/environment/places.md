@@ -21,7 +21,7 @@ One of the largest continuous sand deserts in the world, located in the southern
 Elias's hometown and the base for NanoVita operations. A city once dominated by heavy industry, now transforming into a hub of high-tech and biotech under Elias's influence.
 
 ## NanoVita HQ
-Located in a modern, sustainable campus in Monterrey. It's more than just a company; it's a center of hope and technological evolution.
+Located on a modern, sustainable campus in Monterrey. It's more than just a company; it's a center of hope and technological evolution.
 - **Physical Characteristics**: Sleek, glass-and-steel architecture integrated with vertical gardens. The labs are filled with state-of-the-art nanotechnology equipment.
 - **Characteristics of NanoVita**: 
     - Focused on medical nanobots and ethical AI.
