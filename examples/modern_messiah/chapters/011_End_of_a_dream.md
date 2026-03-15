@@ -18,5 +18,6 @@ Outside the prison, thousands of followers gather in a silent, candlelit vigil t
 
 ## Scene 4: The Silent Recovery
 In the chaos following the execution, Iris contacts Dr. Maria Vasquez. Maria, despite her years of isolation, realizes she must act to save her "grandson."
+- **The Clandestine Journey**: Iris coordinates a high-risk transport for Maria and her three companions: Turing, Ada, and Pascal. Using a network of hijacked autonomous delivery drones and black-market shipping routes, Maria is whisked away from her Colorado cabin. The crossing of the US-Mexico border is a perilous ordeal, as the frontier has become a militarized zone of suspicion and violence in the wake of the national crisis.
 - **Josep Arispe**: Maria reaches out to Josep, a philanthropist and owner of a healthcare company for the homeless in Monterrey. Josep, a secret ally of NanoVita, uses his resources to intercept the body under the guise of "humanitarian medical research."
-- **Transport**: They move Elias's remains to a clandestine laboratory within one of Josep's facilities, evading government surveillance.
+- **Arrival**: They move Elias's remains and Maria's small, feline-accompanied team to a clandestine laboratory within one of Josep's facilities, evading government surveillance and the growing civil unrest.
