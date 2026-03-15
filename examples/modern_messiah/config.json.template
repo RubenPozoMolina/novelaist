@@ -5,7 +5,7 @@
     "host": "http://localhost:11434",
     "language": "Spanish",
     "minimum_chapter_words_number": "500",
-    "chapter_sections:": 4,
+    "chapter_sections": 4,
     "cover_model": "Lykon/DreamShaper",
     "cover_prompt": "Cyborg praying on the Mount of Olives",
     "cover_negative_prompt": "cartoon, anime, low quality, bad anatomy, naked, text, letters, watermark, words, typography, signature, storyboard, label, quote, heading, script, writing"

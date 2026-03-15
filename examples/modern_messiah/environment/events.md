@@ -39,3 +39,6 @@
 - **2038-01-05**: The Resurrection of Lazarus. Elias returns to Monterrey and brings Lazarus back to life using advanced nanobots.
 - **2038-01-08**: The CES Keynote in Las Vegas. Elias gives a historic speech and confronts pharmaceutical executives.
 - **2038-01-09**: The Last Supper at Luxor Hotel. Elias predicts betrayal and his arrest by the US government.
+- **2038-01-10**: The Trial. Elias is found guilty of high treason in a rigged process orchestrated by the pharmaceutical lobby.
+- **2038-01-15**: The Execution. Elias is executed via electric chair. Protests and riots break out among his followers.
+- **2038-02-24**: The Resurrection. After 40 days hidden in Josep Arispe's facilities, Elias returns to life with the help of Maria and Iris.

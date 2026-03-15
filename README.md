@@ -118,8 +118,22 @@ pip install --no-binary lxml lxml
 The project expects a specific folder structure to build the context for the AI:
 
 - **`characters/`**: Detailed profiles for each character. Include personality traits, appearance, and background.
-- **`chapters/`**: Outline for each chapter. Use headers for scenes to help the AI structure the narrative.
+- **`chapters/`**: Outline for each chapter. Use headers (`##`) for scenes to help the AI structure the narrative. Note that the number of `##` headers in each chapter file will override the `chapter_sections` parameter in `config.json` for that specific chapter, allowing for dynamic chapter lengths.
 - **`environment/`**: Descriptions of locations, world rules, and key historical events.
+
+## Configuration
+
+You can customize the generation process by editing the `config.json` file in your project directory:
+
+- **`novel_title`**: The title of your novel.
+- **`author`**: The author's name.
+- **`model`**: The AI model to use (e.g., `llama3`).
+- **`language`**: The language for the generated content (e.g., `Spanish`, `English`).
+- **`minimum_chapter_words_number`**: Target word count for each chapter.
+- **`chapter_sections`**: Default number of sections to split a chapter into if no `##` headers are found in the chapter outline. If `##` headers are present, they take precedence.
+- **`cover_model`**: Model used for cover generation.
+- **`cover_prompt`**: Prompt for the cover image.
+- **`cover_negative_prompt`**: Negative prompt for the cover image.
 
 ## Development
 
@@ -139,4 +153,20 @@ To contribute or run tests:
 
 ## License
 
-This project is licensed under the MIT License.
+Este proyecto utiliza dos tipos de licencias para distinguir entre el software y el contenido creativo:
+
+### Software (Novelaist)
+El código fuente de **Novelaist** está bajo la licencia **MIT**. Esto permite el uso, copia, modificación y distribución gratuita del software, siempre que se incluya el aviso de copyright original. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+### Contenido (Modern Messiah)
+El contenido literario, personajes, tramas y universos que componen el ejemplo **Modern Messiah** (ubicado en `examples/modern_messiah/`) están protegidos bajo la licencia **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)**. 
+
+Esto significa que eres libre de:
+- **Compartir**: Copiar y redistribuir el material en cualquier medio o formato.
+- **Adaptar**: Mezclar, transformar y construir sobre el material para cualquier propósito, incluso comercial.
+
+Bajo los siguientes términos:
+- **Atribución**: Debes dar crédito de manera adecuada, proporcionar un enlace a la licencia e indicar si se han realizado cambios.
+- **Compartir Igual**: Si remezclas, transformas o creas a partir del material, debes distribuir tus contribuciones bajo la misma licencia que el original.
+
+Consulta el archivo [LICENSE_MODERN_MESSIAH.md](LICENSE_MODERN_MESSIAH.md) para el resumen de la licencia o visita [Creative Commons](https://creativecommons.org/licenses/by-sa/4.0/) para el texto legal completo.
