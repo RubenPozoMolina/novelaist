@@ -35,6 +35,20 @@ class CoverGenerator:
                 logger.error(f"Error loading model: {str(e)}")
                 raise
 
+    def clear_resources(self):
+        """Release the pipeline and empty CUDA cache."""
+        if self.pipeline is not None:
+            logger.info("Releasing cover generation resources...")
+            device = str(self.pipeline.device)
+            # Delete the pipeline object
+            del self.pipeline
+            self.pipeline = None
+            
+            # Explicitly empty CUDA cache if it was used
+            if "cuda" in device:
+                torch.cuda.empty_cache()
+                logger.info("CUDA cache cleared.")
+
     def generate_cover(self, title, description, output_path, width=512, height=768, negative_prompt=None):
         """Generate a book cover based on the title and description."""
         self._load_pipeline()

@@ -69,6 +69,7 @@ def test_cover_integration_in_novelaist(tmp_path):
         
         assert cover_path == str(output_dir / "Integrated_Novel_cover.png")
         mock_gen_instance.generate_cover.assert_called()
+        mock_gen_instance.clear_resources.assert_called()
         assert novelaist.cover_path == cover_path
 
 def test_skip_cover_generation_if_exists(tmp_path):
