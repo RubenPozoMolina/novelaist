@@ -17,7 +17,7 @@ The very technology Elias designed to end suffering is weaponized.
 
 ## Scene 4: The Laboratory of Hope
 Deep within Josep Arispe’s clandestine facility in Monterrey, the atmosphere is a stark contrast to the chaos outside.
-- **The Work**: Dr. Maria Vasquez, aged and weary but driven by a singular purpose, works tirelessly alongside the omnipresent digital consciousness of Iris.
-- **The Goal**: Resurrection. They are not just repairing an android; they are attempting to re-knit the unique consciousness-bridge that Elias represented.
+- **The Work**: Dr. Maria Vasquez, alongside the loyal Magda, works tirelessly within the digital embrace of Iris. 
+- **The Goal**: Resurrection. They are not just repairing an android; they are attempting to re-knit the unique consciousness-bridge that Elias represented. Magda provides the human focus and logistical support that Maria, in her isolation, could not manage alone.
 - **Josep's Role**: Josep Arispe provides the sanctuary and the specialized bio-materials needed. He watches as Maria talks to the air, responding to Iris's lightning-fast calculations. 
 - **The Progress**: Elias’s body lies in a specialized vat, his nanobots slowly re-assembling under the guidance of his "mother" and "grandmother." While the world burns, the "impossible child" is being prepared for a second coming.

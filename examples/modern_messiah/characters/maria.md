@@ -33,4 +33,5 @@ Maria is the creator of Iris and the catalyst for the entire story. Her moral st
 
 - Robert: Ex-husband
 - Iris: Her AI creation and "impossible child"
+- Magda: Close companion during the resurrection in Monterrey; they share a bond of grief and hope.
 - Turing, Ada, Pascal: Her cats and companions
