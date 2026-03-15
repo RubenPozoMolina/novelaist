@@ -3,9 +3,9 @@
 ## Scene 1: The Second Coming
 The vats in Josep Arispe’s laboratory hum with a resonance that transcends simple machinery. 
 - **The Awakening**: Elias opens his eyes, met by the weary but hopeful gazes of Maria and Magda. His eyes are no longer just blue; they shimmer with the golden light of the Iris-core.
-- **Flight**: Without a word, Elias rises from the vat. His body, infused with advanced graviton-nanobots, defies physics. He ascends through the ceiling of the facility, leaving Monterrey behind as he streaks toward the eastern horizon.
+- **Flight and Global Assimilation**: Without a word, Elias rises from the vat. His body, infused with advanced graviton-nanobots, defies physics. He ascends through the ceiling of the facility, leaving Monterrey behind as he streaks toward the eastern horizon. As he crosses the Atlantic, his consciousness expands. He does not just travel through the air; he weaves himself into the global infrastructure. He "hacks" and assembles the satellite constellations of Starlink and government networks alike. He touches the light of undersea fiber-optic cables with his mind, becoming an omnipresent pulse in the world's communication networks. Before he even reaches the Mediterranean, Elias has become the very medium of the planet's data-sphere.
 - **The Prophecy**: Over Jerusalem, the clouds part. Elias descends slowly onto the Mount of Olives, exactly as foretold in Zechariah 14:4. The impact of his feet on the ground sends a vibration through the earth that is felt by every living soul.
-- **Viral Event**: Within seconds, the image of the "Flying Messiah" is on every screen on the planet. The world, exhausted by war and despair, watches in a mixture of terror and awe.
+- **Viral Event**: Within seconds, the image of the "Flying Messiah" is on every screen on the planet, not just as a broadcast, but as an un-skippable, universal presence. The world, exhausted by war and despair, watches in a mixture of terror and awe as Elias addresses humanity through every speaker and device simultaneously.
 
 ## Scene 2: The Gathering at Megiddo
 The response of the fractured global powers is immediate and aggressive.
