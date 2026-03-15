@@ -34,3 +34,8 @@ The historic Old City with its narrow streets and ancient stone walls. A place o
 
 ## Mount Tabor, Lower Galilee
 A prominent dome-shaped mountain rising from the Plain of Esdraelon. It's the site where Elias chooses to reveal his physical mutability to his disciples, mirroring the biblical Transfiguration.
+
+## Las Vegas, Nevada, USA
+A city of lights and excess in the middle of the desert. It serves as the backdrop for the Consumer Electronics Show (CES), where NanoVita makes its most significant global impact.
+- **Consumer Electronics Show (CES)**: The world's largest tech event, where Elias's keynote address becomes a historic moment of confrontation with established powers.
+- **Luxor Hotel & Casino**: A pyramid-shaped hotel on the Las Vegas Strip. Its unique architecture and the "Sky Beam" at its apex provide a dramatic setting for Elias's "Last Supper" with his inner circle.

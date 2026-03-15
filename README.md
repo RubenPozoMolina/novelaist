@@ -4,7 +4,7 @@ Novelaist is a tool that leverages local AI models to assist in the creative pro
 
 ## Features
 
-- **Local AI Integration**: Uses the Command-R model via Ollama for private, offline content generation.
+- **Local AI Integration**: Uses the Llama3 model via Ollama for private, offline content generation.
 - **Structured Content Processing**: Automatically parses characters, chapters, and environment details from Markdown files.
 - **Context-Aware Generation**: Maintains narrative consistency by feeding relevant metadata to the AI.
 - **Multiple Output Formats**: Supports exporting the generated novel to EPUB, PDF, and HTML.
@@ -73,7 +73,7 @@ ollama pull llama3
    *Note: Edit `config.json` to set your preferred model, Ollama host, and optional parameters like `cover_prompt` or `negative_prompt`.*
 
 4. **Verify Ollama**:
-   Ensure Ollama is running and the Command-R model is downloaded:
+   Ensure Ollama is running and the Llama3 model is downloaded:
    ```bash
    ollama list
    ```
