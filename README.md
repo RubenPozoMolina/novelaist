@@ -7,7 +7,7 @@ Novelaist is a tool that leverages local AI models to assist in the creative pro
 - **Local AI Integration**: Uses the Command-R model via Ollama for private, offline content generation.
 - **Structured Content Processing**: Automatically parses characters, chapters, and environment details from Markdown files.
 - **Context-Aware Generation**: Maintains narrative consistency by feeding relevant metadata to the AI.
-- **Multiple Output Formats**: Supports exporting the generated novel to EPUB, PDF, and MOBI (via EPUB conversion).
+- **Multiple Output Formats**: Supports exporting the generated novel to EPUB, PDF, and HTML.
 - **Extensible Architecture**: Easy to add new document types or change the underlying AI model.
 
 ## Project Structure
@@ -30,7 +30,6 @@ novelaist/
 - **Python**: ^3.12 (specifically tested on 3.12.3)
 - **Poetry**: For Python dependency management.
 - **Ollama**: Installed and running on your local machine for text generation.
-- **Calibre**: Specifically the `ebook-convert` CLI tool for MOBI output.
 - **Cuda (Optional)**: Recommended for faster cover generation with Stable Diffusion.
 
 ## Installation
@@ -43,12 +42,6 @@ Download and install from [ollama.com](https://ollama.com/). After installing, p
 ollama pull llama3
 ```
 *(Note: You can change the model in the project's `config.json`)*
-
-#### Calibre
-For MOBI support, install Calibre:
-- **Linux**: `sudo apt install calibre` (or your distribution's package manager)
-- **macOS**: `brew install --cask calibre`
-- **Windows**: Download from [calibre-ebook.com](https://calibre-ebook.com/download)
 
 ### 2. Project Setup
 
@@ -106,7 +99,7 @@ For MOBI support, install Calibre:
    poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah
    ```
 
-3. **Check the results**: The generated files (Markdown, EPUB, PDF, MOBI) will be available in the specified output directory.
+3. **Check the results**: The generated files (Markdown, EPUB, PDF, HTML) will be available in the specified output directory.
 
 ## Troubleshooting
 

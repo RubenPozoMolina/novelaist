@@ -8,11 +8,13 @@ from PIL import Image
 import xml2epub
 from .base_converter import BaseConverter
 
+logger = logging.getLogger("novelaist.converters.epub")
+
 class EpubConverter(BaseConverter):
     def convert(self, content, title="Generated Novel"):
         """Create an EPUB file from the content using xml2epub"""
         try:
-            print(f"Creating EPUB for '{title}' using xml2epub...")
+            logger.info(f"Creating EPUB for '{title}' using xml2epub...")
             
             # Use author configuration if available
             author = self.config.get('author', 'Unknown Author')
@@ -110,10 +112,10 @@ class EpubConverter(BaseConverter):
                 book.create_epub(str(self.output_dir), epub_name=filename_base)
             
             filename = self.output_dir / f"{filename_base}.epub"
-            print(f"EPUB file saved at: {filename}")
+            logger.info(f"EPUB file saved at: {filename}")
             return str(filename)
         except Exception as e:
-            print(f"Error creating EPUB: {str(e)}")
+            logger.error(f"Error creating EPUB: {str(e)}")
             import traceback
-            traceback.print_exc()
+            logger.debug(traceback.format_exc())
             return None
