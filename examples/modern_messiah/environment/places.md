@@ -32,10 +32,35 @@ Located on a modern, sustainable campus in Monterrey. It's more than just a comp
 ## Jerusalem, Israel
 The historic Old City with its narrow streets and ancient stone walls. A place of deep religious and historical significance where NanoVita expands its healthcare reach.
 
+## Mount of Olives, Jerusalem
+A prominent ridge overlooking Jerusalem's Old City.
+- **Physical Characteristics**: Slopes covered in ancient olive trees and vast cemeteries. 
+- **Symbolism**: The site of Elias's second coming, fulfilling the prophecy of Zechariah 14:4. It represents the bridge between the earthly and the divine/technological.
+
 ## Mount Tabor, Lower Galilee
 A prominent dome-shaped mountain rising from the Plain of Esdraelon. It's the site where Elias chooses to reveal his physical mutability to his disciples, mirroring the biblical Transfiguration.
+
+## Valley of Megiddo (Armageddon)
+A large, fertile plain in northern Israel.
+- **Physical Characteristics**: A strategic crossroads throughout history, now a theater for the final confrontation between global military forces and Elias's nanobot army.
+- **Symbolism**: The site of the "Great Judgment." It represents the end of the old world order and the purge of human ego.
+
+## Zion
+The spiritual and political center of the new era established by Elias.
+- **Physical Characteristics**: A city of crystalline structures and living architecture, where technology and nature are indistinguishable.
+- **Symbolism**: The starting point for humanity's journey beyond the stars; a state of perfect harmony between man and machine.
 
 ## Las Vegas, Nevada, USA
 A city of lights and excess in the middle of the desert. It serves as the backdrop for the Consumer Electronics Show (CES), where NanoVita makes its most significant global impact.
 - **Consumer Electronics Show (CES)**: The world's largest tech event, where Elias's keynote address becomes a historic moment of confrontation with established powers.
 - **Luxor Hotel & Casino**: A pyramid-shaped hotel on the Las Vegas Strip. Its unique architecture and the "Sky Beam" at its apex provide a dramatic setting for Elias's "Last Supper" with his inner circle.
+
+## Nevada High-Security Prison
+A cold, windowless facility in the middle of the desert.
+- **Physical Characteristics**: Sterile corridors, oppressive atmosphere, and heavy concrete walls designed to isolate and dehumanize.
+- **Symbolism**: Represents the fear and corruption of the old system trying to suppress the future.
+
+## Josep Arispe’s Clandestine Laboratory, Monterrey
+A secret facility hidden beneath one of Josep’s healthcare centers.
+- **Physical Characteristics**: Advanced bio-vats, holographic displays, and a stark contrast between high-tech equipment and a sanctuary-like atmosphere.
+- **Symbolism**: The womb of the new world; the place where the "impossible child" is reborn through the collaboration of human intuition (Maria) and machine precision (Iris).
