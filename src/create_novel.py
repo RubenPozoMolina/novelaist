@@ -369,6 +369,9 @@ class Novelaist:
             self._add_text_to_cover(generated_path, title, author, model, language)
             self.cover_path = generated_path
             
+            # Clear GPU resources after generation
+            self.cover_generator.clear_resources()
+            
         return self.cover_path
 
     def _add_text_to_cover(self, image_path, title, author, model, language='English'):
