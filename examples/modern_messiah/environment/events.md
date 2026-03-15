@@ -2,6 +2,7 @@
 
 ## Early AI Successes
 - **2026-01-20**: The first major film entirely created by AI is a success.
+- **2026-03-15**: A mysterious user on a deep-web forum publishes a repository called "Novelaist," containing a predictive simulation titled "Modern Messiah" that details the rise and fall of a future savior.
 - **2026-09-23**: The first quantum computers are sold commercially.
 
 ## The Turning Point
@@ -35,3 +36,6 @@
 - **2037-12-15**: NanoVita travel to Jerusalem to sign a healthcare contract with an Israeli firm.
 - **2037-12-16**: Elias predicts his death and resurrection to his partners in the Old City.
 - **2037-12-17**: The Transfiguration on Mount Tabor. Elias demonstrates his ability to change his physical appearance to his inner circle.
+- **2038-01-05**: The Resurrection of Lazarus. Elias returns to Monterrey and brings Lazarus back to life using advanced nanobots.
+- **2038-01-08**: The CES Keynote in Las Vegas. Elias gives a historic speech and confronts pharmaceutical executives.
+- **2038-01-09**: The Last Supper at Luxor Hotel. Elias predicts betrayal and his arrest by the US government.

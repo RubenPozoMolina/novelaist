@@ -1,6 +1,6 @@
 import torch
 import logging
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, FluxPipeline
 from pathlib import Path
 
 logger = logging.getLogger("novelaist.cover_generator")
@@ -19,10 +19,17 @@ class CoverGenerator:
             torch_dtype = torch.float16 if device == "cuda" else torch.float32
             
             try:
-                self.pipeline = StableDiffusionPipeline.from_pretrained(
-                    self.model_id, 
-                    torch_dtype=torch_dtype
-                )
+                if "flux" in self.model_id.lower():
+                    logger.info("Using FluxPipeline for FLUX model")
+                    self.pipeline = FluxPipeline.from_pretrained(
+                        self.model_id,
+                        torch_dtype=torch_dtype
+                    )
+                else:
+                    self.pipeline = StableDiffusionPipeline.from_pretrained(
+                        self.model_id, 
+                        torch_dtype=torch_dtype
+                    )
                 self.pipeline.to(device)
             except Exception as e:
                 logger.error(f"Error loading model: {str(e)}")
@@ -35,20 +42,31 @@ class CoverGenerator:
         # We explicitly ask for no text in the generated image
         prompt = f"Professional book cover art for '{title}'. {description}. High quality, detailed, professional digital art, cinematic lighting, masterpiece, no text, no letters"
         
-        if negative_prompt is None:
+        is_flux = "flux" in self.model_id.lower()
+        
+        if negative_prompt is None and not is_flux:
             negative_prompt = "text, letters, words, watermark, signature, blurry, low quality, distorted, watermark, deformed, ugly, bad anatomy, poorly drawn face"
         
-        logger.info(f"Generating cover background for '{title}' ({width}x{height})...")
+        logger.info(f"Generating cover background for '{title}' ({width}x{height}) using {self.model_id}...")
         try:
             # Use width and height for the generation
-            image = self.pipeline(
-                prompt=prompt, 
-                negative_prompt=negative_prompt,
-                width=width, 
-                height=height,
-                num_inference_steps=50,
-
-            ).images[0]
+            if is_flux:
+                # Flux usually doesn't take negative_prompt and uses guidance_scale differently
+                image = self.pipeline(
+                    prompt=prompt,
+                    width=width,
+                    height=height,
+                    num_inference_steps=50,
+                    guidance_scale=3.5,
+                ).images[0]
+            else:
+                image = self.pipeline(
+                    prompt=prompt, 
+                    negative_prompt=negative_prompt,
+                    width=width, 
+                    height=height,
+                    num_inference_steps=50,
+                ).images[0]
             
             output_file = Path(output_path)
             output_file.parent.mkdir(parents=True, exist_ok=True)

@@ -15,6 +15,11 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
+# Silence HTTP request logs from third-party libraries
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
 logger = logging.getLogger("novelaist")
 try:
     from src.cover_generator import CoverGenerator
