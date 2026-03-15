@@ -1,4 +1,4 @@
-# Chapter 11: The Return of the Messiah
+# Chapter 11: End of a dream
 
 ## Scene 1: Solitary Confinement and the Rigged Trial
 Elias is held in a cold, windowless high-security cell in Nevada. The American government, acting as a puppet for the pharmaceutical and private healthcare giants, accelerates a secret legal process. He is denied legal representation and contact with the outside world.
@@ -20,8 +20,3 @@ Outside the prison, thousands of followers gather in a silent, candlelit vigil t
 In the chaos following the execution, Iris contacts Dr. Maria Vasquez. Maria, despite her years of isolation, realizes she must act to save her "grandson."
 - **Josep Arispe**: Maria reaches out to Josep, a philanthropist and owner of a healthcare company for the homeless in Monterrey. Josep, a secret ally of NanoVita, uses his resources to intercept the body under the guise of "humanitarian medical research."
 - **Transport**: They move Elias's remains to a clandestine laboratory within one of Josep's facilities, evading government surveillance.
-
-## Scene 5: The Forty Days
-Forty days of painstaking work follow. Maria, guided by Iris's advanced calculations, uses a specialized batch of nanobots to repair the massive cellular damage caused by the high-voltage discharge.
-- **The Miracle**: On the fortieth day, as the sun rises over Monterrey, Elias's eyes open. He is pale but his presence is more intense than ever.
-- **Conclusion**: Elias looks at Maria and Josep. He acknowledges that while Jesus ascended to heaven, his own mission requires him to remain on Earth. "I have returned to stay," he declares, as the first phase of the global transformation truly begins.

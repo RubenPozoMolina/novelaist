@@ -153,20 +153,20 @@ To contribute or run tests:
 
 ## License
 
-Este proyecto utiliza dos tipos de licencias para distinguir entre el software y el contenido creativo:
+This project uses two types of licenses to distinguish between software and creative content:
 
 ### Software (Novelaist)
-El código fuente de **Novelaist** está bajo la licencia **MIT**. Esto permite el uso, copia, modificación y distribución gratuita del software, siempre que se incluya el aviso de copyright original. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+The source code for **Novelaist** is under the **MIT** license. This allows for free use, copying, modification, and distribution of the software, provided the original copyright notice is included. See the [LICENSE](LICENSE) file for more details.
 
-### Contenido (Modern Messiah)
-El contenido literario, personajes, tramas y universos que componen el ejemplo **Modern Messiah** (ubicado en `examples/modern_messiah/`) están protegidos bajo la licencia **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)**. 
+### Content (Modern Messiah)
+The literary content, characters, plots, and universes that make up the **Modern Messiah** example (located in `examples/modern_messiah/`) are protected under the **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)** license.
 
-Esto significa que eres libre de:
-- **Compartir**: Copiar y redistribuir el material en cualquier medio o formato.
-- **Adaptar**: Mezclar, transformar y construir sobre el material para cualquier propósito, incluso comercial.
+This means you are free to:
+- **Share**: Copy and redistribute the material in any medium or format.
+- **Adapt**: Remix, transform, and build upon the material for any purpose, even commercially.
 
-Bajo los siguientes términos:
-- **Atribución**: Debes dar crédito de manera adecuada, proporcionar un enlace a la licencia e indicar si se han realizado cambios.
-- **Compartir Igual**: Si remezclas, transformas o creas a partir del material, debes distribuir tus contribuciones bajo la misma licencia que el original.
+Under the following terms:
+- **Attribution**: You must give appropriate credit, provide a link to the license, and indicate if changes were made.
+- **ShareAlike**: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-Consulta el archivo [LICENSE_MODERN_MESSIAH.md](LICENSE_MODERN_MESSIAH.md) para el resumen de la licencia o visita [Creative Commons](https://creativecommons.org/licenses/by-sa/4.0/) para el texto legal completo.
+See the [LICENSE_MODERN_MESSIAH.md](LICENSE_MODERN_MESSIAH.md) file for a summary of the license or visit [Creative Commons](https://creativecommons.org/licenses/by-sa/4.0/) for the full legal text.
