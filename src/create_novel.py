@@ -65,7 +65,8 @@ class Novelaist:
         self.documents = {
             "characters": [],
             "chapters": [],
-            "environment": []
+            "environment": [],
+            "prologue": []
         }
         self._load_documents()
         
@@ -115,6 +116,11 @@ class Novelaist:
         if environment_dir.exists():
             for f in environment_dir.glob("*.md"):
                 self.documents["environment"].append(f)
+        
+        # Load prologue if exists
+        prologue_path = self.examples_dir / "prologue.md"
+        if prologue_path.exists():
+            self.documents["prologue"].append(prologue_path)
     
     def get_document_structure(self):
         """Get the structure of loaded documents"""
@@ -160,7 +166,7 @@ class Novelaist:
         sorted_chapters = sorted(self.documents["chapters"])
         
         full_novel_content = []
-        
+
         # Generate content using the configured model
         model_name = self.config.get('model', 'command-r')
         host = self.config.get('host')
@@ -171,6 +177,38 @@ class Novelaist:
         else:
             logger.info(f"Connecting to {model_name}...")
             client = ollama
+            
+        # Include prologue if exists
+        if self.documents["prologue"]:
+            prologue_file = self.documents["prologue"][0]
+            logger.info(f"Including prologue from {prologue_file.name}...")
+            with open(prologue_file, 'r') as f:
+                prologue_content = f.read().strip()
+                
+            # If the language is not English, translate the prologue
+            if language != 'English':
+                logger.info(f"  - Requesting prologue translation into {language}...")
+                prologue_prompt = f"""Translate the following prologue into {language}. 
+                DO NOT transform or interpret the content. 
+                Keep the same meaning and structure. 
+                Return ONLY the translated prologue text, nothing else.
+                
+                Prologue to translate:
+                {prologue_content}"""
+                
+                try:
+                    response = client.chat(
+                        model=model_name,
+                        messages=[{'role': 'user', 'content': prologue_prompt}]
+                    )
+                    if isinstance(response, dict):
+                        prologue_content = response['message']['content'].strip()
+                    else:
+                        prologue_content = response.message.content.strip()
+                except Exception as e:
+                    logger.error(f"  - Error translating prologue: {str(e)}. Using original content.")
+            
+            full_novel_content.append(prologue_content)
             
         translations = {
             'English': {'by': 'By', 'generated_with': 'Generated with', 'toc': 'Table of Contents'},
