@@ -31,6 +31,11 @@ try:
 except ImportError:
     from converters import HtmlConverter, EpubConverter, PdfConverter
 
+try:
+    from src.editor import Editor
+except ImportError:
+    from editor import Editor
+
 from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -74,6 +79,9 @@ class Novelaist:
         cover_model = self.config.get('cover_model', "Lykon/DreamShaper")
         self.cover_generator = CoverGenerator(model_id=cover_model)
         self.cover_path = self._discover_cover()
+
+        # Editor agent (loads role from agents/editor.md)
+        self.editor = Editor()
     
     def _discover_cover(self):
         """Try to find an existing cover in the output directory."""
@@ -337,16 +345,30 @@ class Novelaist:
                 chapter_sections_content.append(uniform_section_content)
             
             chapter_content = "\n\n".join(chapter_sections_content)
-                
-            # Save individual chapter
+
+            # Let the Editor agent review and improve the chapter
+            try:
+                reviewed_content = self.editor.review_chapter(
+                    chapter_markdown=chapter_content,
+                    language=language,
+                    context=context,
+                    outline=chapter_outline,
+                    model_name=model_name,
+                    client=client,
+                )
+            except Exception as e:
+                logger.error(f"  - Error during editor review: {e}. Using original chapter content.")
+                reviewed_content = chapter_content
+
+            # Save individual chapter (reviewed)
             with open(output_chapter_file, 'w') as f:
-                f.write(chapter_content)
+                f.write(reviewed_content)
                 
             end_chapter_time = datetime.datetime.now()
             chapter_duration = end_chapter_time - start_chapter_time
             logger.info(f"  - Chapter generated in {chapter_duration}")
 
-            full_novel_content.append(chapter_content)
+            full_novel_content.append(reviewed_content)
             
         end_total_time = datetime.datetime.now()
         total_duration = end_total_time - start_total_time
