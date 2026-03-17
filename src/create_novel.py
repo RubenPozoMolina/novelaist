@@ -607,6 +607,11 @@ class Novelaist:
                 content += f"- **{project_name} v{project_version}**\n"
                 content += f"- **{trans['project_url']}:** {project_url}\n"
                 content += f"- **{trans['created_at']}:** {timestamp}\n"
+                # Add config entries except 'host'
+                for key, value in self.config.items():
+                    if key == 'host':
+                        continue
+                    content += f"- **{key}:** {value}\n"
                 
             with open(output_file, 'w') as f:
                 f.write(content)

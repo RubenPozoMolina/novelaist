@@ -19,11 +19,11 @@
 
 ## History
 
-Magda was a successful consultant at a top-tier firm until she was unfairly dismissed during a "restructuring" that targeted employees with family commitments. As a single mother of two small children, she faced a desperate situation in a world increasingly dominated by cold, algorithmic corporate decisions.
+Magda was a successful consultant at a top-tier firm until she was unfairly dismissed during a "restructuring" that targeted employees with family commitments. As a single mother of two little children, she faced a desperate situation in a world increasingly dominated by cold, algorithmic corporate decisions.
 
-Her life changed when she met Elias Revuelta during the early days of NanoVita. Elias, sensing her integrity and her analytical skills that were being wasted, hired her not just as an employee, but as a key strategist for his mission. Magda became a fundamental part of his inner circle, bridging the gap between Elias's advanced technological vision and the practical needs of the people they were trying to help.
+Her life changed when she met Elias Revuelta during the early days of NanoVita. Elias, sensing her integrity and her analytical skills that were being wasted, hired her not just as an employee but as a key strategist for his mission. Magda became a fundamental part of his inner circle, bridging the gap between Elias's advanced technological vision and the practical needs of the people they were trying to help.
 
-She accompanied Elias throughout his ministry, often being the one who organized the logistics of his "miracles" and managed the growing organization of disciples. After Elias's execution, Magda did not flee. She joined Dr. Maria Vasquez and Josep Arispe in Monterrey, using her organizational skills to keep the clandestine laboratory running and providing emotional support to Maria during the long nights of the resurrection process.
+She went with Elias throughout his ministry, often being the one who organized the logistics of his "miracles" and managed the growing organization of disciples. After Elias's execution, Magda did not flee. She joined Dr. Maria Vasquez and Josep Arispe in Monterrey, using her organizational skills to keep the clandestine laboratory running and providing emotional support to Maria during the long nights of the resurrection process.
 
 ## Importance in the novel
 
