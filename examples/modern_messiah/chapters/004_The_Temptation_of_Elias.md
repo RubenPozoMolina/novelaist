@@ -1,6 +1,6 @@
 # Chapter 4: The Temptation of Elias
 
-In this final chapter, Elias leaves NanoTechIA and retreats to the desert of Rub al-Khali to seek self-discovery and decide his future path.
+Elias leaves NanoTechIA, travels by plane from Monterrey to Saudi Arabia, and retreats to the desert of Rub al-Khali to seek self-discovery and decide his future path.
 
 ## Scene 1: Withdrawal to Rub al-Khali
 Elias chooses to isolate himself in the vast desert for 40 days, drawing a parallel to Jesus's 40 days in the wilderness. As an android, his abstinence isn't from food, but a sensory and data isolation to process everything he has learned about human nature.

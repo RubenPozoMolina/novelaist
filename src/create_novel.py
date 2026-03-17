@@ -36,6 +36,11 @@ try:
 except ImportError:
     from editor import Editor
 
+try:
+    from src.translator import Translator
+except ImportError:
+    from translator import Translator
+
 from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -82,6 +87,9 @@ class Novelaist:
 
         # Editor agent (loads role from agents/editor.md)
         self.editor = Editor()
+        
+        # Translator agent (loads role from agents/translator.md)
+        self.translator = Translator()
     
     def _discover_cover(self):
         """Try to find an existing cover in the output directory."""
@@ -252,33 +260,9 @@ class Novelaist:
             # If the first line of outline is # Chapter X: Title, use that
             first_line = chapter_outline.strip().split('\n')[0]
             if first_line.startswith('# '):
-                raw_title = first_line.replace('# ', '').strip()
-                if language != 'English':
-                    # Ask AI to translate the chapter title if it's not in English (likely extracted from MD)
-                    logger.info(f"  - Requesting chapter title translation for: {raw_title}")
-                    title_prompt = f"Translate this chapter title into {language}: '{raw_title}'. Return ONLY the translated title text, nothing else."
-                    title_response = client.chat(
-                        model=model_name,
-                        messages=[{'role': 'user', 'content': title_prompt}]
-                    )
-                    if isinstance(title_response, dict):
-                        chapter_header_title = title_response['message']['content'].strip().strip('"')
-                    else:
-                        chapter_header_title = title_response.message.content.strip().strip('"')
-                else:
-                    chapter_header_title = raw_title
+                chapter_header_title = first_line.replace('# ', '').strip()
             else:
-                # Ask AI to generate/translate the chapter title in the target language
-                logger.info(f"  - Requesting chapter title translation for: {chapter_name}")
-                title_prompt = f"Translate or generate a creative chapter title in {language} for a chapter with the filename '{chapter_name}'. Return ONLY the title text, nothing else."
-                title_response = client.chat(
-                    model=model_name,
-                    messages=[{'role': 'user', 'content': title_prompt}]
-                )
-                if isinstance(title_response, dict):
-                    chapter_header_title = title_response['message']['content'].strip().strip('"')
-                else:
-                    chapter_header_title = title_response.message.content.strip().strip('"')
+                chapter_header_title = chapter_name
 
             chapter_sections_content = []
             
@@ -346,10 +330,25 @@ class Novelaist:
             
             chapter_content = "\n\n".join(chapter_sections_content)
 
-            # Let the Editor agent review and improve the chapter
+            # Let the Translator translate if language is not English
+            if language != 'English':
+                try:
+                    translated_content = self.translator.translate_chapter(
+                        chapter_markdown=chapter_content,
+                        target_language=language,
+                        model_name=model_name,
+                        client=client
+                    )
+                except Exception as e:
+                    logger.error(f"  - Error during translation: {e}. Using original content.")
+                    translated_content = chapter_content
+            else:
+                translated_content = chapter_content
+
+            # Let the Editor agent review and improve the chapter (in the target language)
             try:
                 reviewed_content = self.editor.review_chapter(
-                    chapter_markdown=chapter_content,
+                    chapter_markdown=translated_content,
                     language=language,
                     context=context,
                     outline=chapter_outline,
@@ -357,18 +356,18 @@ class Novelaist:
                     client=client,
                 )
             except Exception as e:
-                logger.error(f"  - Error during editor review: {e}. Using original chapter content.")
-                reviewed_content = chapter_content
+                logger.error(f"  - Error during editor review: {e}. Using translated content.")
+                reviewed_content = translated_content
 
-            # Save individual chapter (reviewed)
+            # Save individual chapter (translated)
             with open(output_chapter_file, 'w') as f:
-                f.write(reviewed_content)
+                f.write(translated_content)
                 
             end_chapter_time = datetime.datetime.now()
             chapter_duration = end_chapter_time - start_chapter_time
             logger.info(f"  - Chapter generated in {chapter_duration}")
 
-            full_novel_content.append(reviewed_content)
+            full_novel_content.append(translated_content)
             
         end_total_time = datetime.datetime.now()
         total_duration = end_total_time - start_total_time
@@ -607,6 +606,11 @@ class Novelaist:
                 content += f"- **{project_name} v{project_version}**\n"
                 content += f"- **{trans['project_url']}:** {project_url}\n"
                 content += f"- **{trans['created_at']}:** {timestamp}\n"
+                # Add config entries except 'host'
+                for key, value in self.config.items():
+                    if key == 'host':
+                        continue
+                    content += f"- **{key}:** {value}\n"
                 
             with open(output_file, 'w') as f:
                 f.write(content)
