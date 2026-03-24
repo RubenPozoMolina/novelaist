@@ -41,6 +41,11 @@ try:
 except ImportError:
     from translator import Translator
 
+try:
+    from src.grammar_corrector import GrammarCorrector
+except ImportError:
+    from grammar_corrector import GrammarCorrector
+
 from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -90,6 +95,9 @@ class Novelaist:
         
         # Translator agent (loads role from agents/translator.md)
         self.translator = Translator()
+        
+        # GrammarCorrector agent (loads role from agents/grammar_corrector.md)
+        self.grammar_corrector = GrammarCorrector()
     
     def _discover_cover(self):
         """Try to find an existing cover in the output directory."""
@@ -201,41 +209,30 @@ class Novelaist:
             with open(prologue_file, 'r') as f:
                 prologue_content = f.read().strip()
                 
-            # If the language is not English, translate the prologue
+            # If the language is not English, translate the prologue using the Translator agent
             if language != 'English':
                 logger.info(f"  - Requesting prologue translation into {language}...")
-                prologue_prompt = f"""Translate the following prologue into {language}. 
-                DO NOT transform or interpret the content. 
-                Keep the same meaning and structure. 
-                Return ONLY the translated prologue text, nothing else.
-                
-                Prologue to translate:
-                {prologue_content}"""
-                
                 try:
-                    response = client.chat(
-                        model=model_name,
-                        messages=[{'role': 'user', 'content': prologue_prompt}]
+                    prologue_content = self.translator.translate_chapter(
+                        chapter_markdown=prologue_content,
+                        target_language=language,
+                        model_name=model_name,
+                        client=client
                     )
-                    if isinstance(response, dict):
-                        prologue_content = response['message']['content'].strip()
-                    else:
-                        prologue_content = response.message.content.strip()
                 except Exception as e:
                     logger.error(f"  - Error translating prologue: {str(e)}. Using original content.")
             
             full_novel_content.append(prologue_content)
             
         translations = {
-            'English': {'by': 'By', 'generated_with': 'Generated with', 'toc': 'Table of Contents'},
-            'Spanish': {'by': 'Por', 'generated_with': 'Generado con', 'toc': 'Índice'},
-            'French': {'by': 'Par', 'generated_with': 'Généré con', 'toc': 'Table des matières'},
-            'German': {'by': 'Von', 'generated_with': 'Generiert mit', 'toc': 'Inhaltsverzeichnis'},
-            'Italian': {'by': 'Di', 'generated_with': 'Generato con', 'toc': 'Indice'},
-            'Portuguese': {'by': 'Por', 'generated_with': 'Gerado com', 'toc': 'Índice'}
+            'English': {'by': 'By', 'generated_with': 'Generated with', 'toc': 'Table of Contents', 'chapter': 'Chapter'},
+            'Spanish': {'by': 'Por', 'generated_with': 'Generado con', 'toc': 'Índice', 'chapter': 'Capítulo'},
+            'French': {'by': 'Par', 'generated_with': 'Généré con', 'toc': 'Table des matières', 'chapter': 'Chapitre'},
+            'German': {'by': 'Von', 'generated_with': 'Generiert mit', 'toc': 'Inhaltsverzeichnis', 'chapter': 'Kapitel'},
+            'Italian': {'by': 'Di', 'generated_with': 'Generato con', 'toc': 'Indice', 'chapter': 'Capitolo'},
+            'Portuguese': {'by': 'Por', 'generated_with': 'Gerado com', 'toc': 'Índice', 'chapter': 'Capítulo'}
         }
         trans = translations.get(language, translations['English'])
-        chapter_prefix = trans.get('chapter', 'Chapter')
 
         for chapter_index, chapter_file in enumerate(sorted_chapters, 1):
             chapter_name = chapter_file.stem
@@ -330,19 +327,15 @@ class Novelaist:
             
             chapter_content = "\n\n".join(chapter_sections_content)
 
-            # Let the Translator translate if language is not English
-            if language != 'English':
-                try:
-                    translated_content = self.translator.translate_chapter(
-                        chapter_markdown=chapter_content,
-                        target_language=language,
-                        model_name=model_name,
-                        client=client
-                    )
-                except Exception as e:
-                    logger.error(f"  - Error during translation: {e}. Using original content.")
-                    translated_content = chapter_content
-            else:
+            try:
+                translated_content = self.translator.translate_chapter(
+                    chapter_markdown=chapter_content,
+                    target_language=language,
+                    model_name=model_name,
+                    client=client
+                )
+            except Exception as e:
+                logger.error(f"  - Error during translation: {e}. Using original content.")
                 translated_content = chapter_content
 
             # Let the Editor agent review and improve the chapter (in the target language)
@@ -359,15 +352,28 @@ class Novelaist:
                 logger.error(f"  - Error during editor review: {e}. Using translated content.")
                 reviewed_content = translated_content
 
-            # Save individual chapter (translated)
+            # Let the GrammarCorrector agent review for spelling and grammar
+            try:
+                corrected_content = self.grammar_corrector.review_chapter(
+                    chapter_markdown=reviewed_content,
+                    language=language,
+                    context=context,
+                    model_name=model_name,
+                    client=client,
+                )
+            except Exception as e:
+                logger.error(f"  - Error during grammar correction: {e}. Using reviewed content.")
+                corrected_content = reviewed_content
+
+            # Save individual chapter (corrected)
             with open(output_chapter_file, 'w') as f:
-                f.write(translated_content)
+                f.write(corrected_content)
                 
             end_chapter_time = datetime.datetime.now()
             chapter_duration = end_chapter_time - start_chapter_time
             logger.info(f"  - Chapter generated in {chapter_duration}")
 
-            full_novel_content.append(translated_content)
+            full_novel_content.append(corrected_content)
             
         end_total_time = datetime.datetime.now()
         total_duration = end_total_time - start_total_time

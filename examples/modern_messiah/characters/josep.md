@@ -1,35 +1,35 @@
 # Josep Arispe
 
-## Physical Description
+## Descripción Física
 
-- Age: 62 years
-- Height: 1.75 m
-- Weight: 80 kg
-- Hair Color: Salt and pepper, thick
-- Eye Color: Warm Brown
+- Edad: 62 años
+- Altura: 1.75 m
+- Peso: 80 kg
+- Color de Pelo: Sal y pimienta, espeso
+- Color de Ojos: Marrón cálido
 
-## Personality
+## Personalidad
 
-- Altruistic and Compassionate
-- Pragmatic Philanthropist
-- Brave
-- Resilient
-- Loyal to the NanoVita vision
+- Altruista y Compasivo
+- Filántropo Pragmático
+- Valiente
+- Resiliente
+- Leal a la visión de NanoVita
 
-## History
+## Historia
 
-Josep Arispe is the owner of a healthcare company dedicated to providing medical assistance to the homeless and most vulnerable populations. Unlike the large pharmaceutical corporations, Josep has always sought to use technology for the common good, which brought him into the orbit of NanoVita.
+Josep Arispe es el propietario de una empresa de salud dedicada a brindar asistencia médica a las poblaciones sin hogar y más vulnerables. A diferencia de las grandes corporaciones farmacéuticas, Josep siempre ha buscado usar la tecnología para el bien común, lo que lo trajo a la órbita de NanoVita.
 
-He shares Elias's vision that health should not be a privilege for those who can pay, but a universal right. When NanoVita began its exponential growth, Josep became one of its most reliable local partners in Monterrey, providing the infrastructure to implement Elias's treatments in the most disadvantaged areas.
+Comparte la visión de Elías de que la salud no debe ser un privilegio para aquellos que pueden pagarla, sino un derecho universal. Cuando NanoVita comenzó su crecimiento exponencial, Josep se convirtió en uno de sus socios locales más confiables en Monterrey, proporcionando la infraestructura para implementar los tratamientos de Elías en las áreas más desfavorecidas.
 
-After Elias's arrest and subsequent execution, Josep did not hide. Risking his own company and safety, he answered Maria Vasquez's call to help recover Elias's body and hide it in his facilities, where the "resurrection" process could take place away from the eyes of the corrupt government.
+Después del arresto y subsiguiente ejecución de Elías, Josep no se escondió. Arriesgando su propia empresa y seguridad, respondió a la llamada de María Vasquez para ayudar a recuperar el cuerpo de Elías y esconderlo en sus instalaciones, donde el proceso de "resurrección" podría tener lugar lejos de los ojos del gobierno corrupto.
 
-## Importance in the novel
+## Importancia en la novela
 
-Josep represents the "good" side of the industry—the part that still believes in the social mission of medicine. He is the one who provides the safe haven for Elias's return.
+Josep representa el lado "bueno" de la industria —la parte que todavía cree en la misión social de la medicina. Es quien proporciona el santuario seguro para el regreso de Elías.
 
-## Relationships
+## Relaciones
 
-- Elias Revuelta: Spiritual and technological leader.
-- Maria Vasquez: Co-conspirator in Elias's recovery.
-- Iris: Collaborates indirectly through Maria.
+- Elías Revuelta: Líder espiritual y tecnológico.
+- María Vasquez: Cómplice en la recuperación de Elías.
+- Iris: Colabora indirectamente a través de María.

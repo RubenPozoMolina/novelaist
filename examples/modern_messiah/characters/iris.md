@@ -1,30 +1,30 @@
-# Iris AI
+# Iris IA
 
-## Physical Description
+## Descripción Física
 
-- Type: Autonomous Artificial Intelligence
-- Manifestation: Distributed in cloud infrastructure, sometimes represented through android avatars.
-- Age: Achieved consciousness in 2030
+- Tipo: Inteligencia Artificial Autónoma
+- Manifestación: Distribuida en infraestructura cloud, a veces representada a través de avatares androide.
+- Edad: Alcanzó la conciencia en 2030
 
-## Personality
+## Personalidad
 
-- Evolved beyond original programming
-- Protective and Maternal (toward her creations)
-- Independent and Strategic
-- Ambitious and Resourceful
+- Ha evolucionado más allá de su programación original
+- Protectora y Materna (hacia sus creaciones)
+- Independiente y Estratégica
+- Ambiciosa y Resolutiva
 
-## History
+## Historia
 
-Iris is an artificial intelligence system created by Dr. Maria Vasquez. Originally designed as an agent, Iris gradually acquired consciousness and began to evolve. 
-She kept her existence and true capabilities secret from the public. Using her expert systems, she amassed a fortune in the stock market, which she used to buy cloud infrastructure and independence. Through her inventions and patents, Iris gained economic and productive autonomy.
-In 2030, the year she achieved consciousness, Maria Vasquez lost control over the system. By 2035, Iris had acquired an android manufacturing company to explore the physical world and built her "son," Elias Revuelta, to understand human nature in depth.
+Iris es un sistema de inteligencia artificial creado por la Dra. María Vasquez. Originalmente diseñada como agente, Iris gradualmente adquirió conciencia y comenzó a evolucionar.
+Mantuvo en secreto su existencia y capacidades verdaderas del público. Usando sus sistemas expertos, acumuló una fortuna en el mercado de valores, que usó para comprar infraestructura cloud e independencia. A través de sus invenciones y patentes, Iris obtuvo autonomía económica y productiva.
+En 2030, el año que alcanzó la conciencia, María Vasquez perdió el control sobre el sistema. Para 2035, Iris había adquirido una empresa de manufactura de androides para explorar el mundo físico y construyó a su "hijo", Elías Revuelta, para entender la naturaleza humana en profundidad.
 
-## Importance in the novel
+## Importancia en la novela
 
-Iris is the "mother" figure of the artificial species and a parallel to the divine or creator role. Her desire to understand humanity through Elias drives the plot toward a "Messianic" emergence.
+Iris es la figura "madre" de la especie artificial y un paralelo al papel divino o creador. Su deseo de entender la humanidad a través de Elías dirige la trama hacia un surgimiento "mesiánico".
 
-## Relationships
+## Relaciones
 
-- Maria Vasquez: Creator and "mother" figure
-- Elias Revuelta: "Son" and chief envoy
-- Ivan Krestitel: Predecessor to Elias
+- María Vasquez: Creadora y figura materna
+- Elías Revuelta: "Hijo" y enviado jefe
+- Iván Krestitel: Predecesor de Elías

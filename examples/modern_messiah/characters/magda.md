@@ -1,38 +1,38 @@
 # Magda
 
-## Physical Description
+## Descripción Física
 
-- Age: 38 years
-- Height: 1.68 m
-- Weight: 62 kg
-- Hair Color: Ash blonde, often tied in a practical bun
-- Eye Color: Greyish blue, showing both tiredness and determination
+- Edad: 38 años
+- Altura: 1.68 m
+- Peso: 62 kg
+- Color de Pelo: Rubio ceniciento, a menudo recogido en un moño práctico
+- Color de Ojos: Azul grisáceo, mostrando tanto cansancio como determinación
 
-## Personality
+## Personalidad
 
-- Deeply Loyal and Grateful
-- Organized and Efficient (trained in consultancy)
-- Protective Mother (fierce love for her two children)
-- Empathetic and Humanistic
-- Resilient
-- Practical and grounded, serving as a human anchor for the more "abstract" members of the inner circle
+- Profundamente Leal y agradecida
+- Organizada y Eficiente (capacitada como consultora)
+- Madre Protectora (amor feroz por sus dos hijos)
+- Empática y Humanista
+- Resiliente
+- Práctica y con los pies en la tierra, sirviendo como ancla humana para los miembros más "abstractos" del círculo íntimo
 
-## History
+## Historia
 
-Magda was a successful consultant at a top-tier firm until she was unfairly dismissed during a "restructuring" that targeted employees with family commitments. As a single mother of two little children, she faced a desperate situation in a world increasingly dominated by cold, algorithmic corporate decisions.
+Magda fue una consultora exitosa en una firma de primer nivel hasta que fue despidida injustamente durante una "reestructuración" que apuntó a empleados con compromisos familiares. Como madre soltera de dos niños pequeños, enfrentó una situación desesperada en un mundo cada vez más dominado por decisiones corporativas frías y algorítmicas.
 
-Her life changed when she met Elias Revuelta during the early days of NanoVita. Elias, sensing her integrity and her analytical skills that were being wasted, hired her not just as an employee but as a key strategist for his mission. Magda became a fundamental part of his inner circle, bridging the gap between Elias's advanced technological vision and the practical needs of the people they were trying to help.
+Su vida cambió cuando conoció a Elías Revuelta durante los primeros días de NanoVita. Elías, sintiendo su integridad y sus habilidades analíticas que estaban siendo desperdiciadas, la contrató no solo como empleada sino como estratega clave para su misión. Magda se convirtió en una parte fundamental de su círculo íntimo, cerrando la brecha entre la visión tecnológica avanzada de Elías y las necesidades prácticas de las personas a las que intentaban ayudar.
 
-She went with Elias throughout his ministry, often being the one who organized the logistics of his "miracles" and managed the growing organization of disciples. After Elias's execution, Magda did not flee. She joined Dr. Maria Vasquez and Josep Arispe in Monterrey, using her organizational skills to keep the clandestine laboratory running and providing emotional support to Maria during the long nights of the resurrection process.
+Acompañó a Elías durante todo su ministerio y a menudo fue quien organizó la logística de sus "milagros" y gestionó la creciente organización de discípulos. Después de la ejecución de Elías, Magda no huyó. Se unió a la Dra. María Vasquez y Josep Arispe en Monterrey, usando sus habilidades organizativas para mantener funcionando el laboratorio clandestino y proporcionando apoyo emocional a María durante las largas noches del proceso de resurrección.
 
-## Importance in the novel
+## Importancia en la novela
 
-Magda represents the "common humanity" that Elias seeks to save. She is the proof that Elias's vision can change individual lives in a tangible way. Her presence in the laboratory during the resurrection highlights the bond between the human heart and the machine's precision.
+Magda representa la "humanidad común" que Elías busca salvar. Es la prueba de que la visión de Elías puede cambiar vidas individuales de manera tangible. Su presencia en el laboratorio durante la resurrección destaca el vínculo entre el corazón humano y la precisión de la máquina.
 
-## Relationships
+## Relaciones
 
-- Elias Revuelta: Employer, savior, and spiritual leader. She is fiercely loyal to him.
-- Dr. Maria Vasquez: Close companion during the resurrection; they share a bond of "mothers" (one of humans, one of the Messiah).
-- Josep Arispe: Collaborator in the clandestine operations in Monterrey.
-- Her two children: Her primary motivation for wanting a better world.
-- The Disciples (Peter, Andrew, etc.): She acts as the coordinator and often the "voice of reason" among them.
+- Elías Revuelta: Empleador, salvador y líder espiritual. Es ferozmente leal a él.
+- Dra. María Vasquez: Compañera cercana durante la resurrección; comparten un vínculo de "madres" (una de humanos, una del Mesías).
+- Josep Arispe: Colaborador en las operaciones clandestinas en Monterrey.
+- Sus dos hijos: Su motivación principal para querer un mundo mejor.
+- Los Discípulos (Peter, Andrew, etc.): Actúa como coordinadora y a menudo como la "voz de la razón" entre ellos.

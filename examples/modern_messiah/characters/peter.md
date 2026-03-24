@@ -1,19 +1,20 @@
 # Peter
-## Physical Description
-- Age: 34 years
-- Height: 1.82 m
-- Weight: 85 kg
-- Appearance: Robust build, dark hair, eyes with a restless but sincere gaze.
 
-## Personality
-- Natural leader, impulsive but deeply loyal.
-- He tends to act before thinking, but his heart is in the right place.
-- He has a strong sense of justice and protective instinct towards his brother Andrew.
+## Descripción Física
+- Edad: 34 años
+- Altura: 1.82 m
+- Peso: 85 kg
+- Apariencia: Complexión robusta, cabello oscuro, ojos con una mirada inquieta pero sincera.
 
-## History
-Peter was a frustrated software engineer working for large corporations before joining the business incubator in Monterrey. He felt that technology was being used to enslave people rather than free them. When he met Elias, he saw a vision that resonated with his desire for a meaningful change. He is the first to follow Elias's lead, despite his initial doubts.
+## Personalidad
+- Líder natural, impulsivo pero profundamente leal.
+- Tiende a actuar antes de pensar, pero su corazón está en el lugar correcto.
+- Tiene un fuerte sentido de justicia e instinto protector hacia su hermano Andrew.
 
-## Relationships
-- Andrew: Younger brother.
-- Elias: Leader and mentor.
-- James and John: Close partners and friends.
+## Historia
+Peter fue un ingeniero de software frustrado que trabajaba para grandes corporaciones antes de unirse a la incubadora de empresas en Monterrey. Sentía que la tecnología se usaba para esclavizar a las personas en lugar de liberarlas. Cuando conoció a Elías, vio una visión que resonó con su deseo de un cambio significativo. Es el primero en seguir el liderazgo de Elías, a pesar de sus dudas iniciales.
+
+## Relaciones
+- Andrew: Hermano menor.
+- Elías: Líder y mentor.
+- Santiago y Juan: Socios y amigos cercanos.

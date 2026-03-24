@@ -1,21 +1,21 @@
 # Marta
 
-## Physical Description
-- Age: 33 years
-- Height: 1.68 m
-- Weight: 62 kg
-- Appearance: Practical and professional look, dark hair tied back, eyes that show both concern and efficiency.
+## Descripción Física
+- Edad: 33 años
+- Altura: 1.68 m
+- Peso: 62 kg
+- Apariencia: Atractivo práctico y profesional, cabello oscuro recogido, ojos que muestran tanto preocupación como eficiencia.
 
-## Personality
-- Organized, pragmatic, and highly responsible.
-- She is a natural coordinator and the glue that keeps the NanoVita team together in Elias's absence.
-- Deeply protective of her siblings, Lazarus and Mary Jane.
+## Personalidad
+- Organizada, pragmática y altamente responsable.
+- Es una coordinadora natural y el pegamento que mantiene unido al equipo de NanoVita en ausencia de Elías.
+- Profundamente protectora de sus hermanos, Lazarus y Mary Jane.
 
-## History
-Marta is the operations coordinator at NanoVita in Monterrey. She ensures that the visionary projects of Elias are translated into practical medical solutions. When her brother Lazarus fell ill, she was the one who desperately reached out to Elias in Jerusalem, hoping for a miracle that the local medical teams couldn't provide.
+## Historia
+Marta es la coordinadora de operaciones en NanoVita en Monterrey. Asegura que los proyectos visionarios de Elías se traduzcan en soluciones médicas prácticas. Cuando su hermano Lazarus enfermó, fue ella quien desesperadamente se contactó con Elías en Jerusalén, esperando un milagro que los equipos médicos locales no podían proporcionar.
 
-## Relationships
-- Lazarus: Younger brother.
-- Mary Jane: Younger sister.
-- Elias: Leader and employer.
-- NanoVita team: Colleagues who respect her leadership.
+## Relaciones
+- Lazarus: Hermano menor.
+- Mary Jane: Hermana menor.
+- Elías: Líder y empleador.
+- Equipo de NanoVita: Colegas que respetan su liderazgo.

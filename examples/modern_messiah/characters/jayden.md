@@ -1,21 +1,22 @@
 # Jayden
-## Physical Description
-- Age: 38 years
-- Height: 1.78 m
-- Weight: 76 kg
-- Appearance: Sharp features, thin-framed glasses, always in a perfectly tailored business casual suit.
-- Gaze: Calculated, observant, rarely showing emotion.
 
-## Personality
-- Pragmatic and highly organized.
-- Excellent with numbers and logistics.
-- Deeply connected to the American corporate and government sectors.
-- Secretly motivated by a mix of fear of Elias's power and a sense of duty to his country.
+## Descripción Física
+- Edad: 38 años
+- Altura: 1.78 m
+- Peso: 76 kg
+- Apariencia: Rasgos afilados, gafas de montura delgada, siempre con un traje casual de negocios perfectamente ajustado.
+- Mirada: Calculadora, observadora, raramente mostrando emoción.
 
-## History
-Jayden was recruited by Peter during the early stages of NanoVita to handle the complex financial landscape of a global startup. With a background in international finance and strong ties to the United States, he became the company's chief accountant and liaison for American operations. While he initially admired Elias's technological breakthroughs, the "miracle" of Lazarus's resurrection terrified him, leading him to believe that Elias represented a threat to the established world order and the American pharmaceutical industry.
+## Personalidad
+- Pragmático y altamente organizado.
+- Excelente con números y logística.
+- Profundamente conectado con los sectores corporativos y gubernamentales estadounidenses.
+- Secretamente motivado por una mezcla de miedo al poder de Elías y un sentido de deber hacia su país.
 
-## Relationships
-- Elias: Leader (viewed with increasing suspicion and fear).
-- Peter: Colleague who recruited him.
-- US Intelligence: Secret contact and informant.
+## Historia
+Jayden fue reclutado por Peter durante las etapas tempranas de NanoVita para manejar el complejo panorama financiero de una startup global. Con experiencia en finanzas internacionales y sólidos vínculos con Estados Unidos, se convirtió en el contable jefe de la empresa y enlace para operaciones estadounidenses. Aunque inicialmente admiró los avances tecnológicos de Elías, el "milagro" de la resurrección de Lazarus lo aterrorizó, llevándolo a creer que Elías representaba una amenaza para el orden mundial establecido y la industria farmacéutica estadounidense.
+
+## Relaciones
+- Elías: Líder (visto con creciente sospecha y miedo).
+- Peter: Colega que lo reclutó.
+- Inteligencia Estadounidense: Contacto secreto e informante.

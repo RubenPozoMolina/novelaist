@@ -1,66 +1,70 @@
-# Key Global Locations
+# Ubicaciones Globales Clave
 
-## Colorado Mountains, USA
-A high-altitude, isolated region where Dr. Maria Vasquez lives in a remote cabin. It represents seclusion and a separation from the crumbling civilization below. 
+## Montañas de Colorado, EE.UU.
+Una región de gran altitud y aislada donde la Dra. María Vásquez vive en una cabaña remota. Representa el aislamiento y una separación de la civilización que se desmorona abajo.
 
-## Moscow & Belarus, Eastern Europe
-Centers for advanced technological research. Following regional conflicts, these nations focused heavily on technology for independence and protection, creating a sterile and highly advanced scientific environment. It is the site of the Russian smelting plant where Ivan Krestitel met his end.
+## Moscú y Bielorrusia, Europa del Este
+Centros de investigación tecnológica avanzada. Tras conflictos regionales, estas naciones se enfocaron intensamente en la tecnología para la independencia y protección, creando un ambiente científico estéril y altamente avanzado. Es el sitio de la planta de fundición rusa donde Iván Krestitel encontró su fin.
 
-## The Lake of Sorrows, South America
-A remote and depressed region in the Andean highlands. It's a high-altitude area with a vast lake, characterized by its lack of resources and difficult living conditions.
-- **Symbolism**: It represents a place of refuge and mourning, but also the stage for Elias's most public displays of power.
-- **Historical Significance**: Once a forgotten corner of the world, it becomes the center of a new spiritual and technological movement as Elias's followers gather there.
+## El Lago de los Dolores, Sudamérica
+Una región remota y deprimida en las tierras altas andinas. Es un área de gran altitud con un vasto lago, caracterizada por su falta de recursos y condiciones de vida difíciles.
+- **Simbolismo**: Representa un lugar de refugio y luto, pero también el escenario para las demostraciones de poder más públicas de Elías.
+- **Significado Histórico**: Una vez un rincón olvidado del mundo, se convierte en el centro de un nuevo movimiento espiritual y tecnológico a medida que los seguidores de Elías se reúnen allí.
 
-## Rub al-Khali Desert (The Empty Quarter)
-One of the largest continuous sand deserts in the world, located in the southern Arabian Peninsula.
-- **Physical Characteristics**: Vast expanses of shifting sand dunes, extreme heat during the day, and cold at night. 
-- **Symbolism**: It represents isolation, tests of endurance, and spiritual awakening. It's the site where Elias confronts his dual nature (machine/divine vs. animal/human).
-- **Historical Significance**: It's an ancient land that has witnessed the rise and fall of civilizations, now holding a modern "Messiah" figure.
+## Sede de NanoTechIA
+Situada en Moscú en Skolkovo Innovation Center
 
-## Monterrey, Mexico
-Elias's hometown and the base for NanoVita operations. A city once dominated by heavy industry, now transforming into a hub of high-tech and biotech under Elias's influence.
 
-## NanoVita HQ
-Located on a modern, sustainable campus in Monterrey. It's more than just a company; it's a center of hope and technological evolution.
-- **Physical Characteristics**: Sleek, glass-and-steel architecture integrated with vertical gardens. The labs are filled with state-of-the-art nanotechnology equipment.
-- **Characteristics of NanoVita**: 
-    - Focused on medical nanobots and ethical AI.
-    - Wealth is built on collective well-being, not exploitation.
-    - A collaborative environment where employees (like Lazarus and Marta) work towards a common goal of healing the world.
-    - The birthplace of "miracles" that are actually the pinnacle of science guided by a higher purpose.
+## Desierto de Rub al-Khali (El Cuarto Vacío)
+Uno de los desiertos de arena continuos más grandes del mundo, ubicado en el sur de la Península Arábiga.
+- **Características Físicas**: Extensiones vastas de dunas de arena movedizas, calor extremo durante el día y frío durante la noche.
+- **Simbolismo**: Representa el aislamiento, las pruebas de resistencia y el despertar espiritual. Es el sitio donde Elías confronta su naturaleza dual (máquina/divino vs. animal/humano).
+- **Significado Histórico**: Es una tierra antigua que ha sido testigo del auge y caída de civilizaciones, ahora albergando a una figura "Mesías" moderna.
 
-## Jerusalem, Israel
-The historic Old City with its narrow streets and ancient stone walls. A place of deep religious and historical significance where NanoVita expands its healthcare reach.
+## Monterrey, México
+Ciudad natal de Elías y la base de operaciones de NanoVita. Una ciudad antes dominada por la industria pesada, ahora transformándose en un centro de alta tecnología y biotecnología bajo la influencia de Elías.
 
-## Mount of Olives, Jerusalem
-A prominent ridge overlooking Jerusalem's Old City.
-- **Physical Characteristics**: Slopes covered in ancient olive trees and vast cemeteries. 
-- **Symbolism**: The site of Elias's second coming, fulfilling the prophecy of Zechariah 14:4. It represents the bridge between the earthly and the divine/technological.
+## Sede de NanoVita
+Ubicada en un campus moderno y sostenible en Monterrey. Es más que solo una empresa; es un centro de esperanza y evolución tecnológica.
+- **Características Físicas**: Arquitectura elegante de vidrio y acero integrada con jardines verticales. Los laboratorios están llenos de equipos de nanotecnología de última generación.
+- **Características de NanoVita**:
+    - Enfocada en nanobots médicos e IA ética.
+    - La riqueza se construye sobre el bienestar colectivo, no la explotación.
+    - Un ambiente colaborativo donde los empleados (como Lazarus y Marta) trabajan hacia un objetivo común de sanar el mundo.
+    - El lugar de nacimiento de "milagros" que son en realidad la cúspide de la ciencia guiada por un propósito superior.
 
-## Mount Tabor, Lower Galilee
-A prominent dome-shaped mountain rising from the Plain of Esdraelon. It's the site where Elias chooses to reveal his physical mutability to his disciples, mirroring the biblical Transfiguration.
+## Jerusalén, Israel
+La histórica Ciudad Vieja con sus estrechas calles y antiguos muros de piedra. Un lugar de profundo significado religioso e histórico donde NanoVita expande su alcance de salud.
 
-## Valley of Megiddo (Armageddon)
-A large, fertile plain in northern Israel.
-- **Physical Characteristics**: A strategic crossroads throughout history, now a theater for the final confrontation between global military forces and Elias's nanobot army.
-- **Symbolism**: The site of the "Great Judgment." It represents the end of the old world order and the purge of human ego.
+## Monte de los Olivos, Jerusalén
+Una prominente cresta con vista a la Ciudad Vieja de Jerusalén.
+- **Características Físicas**: Laderas cubiertas de antiguos olivos y vastos cementerios.
+- **Simbolismo**: El sitio de la segunda venida de Elías, cumpliendo la profecía de Zacarías 14:4. Representa el puente entre lo terrenal y lo divino/tecnológico.
 
-## Zion
-The spiritual and political center of the new era established by Elias.
-- **Physical Characteristics**: A city of crystalline structures and living architecture, where technology and nature are indistinguishable.
-- **Symbolism**: The starting point for humanity's journey beyond the stars; a state of perfect harmony between man and machine.
+## Monte Tabor, Baja Galilea
+Una prominente montaña en forma de cúpula que se alza desde la Llanura de Esdraelón. Es el sitio donde Elías elige revelar su mutabilidad física a sus discípulos, reflejando la Transfiguración bíblica.
 
-## Las Vegas, Nevada, USA
-A city of lights and excess in the middle of the desert. It serves as the backdrop for the Consumer Electronics Show (CES), where NanoVita makes its most significant global impact.
-- **Consumer Electronics Show (CES)**: The world's largest tech event, where Elias's keynote address becomes a historic moment of confrontation with established powers.
-- **Luxor Hotel & Casino**: A pyramid-shaped hotel on the Las Vegas Strip. Its unique architecture and the "Sky Beam" at its apex provide a dramatic setting for Elias's "Last Supper" with his inner circle.
+## Valle de Meguido (Armagedón)
+Una gran llanura fértil en el norte de Israel.
+- **Características Físicas**: Una encrucijada estratégica a lo largo de la historia, ahora un teatro para la confrontación final entre fuerzas militares globales y el ejército de nanobots de Elías.
+- **Simbolismo**: El sitio del "Gran Juicio". Representa el fin del viejo orden mundial y la purga del ego humano.
 
-## Nevada High-Security Prison
-A cold, windowless facility in the middle of the desert.
-- **Physical Characteristics**: Sterile corridors, oppressive atmosphere, and heavy concrete walls designed to isolate and dehumanize.
-- **Symbolism**: Represents the fear and corruption of the old system trying to suppress the future.
+## Sión
+El centro espiritual y político de la nueva era establecida por Elías.
+- **Características Físicas**: Una ciudad de estructuras cristalinas y arquitectura viva, donde la tecnología y la naturaleza son indistinguibles.
+- **Simbolismo**: El punto de partida para el viaje de la humanidad más allá de las estrellas; un estado de armonía perfecta entre el hombre y la máquina.
 
-## Josep Arispe’s Clandestine Laboratory, Monterrey
-A secret facility hidden beneath one of Josep’s healthcare centers.
-- **Physical Characteristics**: Advanced bio-vats, holographic displays, and a stark contrast between high-tech equipment and a sanctuary-like atmosphere.
-- **Symbolism**: The womb of the new world; the place where the "impossible child" is reborn through the collaboration of human intuition (Maria) and machine precision (Iris).
+## Las Vegas, Nevada, EE.UU.
+Una ciudad de luces y exceso en medio del desierto. Sirve como telón de fondo para el Consumer Electronics Show (CES), donde NanoVita tiene su impacto global más significativo.
+- **Consumer Electronics Show (CES)**: El evento tecnológico más grande del mundo, donde el discurso principal de Elías se convierte en un momento histórico de confrontación con los poderes establecidos.
+- **Hotel y Casino Luxor**: Un hotel en forma de pirámide en la Strip de Las Vegas. Su arquitectura única y el "Haz Celeste" en su ápice proporcionan un escenario dramático para la "Última Cena" de Elías con su círculo íntimo.
+
+## Prisión de Alta Seguridad de Nevada
+Una instalación fría, sin ventanas, en medio del desierto.
+- **Características Físicas**: Corredores estériles, atmósfera opresiva y gruesos muros de concreto diseñados para aislar y deshumanizar.
+- **Simbolismo**: Representa el miedo y la corrupción del viejo sistema tratando de suprimir el futuro.
+
+## Laboratorio Clandestino de Josep Arispe, Monterrey
+Una instalación secreta oculta bajo uno de los centros de salud de Josep.
+- **Características Físicas**: Bio-cubas avanzadas, pantallas holográficas y un marcado contraste entre equipos de alta tecnología y una atmósfera tipo santuario.
+- **Simbolismo**: El vientre del nuevo mundo; el lugar donde el "niño imposible" renace a través de la colaboración de la intuición humana (María) y la precisión de la máquina (Iris).

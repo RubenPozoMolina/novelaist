@@ -1,20 +1,20 @@
 # Mary Jane
 
-## Physical Description
-- Age: 25 years
-- Height: 1.60 m
-- Weight: 54 kg
-- Appearance: Large expressive eyes, dark hair, youthful but now clouded by grief.
+## Descripción Física
+- Edad: 25 años
+- Altura: 1.60 m
+- Peso: 54 kg
+- Apariencia: Ojos grandes expresivos, cabello oscuro, joven pero ahora nublada por el dolor.
 
-## Personality
-- Emotional, passionate, and outspoken.
-- She has deep feelings and is not afraid to express her anger or sadness.
-- Extremely close to Lazarus and looks up to Elias as a savior figure, which makes her grief even more complex.
+## Personalidad
+- Emocional, apasionada y habladora.
+- Tiene sentimientos profundos y no le teme expresar su ira o tristeza.
+- Extremadamente cercana a Lazarus y ve a Elías como una figura salvadora, lo que hace que su dolor sea aún más complejo.
 
-## History
-Mary Jane is the youngest sibling of Lazarus and Marta. She lived a relatively simple life until Elias came into their lives, giving her hope for a better future. When Lazarus died while Elias was in Jerusalem, she felt betrayed by the "Messiah" figure who should have been there to save his faithful servant.
+## Historia
+Mary Jane es la hermana menor de Lazarus y Marta. Vivió una vida relativamente simple hasta que Elías entró en sus vidas, dándole esperanza de un futuro mejor. Cuando Lazarus murió mientras Elías estaba en Jerusalén, se sintió traicionada por la figura del "Mesías" que debería estar ahí para salvar a su siervo fiel.
 
-## Relationships
-- Lazarus: Older brother.
-- Marta: Older sister.
-- Elias: Leader, once idolized but now the target of her resentment.
+## Relaciones
+- Lazarus: Hermano mayor.
+- Marta: Hermana mayor.
+- Elías: Líder, una vez idolatrado pero ahora el objetivo de su resentimiento.

@@ -114,3 +114,4 @@ __pycache__/
 output/
 
 examples/modern_messiah/config.json
+/local_scripts/

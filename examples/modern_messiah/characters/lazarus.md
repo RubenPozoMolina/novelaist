@@ -1,20 +1,20 @@
 # Lazarus
 
-## Physical Description
-- Age: 30 years
-- Height: 1.75 m
-- Weight: 70 kg
-- Appearance: Pale skin, dark hair, previously energetic but now weakened by illness.
+## Descripción Física
+- Edad: 30 años
+- Altura: 1.75 m
+- Peso: 70 kg
+- Apariencia: Piel pálida, cabello oscuro, previamente enérgico pero ahora debilitado por la enfermedad.
 
-## Personality
-- Hardworking and dedicated.
-- Kind-hearted and well-liked by his colleagues at NanoVita.
-- Deeply spiritual and has a strong bond with his sisters.
+## Personalidad
+- Trabajador y dedicado.
+- Amable y bienquerido por sus colegas en NanoVita.
+- Profundamente espiritual y tiene un vínculo fuerte con sus hermanas.
 
-## History
-Lazarus is a dedicated worker at NanoVita in Monterrey. He was one of the first employees to embrace Elias's vision of technology at the service of humanity. He fell mysteriously ill while Elias was away in Jerusalem. Despite the advanced technology of NanoVita, his condition worsened rapidly, leading to his untimely death before Elias could return.
+## Historia
+Lazarus es un trabajador dedicado en NanoVita en Monterrey. Fue uno de los primeros empleados en abrazar la visión de Elías de tecnología al servicio de la humanidad. enfermó misteriosamente mientras Elías estaba en Jerusalén. A pesar de la tecnología avanzada de NanoVita, su condición empeoró rápidamente, llevando a su prematura muerte antes de que Elías pudiera regresar.
 
-## Relationships
-- Marta: Sister and coordinator at NanoVita.
-- Mary Jane: Younger sister.
-- Elias: Employer and spiritual leader.
+## Relaciones
+- Marta: Hermana y coordinadora en NanoVita.
+- Mary Jane: Hermana menor.
+- Elías: Empleador y líder espiritual.
