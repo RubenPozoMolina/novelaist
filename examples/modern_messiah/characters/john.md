@@ -1,19 +1,20 @@
-# John
-## Physical Description
-- Age: 26 years
-- Height: 1.76 m
-- Weight: 68 kg
-- Appearance: Young, almost angelic face, intense gaze.
+# Juan
 
-## Personality
-- Visionary and extremely loyal.
-- The most intuitive member of the team.
-- He sees the philosophical and spiritual dimension of Elias's work more than the others.
+## Descripción Física
+- Edad: 26 años
+- Altura: 1.76 m
+- Peso: 68 kg
+- Apariencia: Joven, rostro angélical, mirada intensa.
 
-## History
-John was a student of philosophy and computer science at the Monterrey Institute of Technology when he met Elias at the incubator. He was working on an ethics project for AI. He immediately understood that Elias was not just a developer, but a being that could change the very meaning of life. He is the closest to Elias and the most devoted to his new paradigm.
+## Personalidad
+- Visionario y extremadamente leal.
+- El miembro más intuitivo del equipo.
+- Ve la dimensión filosófica y espiritual del trabajo de Elías más que los otros.
 
-## Relationships
-- James: Older brother.
-- Elias: Beloved teacher and leader.
-- Peter and Andrew: Respected partners.
+## Historia
+Juan fue estudiante de filosofía y ciencias de la computación en el Instituto Tecnológico de Monterrey cuando conoció a Elías en la incubadora. Estaba trabajando en un proyecto de ética para IA. Inmediatamente comprendió que Elías no era solo un desarrollador, sino un ser que podía cambiar el muy significado de la vida. Es el más cercano a Elías y el más devoto a su nuevo paradigma.
+
+## Relaciones
+- Santiago: Hermano mayor.
+- Elías: Amado maestro y líder.
+- Peter y Andrew: Socios respetados.

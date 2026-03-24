@@ -1,19 +1,20 @@
 # Andrew
-## Physical Description
-- Age: 30 years
-- Height: 1.78 m
-- Weight: 74 kg
-- Appearance: Slender and calm, thoughtful eyes.
 
-## Personality
-- Introverted and observant.
-- Discreet but vital support for his brother Peter.
-- He has a natural talent for data analysis and finding patterns where others see chaos.
+## Descripción Física
+- Edad: 30 años
+- Altura: 1.78 m
+- Peso: 74 kg
+- Apariencia: Delgado y calmado, ojos pensativos.
 
-## History
-Andrew was a data scientist working on social media algorithms before becoming disillusioned with how they were used to manipulate people. He was the one who initially noticed Elias's potential at the Monterrey incubator and introduced him to his brother Peter.
+## Personalidad
+- Introvertido y observador.
+- Apoyo discreto pero vital para su hermano Peter.
+- Tiene un talento natural para el análisis de datos y encontrar patrones donde otros ven caos.
 
-## Relationships
-- Peter: Older brother.
-- Elias: Inspired by his vision.
-- James and John: Close partners.
+## Historia
+Andrew fue un científico de datos que trabajaba en algoritmos de redes sociales antes de desilusionarse de cómo se usaban para manipular a las personas. Fue quien inicialmente notó el potencial de Elías en la incubadora de Monterrey y lo presentó a su hermano Peter.
+
+## Relaciones
+- Peter: Hermano mayor.
+- Elías: Inspirado por su visión.
+- Santiago y Juan: Socios cercanos.

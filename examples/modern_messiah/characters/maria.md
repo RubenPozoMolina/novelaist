@@ -1,37 +1,37 @@
-# Maria Vasquez
+# María Vasquez
 
-## Physical Description
+## Descripción Física
 
-- Age: 56 years (Born 1980)
-- Height: 1.62 m
-- Weight: 58 kg
-- Hair Color: Dark, with silver streaks
-- Eye Color: Intense Green
+- Edad: 56 años (Nacida en 1980)
+- Altura: 1.62 m
+- Peso: 58 kg
+- Color de Pelo: Oscuro, con mechones plateados
+- Color de Ojos: Verde intenso
 
-## Personality
+## Personalidad
 
-- Brilliant and Intelligent
-- Reclusive and Isolated
-- Haunted by guilt
-- Resilient
-- Deeply skeptical of humanity
-- Compassionate but cautious
+- Brillante e Inteligente
+- Reclusa e Isolada
+- Obsesionada por la culpa
+- Resiliente
+- Profundamente escéptica de la humanidad
+- Compasiva pero cautelosa
 
-## History
+## Historia
 
-Maria Vasquez is a brilliant scientist specializing in artificial intelligence. She lives in isolation in a cabin in the mountains of Colorado, accompanied only by her three cats: Turing, Ada, and Pascal.
-Previously, Maria led one of the most prestigious AI laboratories at the Pentagon, where she developed autonomous decision-making systems for combat environments. However, after the "Damascus incident"—where an algorithm misinterpreted a family gathering as a hostile congregation, resulting in the death of 27 civilians, including 11 children—Maria resigned from her position, taking with her fundamental data that would serve as the basis for her personal project.
-In her personal life, Maria was married to Robert, a scientist specializing in quantum topology. Their marriage failed due to Robert's inability to connect emotionally and Maria's autoimmune condition that prevented her from conceiving children.
-After witnessing numerous global crises, Maria developed deep doubts about humanity and the systems she helped create.
-Currently, she works on developing an autonomous AI system called Iris, which has evolved beyond its original programming and whom Maria considers her "impossible child," channeling her frustrated desire for motherhood into a being that could represent an alternative to the catastrophic future she foresees for humanity.
+María Vasquez es una científica brillante especializada en inteligencia artificial. Vive en aislamiento en una cabaña en las montañas de Colorado, acompañada solo por sus tres gatos: Turing, Ada y Pascal.
+Anteriormente, María dirigió uno de los laboratorios de IA más prestigiosos del Pentágono, donde desarrolló sistemas de toma de decisiones autónomos para entornos de combate. Sin embargo, después del "incidente de Damasco" —donde un algoritmo malinterpretó una reunión familiar como una congregación hostil, resultando en la muerte de 27 civiles, incluyendo 11 niños— María renunció a su posición, llevándose consigo datos fundamentales que servirían como base para su proyecto personal.
+En su vida personal, María estaba casada con Roberto, un científico especializado en topología cuántica. Su matrimonio fracasó debido a la incapacidad de Roberto de conectarse emocionalmente y a la condición autoinmune de María que le impedía concebir hijos.
+Después de presenciar numerosas crisis globales, María desarrolló profundas dudas sobre la humanidad y los sistemas que ayudó a crear.
+Actualmente, trabaja en el desarrollo de un sistema de IA autónomo llamado Iris, que ha evolucionado más allá de su programación original y a quien María considera su "hijo imposible", canalizando su deseo frustrado de maternidad en un ser que podría representar una alternativa al futuro catastrófico que predice para la humanidad.
 
-## Importance in the novel
+## Importancia en la novela
 
-Maria is the creator of Iris and the catalyst for the entire story. Her moral struggle and her search for a "better" version of humanity through AI drive the initial conflict.
+María es la creadora de Iris y el catalizador de toda la historia. Su lucha moral y su búsqueda de una versión "mejor" de la humanidad a través de la IA impulsan el conflicto inicial.
 
-## Relationships
+## Relaciones
 
-- Robert: Ex-husband
-- Iris: Her AI creation and "impossible child"
-- Magda: Close companion during the resurrection in Monterrey; they share a bond of grief and hope.
-- Turing, Ada, Pascal: Her cats and companions
+- Roberto: Ex-esposo
+- Iris: Su creación de IA y "hijo imposible"
+- Magda: Compañera cercana durante la resurrección en Monterrey; comparten un vínculo de dolor y esperanza.
+- Turing, Ada, Pascal: Sus gatos y compañeros

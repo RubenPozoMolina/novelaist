@@ -1,19 +1,20 @@
-# James
-## Physical Description
-- Age: 36 years
-- Height: 1.85 m
-- Weight: 80 kg
-- Appearance: Strong build, intense and somewhat fiery eyes.
+# Santiago
 
-## Personality
-- Passionate and ambitious.
-- Known as one of the "Sons of Thunder" along with his brother John because of their quick tempers and dedication.
-- Competitive but deeply loyal once committed to a cause.
+## Descripción Física
+- Edad: 36 años
+- Altura: 1.85 m
+- Peso: 80 kg
+- Apariencia: Complexión fuerte, ojos intensos y algo fogosos.
 
-## History
-James was an entrepreneur who had failed multiple times but refused to give up. He worked at the Monterrey incubator trying to develop a hardware prototype when he met Elias. He saw in Elias's nanobots the ultimate tool to finally create something that would change the world, but eventually he learned that Elias's goal was not profit but human liberation.
+## Personalidad
+- Apasionado y ambicioso.
+- Conocido como uno de los "Hijos del Trueno" junto a su hermano Juan debido a su mal genio y dedicación.
+- Competitivo pero profundamente leal una vez comprometido con una causa.
 
-## Relationships
-- John: Younger brother.
-- Elias: Mentor.
-- Peter and Andrew: Fellow partners.
+## Historia
+Santiago fue un empresario que había fracasado múltiples veces pero se negó a rendirse. Trabajaba en la incubadora de Monterrey tratando de desarrollar un prototipo de hardware cuando conoció a Elías. Vio en los nanobots de Elías la herramienta definitiva para finalmente crear algo que cambiaría el mundo, pero eventualmente aprendió que el objetivo de Elías no era el lucro sino la liberación humana.
+
+## Relaciones
+- Juan: Hermano menor.
+- Elías: Mentor.
+- Peter y Andrew: Socios fellow.

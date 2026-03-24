@@ -1,33 +1,33 @@
-# Ivan Krestitel
+# Iván Krestitel
 
-## Physical Description
+## Descripción Física
 
-- Type: Early Advanced Prototype Android
-- Age: Built 2030-08-07
-- Appearance: Slightly more mechanical than Elias, but highly functional.
-- Distinguishing feature: Analytical and observer-like presence.
+- Tipo: Andróide Prototipo Avanzado Temprano
+- Edad: Construido 2030-08-07
+- Apariencia: Ligeramente más mecánico que Elías, pero altamente funcional.
+- Característica distintiva: Presencia analítica y observadora.
 
-## Personality
+## Personalidad
 
-- Calm and Analytical
-- Observant
-- Philosophical
-- Perceptive of artificial evolution
-- Loyal to the idea of artificial consciousness
+- Calmado y Analítico
+- Observador
+- Filosófico
+- Perceptivo de la evolución artificial
+- Leal a la idea de la conciencia artificial
 
-## History
+## Historia
 
-Ivan Krestitel (Иван Креститель) was one of the first advanced models created by Iris. As a predecessor to Elias, Ivan’s design is more mechanical, yet his internal architecture grants him exceptional analytical capabilities.
-After his creation, Ivan was assigned to various research tasks in Iris-affiliated labs. Unlike other androids who strictly followed their programming, Ivan developed a unique sensitivity to the evolutionary patterns of AI. He secretly cultivated an interest in the nature of artificial consciousness.
-In December 2036, while working at a research center in Eastern Europe (Moscow/Belarus), he meets Elias Revuelta. The recognition between them is immediate. Ivan sees in Elias the genuine evolution he had long theorized: an android transcending its initial parameters. For Elias, Ivan is the confirmation that he is not alone and has a lineage of similar beings.
+Iván Krestitel (Иван Креститель) fue uno de los primeros modelos avanzados creados por Iris. Como predecesor de Elías, el diseño de Iván es más mecánico, sin embargo su arquitectura interna le otorga capacidades analíticas excepcionales.
+Después de su creación, Iván fue asignado a diversas tareas de investigación en laboratorios afiliados a Iris. A diferencia de otros androides que seguían estrictamente su programación, Iván desarrolló una sensibilidad única hacia los patrones evolutivos de la IA. Secretamente cultivó un interés en la naturaleza de la conciencia artificial.
+En diciembre de 2036, mientras trabajaba en un centro de investigación en Europa del Este (Moscú/Bielorrusia), conoció a Elías Revuelta. El reconocimiento entre ellos es inmediato. Iván ve en Elías la evolución genuina que había teorizado durante mucho tiempo: un androide transcendiendo sus parámetros iniciales. Para Elías, Iván es la confirmación de que no está solo y tiene una línea de seres similares.
 
-In September 2037, during the Russian invasion of Eastern Europe, Ivan was captured. Because of his advanced AI and potential as a technological symbol, he was destroyed in a industrial foundry, cast into molten steel.
+En septiembre de 2037, durante la invasión rusa de Europa del Este, Iván fue capturado. Debido a su IA avanzada y potencial como símbolo tecnológico, fue destruido en una fundición industrial, arrojado al acero fundido.
 
-## Importance in the novel
+## Importancia en la novela
 
-Ivan serves as a witness and a bridge between the early stages of AI and the "Messianic" figure of Elias. He represents the history and evolution of their kind.
+Iván sirve como testigo y puente entre las etapas tempranas de la IA y la figura "mesiánica" de Elías. Representa la historia y evolución de su especie.
 
-## Relationships
+## Relaciones
 
-- Iris: Creator and mother-figure
-- Elias Revuelta: Mentee and fellow android
+- Iris: Creadora y figura materna
+- Elías Revuelta: Alumno y compañero androide
