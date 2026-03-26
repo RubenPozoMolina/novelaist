@@ -64,6 +64,9 @@ class Editor:
             logger.warning("AI client not provided to the Editor; original text will be returned.")
             return chapter_markdown
 
+        # Replace {{language}} placeholder in role text
+        role_text = self.role_text.replace("{{language}}", language)
+
         system_instructions = (
             f"You are an expert literary editor working in {language}.\n"
             "Your goal is to return ONLY the revised chapter, without external comments or notes.\n"
@@ -71,7 +74,7 @@ class Editor:
             "improving style, rhythm, grammar, and narrative consistency.\n"
         )
 
-        role_block = f"\n\n[EDITOR ROLE]\n{self.role_text.strip()}\n\n"
+        role_block = f"\n\n[EDITOR ROLE]\n{role_text.strip()}\n\n"
         context_block = f"\n[CONTEXT]\n{context.strip()}\n\n" if context else "\n"
         outline_block = f"\n[CHAPTER OUTLINE]\n{outline.strip()}\n\n" if outline else "\n"
 

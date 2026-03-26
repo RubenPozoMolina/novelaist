@@ -62,6 +62,9 @@ class GrammarCorrector:
             logger.warning("AI client not provided to the GrammarCorrector; original text will be returned.")
             return chapter_markdown
 
+        # Replace {{language}} placeholder in role text
+        role_text = self.role_text.replace("{{language}}", language)
+
         system_instructions = (
             f"You are an expert grammar corrector working in {language}.\n"
             "Your goal is to return ONLY the corrected chapter, without external comments or notes.\n"
@@ -70,7 +73,7 @@ class GrammarCorrector:
             "Do NOT change the style, content, or narrative of the text.\n"
         )
 
-        role_block = f"\n\n[GRAMMAR CORRECTOR ROLE]\n{self.role_text.strip()}\n\n"
+        role_block = f"\n\n[GRAMMAR CORRECTOR ROLE]\n{role_text.strip()}\n\n"
         context_block = f"\n[CONTEXT]\n{context.strip()}\n\n" if context else "\n"
 
         user_prompt = (

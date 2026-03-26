@@ -2,7 +2,6 @@ import argparse
 import json
 import logging
 import sys
-import ollama
 import subprocess
 import datetime
 from pathlib import Path
@@ -45,6 +44,11 @@ try:
     from src.grammar_corrector import GrammarCorrector
 except ImportError:
     from grammar_corrector import GrammarCorrector
+
+try:
+    from src.clients import create_ai_client
+except ImportError:
+    from clients import create_ai_client
 
 from PIL import Image as PILImage, ImageDraw, ImageFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageBreak
@@ -181,7 +185,9 @@ class Novelaist:
         Author: {self.config.get('author', 'Unknown Author')}
         """
         
-        language = self.config.get('language', 'English')
+        source_language = self.config.get('source_language', 'English')
+        target_language = self.config.get('target_language', source_language)
+        language = target_language  # For backward compatibility and display purposes
         min_words = int(self.config.get('minimum_chapter_words_number', '1000'))
         sections_count = int(self.config.get('chapter_sections', 3))
         words_per_section = min_words // sections_count
@@ -194,13 +200,17 @@ class Novelaist:
         # Generate content using the configured model
         model_name = self.config.get('model', 'command-r')
         host = self.config.get('host')
+        provider = self.config.get('provider')
+        api_key = self.config.get('api_key')
         
-        if host:
-            logger.info(f"Connecting to {model_name} on {host}...")
-            client = ollama.Client(host=host)
-        else:
-            logger.info(f"Connecting to {model_name}...")
-            client = ollama
+        # Create AI client based on configuration
+        client = create_ai_client(
+            model=model_name,
+            provider=provider,
+            host=host,
+            api_key=api_key
+        )
+        logger.info(f"Connected to {client.provider_name} with model: {model_name}")
             
         # Include prologue if exists
         if self.documents["prologue"]:
@@ -209,13 +219,14 @@ class Novelaist:
             with open(prologue_file, 'r') as f:
                 prologue_content = f.read().strip()
                 
-            # If the language is not English, translate the prologue using the Translator agent
-            if language != 'English':
-                logger.info(f"  - Requesting prologue translation into {language}...")
+            # If source and target languages differ, translate the prologue using the Translator agent
+            if source_language != target_language:
+                logger.info(f"  - Requesting prologue translation from {source_language} to {target_language}...")
                 try:
                     prologue_content = self.translator.translate_chapter(
                         chapter_markdown=prologue_content,
-                        target_language=language,
+                        source_language=source_language,
+                        target_language=target_language,
                         model_name=model_name,
                         client=client
                     )
@@ -284,7 +295,7 @@ class Novelaist:
                 prompt = f"""
                 {context}
                 
-                Language: {language}
+                Language: {source_language}
                 
                 Current Chapter Outline:
                 {chapter_outline}
@@ -292,7 +303,7 @@ class Novelaist:
                 {previous_sections_context}
                 
                 Instructions:
-                1. Write section {section_num} of {current_sections_count} (Title: {current_section_title}) for this chapter in {language}.
+                1. Write section {section_num} of {current_sections_count} (Title: {current_section_title}) for this chapter in {source_language}.
                 2. This section should have approximately {current_words_per_section} words.
                 3. Maintain consistency with the provided Characters, Environment, and previous sections.
                 4. DO NOT include any headers (like #, ##, or ###) in your response. The section title will be added automatically.
@@ -306,7 +317,9 @@ class Novelaist:
                     messages=[{'role': 'user', 'content': prompt}]
                 )
                 
-                # In ollama-python 0.1.x, response is a dict with ['message']['content']
+                # Handle response from different AI clients
+                # Ollama returns a dict or object with ['message']['content']
+                # Anthropic returns a custom response object with .message.content
                 if isinstance(response, dict):
                     section_content = response['message']['content']
                 else:
@@ -327,53 +340,55 @@ class Novelaist:
             
             chapter_content = "\n\n".join(chapter_sections_content)
 
+            # Editor agent runs first to improve the generated content
             try:
-                translated_content = self.translator.translate_chapter(
+                edited_content = self.editor.review_chapter(
                     chapter_markdown=chapter_content,
-                    target_language=language,
-                    model_name=model_name,
-                    client=client
-                )
-            except Exception as e:
-                logger.error(f"  - Error during translation: {e}. Using original content.")
-                translated_content = chapter_content
-
-            # Let the Editor agent review and improve the chapter (in the target language)
-            try:
-                reviewed_content = self.editor.review_chapter(
-                    chapter_markdown=translated_content,
-                    language=language,
+                    language=source_language,
                     context=context,
                     outline=chapter_outline,
                     model_name=model_name,
                     client=client,
                 )
             except Exception as e:
-                logger.error(f"  - Error during editor review: {e}. Using translated content.")
-                reviewed_content = translated_content
+                logger.error(f"  - Error during editor review: {e}. Using original content.")
+                edited_content = chapter_content
 
-            # Let the GrammarCorrector agent review for spelling and grammar
+            # Translator agent runs second to translate the edited content
+            try:
+                translated_content = self.translator.translate_chapter(
+                    chapter_markdown=edited_content,
+                    source_language=source_language,
+                    target_language=target_language,
+                    model_name=model_name,
+                    client=client
+                )
+            except Exception as e:
+                logger.error(f"  - Error during translation: {e}. Using edited content.")
+                translated_content = edited_content
+
+            # GrammarCorrector agent runs last to check spelling and grammar in target language
             try:
                 corrected_content = self.grammar_corrector.review_chapter(
-                    chapter_markdown=reviewed_content,
-                    language=language,
+                    chapter_markdown=translated_content,
+                    language=target_language,
                     context=context,
                     model_name=model_name,
                     client=client,
                 )
             except Exception as e:
-                logger.error(f"  - Error during grammar correction: {e}. Using reviewed content.")
-                corrected_content = reviewed_content
+                logger.error(f"  - Error during grammar correction: {e}. Using translated content.")
+                corrected_content = translated_content
 
-            # Save individual chapter (corrected)
+            # Save individual chapter (translated)
             with open(output_chapter_file, 'w') as f:
-                f.write(corrected_content)
+                f.write(translated_content)
                 
             end_chapter_time = datetime.datetime.now()
             chapter_duration = end_chapter_time - start_chapter_time
             logger.info(f"  - Chapter generated in {chapter_duration}")
 
-            full_novel_content.append(corrected_content)
+            full_novel_content.append(translated_content)
             
         end_total_time = datetime.datetime.now()
         total_duration = end_total_time - start_total_time
@@ -387,6 +402,7 @@ class Novelaist:
         title = self.config.get('novel_title', 'Generated Novel')
         author = self.config.get('author', 'Unknown Author')
         model = self.config.get('model', 'command-r')
+        provider = self.config.get('provider', 'ollama')
         
         # Enhanced description based on environmental documents if available
         description = self.config.get('cover_prompt', '')
@@ -430,8 +446,9 @@ class Novelaist:
         
         language = self.config.get('language', 'English')
         if generated_path:
-            # Add text to the generated image
-            self._add_text_to_cover(generated_path, title, author, model, language)
+            # Add text to the generated image (use provider name for cloud models)
+            model_display = f"{provider}/{model}" if provider != 'ollama' else model
+            self._add_text_to_cover(generated_path, title, author, model_display, language)
             self.cover_path = generated_path
             
             # Clear GPU resources after generation

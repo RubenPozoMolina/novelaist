@@ -46,28 +46,38 @@ class Translator:
         self,
         chapter_markdown: str,
         *,
+        source_language: str = "English",
         target_language: str = "Spanish",
         model_name: str = "command-r",
         client=None,
     ) -> str:
         """
-        Translates the provided chapter to the target language, returning the final translated text.
+        Translates the provided chapter from source to target language, returning the final translated text.
         - chapter_markdown: Full chapter content including all markdown headers.
+        - source_language: Source language of the original text.
         - target_language: Target language for translation.
         - model_name/client: Reuses the client/model already configured by Novelaist.
         """
         if client is None:
             logger.warning("AI client not provided to the Translator; original text will be returned.")
             return chapter_markdown
+        
+        # Skip translation if source and target languages are the same
+        if source_language.lower() == target_language.lower():
+            logger.info(f"Translator: source and target languages are the same ({source_language}), skipping translation.")
+            return chapter_markdown
+
+        # Replace {{source_language}} and {{target_language}} placeholders in role text
+        role_text = self.role_text.replace("{{source_language}}", source_language).replace("{{target_language}}", target_language)
 
         system_instructions = (
-            f"You are an expert translator. Translate the following chapter to {target_language}.\n"
+            f"You are an expert translator. Translate the following chapter from {source_language} to {target_language}.\n"
             "Return ONLY the translated chapter text, without any external comments or notes.\n"
             "Maintain the exact markdown structure (#, ##, ###) and formatting.\n"
             "Translate ALL content including headers, scene titles, dialogue, and narrative.\n"
         )
 
-        role_block = f"\n\n[TRANSLATOR ROLE]\n{self.role_text.strip()}\n\n"
+        role_block = f"\n\n[TRANSLATOR ROLE]\n{role_text.strip()}\n\n"
 
         user_prompt = (
             f"{system_instructions}"
@@ -75,14 +85,14 @@ class Translator:
             "[ORIGINAL CHAPTER]\n"
             f"{chapter_markdown.strip()}\n\n"
             "[INSTRUCTIONS]\n"
-            "- Translate everything to {target_language}.\n"
+            f"- Translate everything from {source_language} to {target_language}.\n"
             "- Preserve the markdown structure exactly.\n"
             "- Keep proper names, technical terms, and place names unless they have established translations.\n"
-            "- Ensure the translation reads naturally in {target_language}.\n"
+            f"- Ensure the translation reads naturally in {target_language}.\n"
             "- Return ONLY the translated chapter text.\n"
         )
 
-        logger.info(f"Translator: translating chapter to {target_language}...")
+        logger.info(f"Translator: translating chapter from {source_language} to {target_language}...")
         try:
             response = client.chat(
                 model=model_name,
