@@ -6,4 +6,4 @@ Al igual que cuando Johannes Gutenberg inventó la imprenta, los copistas manual
 
 No pretendo predecir el futuro, pero está claro que en este 2026 estamos experimentando cambios que representarán un punto de no retorno para nuestra existencia como humanos. Depende en gran medida de nosotros si nuestro futuro es una utopía o un infierno. Estamos a punto de evolucionar como especie de una manera que nunca ha ocurrido en la historia natural. Nuevas entidades inteligentes están ocupando nuestro espacio. Nuestros hijos no humanos heredarán ciertas ideas de nosotros. Me gustaría pensar que heredarán nuestra capacidad de apreciar la belleza sobre nuestra ambición ilimitada.
 
-He desarrollado este proyecto para experimentar y divertirme. Espero que el lector disfrute leyendo la historia tanto como yo he disfrutado creándola.
+He desarrollado este proyecto para experimentar y divertirme. Lo veo más como una herramienta para potenciar la creatividad que una amenaza a los escritores. Espero que el lector disfrute leyendo la historia tanto como yo he disfrutado creándola. 
