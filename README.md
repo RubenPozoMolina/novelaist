@@ -1,10 +1,10 @@
-# Novelaist - Local AI Novel Writing Project
+# Novelaist - AI Novel Writing Project
 
-Novelaist is a tool that leverages local AI models to assist in the creative process of novel writing. By processing structured Markdown documents, it generates literary content that maintains consistency across characters, environments, and plot points.
+Novelaist is a tool that leverages AI models (local via Ollama or cloud via Anthropic Claude) to assist in the creative process of novel writing. By processing structured Markdown documents, it generates literary content that maintains consistency across characters, environments, and plot points.
 
 ## Features
 
-- **Local AI Integration**: Uses the Llama3 model via Ollama for private, offline content generation.
+- **Multi-Provider AI Integration**: Supports both local AI via [Ollama](https://ollama.com/) and cloud AI via [Anthropic Claude](https://www.anthropic.com/claude).
 - **Structured Content Processing**: Automatically parses characters, chapters, and environment details from Markdown files.
 - **Context-Aware Generation**: Maintains narrative consistency by feeding relevant metadata to the AI.
 - **Multiple Output Formats**: Supports exporting the generated novel to EPUB, PDF, and HTML.
@@ -29,19 +29,28 @@ novelaist/
 
 - **Python**: ^3.12 (specifically tested on 3.12.3)
 - **Poetry**: For Python dependency management.
-- **Ollama**: Installed and running on your local machine for text generation.
+- **Ollama** OR **Anthropic API Key**: Choose your AI provider:
+  - **Ollama**: For local, offline AI generation.
+  - **Anthropic Claude**: For cloud-based AI with higher quality models.
 - **Cuda (Optional)**: Recommended for faster cover generation with Stable Diffusion.
 
 ## Installation
 
 ### 1. External Dependencies
 
-#### Ollama
+#### Option A: Ollama (Local AI)
 Download and install from [ollama.com](https://ollama.com/). After installing, pull the model used in the examples:
 ```bash
 ollama pull llama3
 ```
-*(Note: You can change the model in the project's `config.json`)*
+
+#### Option B: Anthropic Claude (Cloud AI)
+1. Create an account at [anthropic.com](https://www.anthropic.com/)
+2. Get your API key from the [console](https://console.anthropic.com/)
+3. Set your API key as an environment variable:
+   ```bash
+   export ANTHROPIC_API_KEY='your-api-key-here'
+   ```
 
 ### 2. Project Setup
 
@@ -70,12 +79,19 @@ ollama pull llama3
    ```bash
    cp examples/modern_messiah/config.json.template examples/modern_messiah/config.json
    ```
-   *Note: Edit `config.json` to set your preferred model, Ollama host, and optional parameters like `cover_prompt` or `negative_prompt`.*
+   *Note: Edit `config.json` to set your preferred model, provider, and optional parameters.*
 
-4. **Verify Ollama**:
-   Ensure Ollama is running and the Llama3 model is downloaded:
+4. **Verify your AI provider**:
+
+   **For Ollama:**
    ```bash
    ollama list
+   ```
+
+   **For Anthropic:**
+   ```bash
+   # Test your API key is set
+   echo $ANTHROPIC_API_KEY
    ```
 
 ## Usage
@@ -100,6 +116,45 @@ ollama pull llama3
    ```
 
 3. **Check the results**: The generated files (Markdown, EPUB, PDF, HTML) will be available in the specified output directory.
+
+## AI Provider Configuration
+
+### Using Ollama (Local AI)
+
+```json
+{
+    "novel_title": "My Novel",
+    "author": "Your Name",
+    "provider": "ollama",
+    "model": "llama3",
+    "host": "http://localhost:11434",
+    "language": "English",
+    "minimum_chapter_words_number": "1000",
+    "chapter_sections": 3
+}
+```
+
+### Using Anthropic Claude (Cloud AI)
+
+```json
+{
+    "novel_title": "My Novel",
+    "author": "Your Name",
+    "provider": "anthropic",
+    "model": "claude-3-sonnet-20240229",
+    "api_key": "your-api-key-here",
+    "language": "English",
+    "minimum_chapter_words_number": "1000",
+    "chapter_sections": 3
+}
+```
+
+**Available Claude Models:**
+- `claude-3-opus-20240229` - Most powerful, best for complex tasks
+- `claude-3-sonnet-20240229` - Balanced speed and quality
+- `claude-3-haiku-20240307` - Fastest, good for simple tasks
+
+**Note:** You can also set the API key via environment variable `ANTHROPIC_API_KEY` instead of in the config file.
 
 ## Troubleshooting
 
@@ -127,7 +182,10 @@ You can customize the generation process by editing the `config.json` file in yo
 
 - **`novel_title`**: The title of your novel.
 - **`author`**: The author's name.
-- **`model`**: The AI model to use (e.g., `llama3`).
+- **`provider`**: The AI provider to use (`ollama` or `anthropic`).
+- **`model`**: The AI model to use (e.g., `llama3`, `claude-3-sonnet-20240229`).
+- **`host`**: (Ollama only) The host URL for Ollama (e.g., `http://localhost:11434`).
+- **`api_key`**: (Anthropic only) Your Anthropic API key.
 - **`language`**: The language for the generated content (e.g., `Spanish`, `English`).
 - **`minimum_chapter_words_number`**: Target word count for each chapter.
 - **`chapter_sections`**: Default number of sections to split a chapter into if no `##` headers are found in the chapter outline. If `##` headers are present, they take precedence.

@@ -1,9 +1,11 @@
 {
     "novel_title": "Modern Messiah",
     "author": "Rubén Pozo",
+    "provider": "ollama",
     "model": "llama3",
     "host": "http://localhost:11434",
-    "language": "Spanish",
+    "source_language": "Spanish",
+    "target_language": "English",
     "minimum_chapter_words_number": "500",
     "chapter_sections": 4,
     "cover_model": "Lykon/DreamShaper",
