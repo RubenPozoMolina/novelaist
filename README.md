@@ -8,6 +8,9 @@ Novelaist is a tool that leverages AI models (local via Ollama or cloud via Anth
 - **Structured Content Processing**: Automatically parses characters, chapters, and environment details from Markdown files.
 - **Context-Aware Generation**: Maintains narrative consistency by feeding relevant metadata to the AI.
 - **Multiple Output Formats**: Supports exporting the generated novel to EPUB, PDF, and HTML.
+- **Credits Section**: Every output file includes a credits section with the generation timestamp and configuration used (sensitive fields are excluded automatically).
+- **Customizable Cover Typography**: Font, size, and color for cover text are fully configurable via `config.json`.
+- **Log to File**: Use `--log` to save the full generation log to a file for later review.
 - **Extensible Architecture**: Easy to add new document types or change the underlying AI model.
 
 ## Project Structure
@@ -115,7 +118,12 @@ ollama pull llama3
    poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah
    ```
 
-3. **Check the results**: The generated files (Markdown, EPUB, PDF, HTML) will be available in the specified output directory.
+   **Optional: Save log to a file** using the `--log` parameter:
+   ```bash
+   poetry run python src/create_novel.py examples/modern_messiah output/modern_messiah --log output/modern_messiah/run.log
+   ```
+
+3. **Check the results**: The generated files (Markdown, EPUB, PDF, HTML) will be available in the specified output directory. Each output file includes a **credits section** with the generation timestamp and the configuration parameters used (sensitive fields like `api_key` and `host` are automatically excluded).
 
 ## AI Provider Configuration
 
@@ -192,6 +200,13 @@ You can customize the generation process by editing the `config.json` file in yo
 - **`cover_model`**: Model used for cover generation.
 - **`cover_prompt`**: Prompt for the cover image.
 - **`cover_negative_prompt`**: Negative prompt for the cover image.
+- **`cover_font`**: (Optional) Path to a `.ttf` font file for the cover text. Defaults to DejaVuSans-Bold or Liberation Sans if available.
+- **`cover_font_size_title`**: (Optional) Title font size as a ratio of the image height (e.g., `0.08` = 8%). Default: `0.08`.
+- **`cover_font_size_author`**: (Optional) Author font size as a ratio of the image height. Default: `0.04`.
+- **`cover_font_size_model`**: (Optional) Model label font size as a ratio of the image height. Default: `0.02`.
+- **`cover_font_color_title`**: (Optional) Color for the title text (PIL color name or hex). Default: `"white"`.
+- **`cover_font_color_author`**: (Optional) Color for the author text. Default: `"white"`.
+- **`cover_font_color_model`**: (Optional) Color for the model label text. Default: `"lightgray"`.
 
 ## Development
 
