@@ -30,17 +30,43 @@ class Translator:
             logger.error(f"Could not read {self.role_file}: {e}")
             return ""
 
+    # Patterns that indicate a line is a leaked instruction, not real content
+    _INSTRUCTION_PATTERNS = [
+        r"return only",
+        r"translated chapter text",
+        r"no comments or notes",
+        r"preserve the markdown",
+        r"maintain the exact markdown",
+        r"translate (all|everything|faithfully)",
+        r"^\[instructions\]",
+        r"^\[original chapter\]",
+        r"^\[translator role\]",
+    ]
+
+    def _is_instruction_line(self, line: str) -> bool:
+        """Return True if the line looks like a leaked prompt instruction."""
+        import re
+        clean = line.lstrip("#").strip().lower()
+        return any(re.search(pat, clean) for pat in self._INSTRUCTION_PATTERNS)
+
     def _strip_preamble(self, result: str, fallback: str) -> str:
         """Remove any preamble lines added by the model before the actual translated content."""
         import re
-        # If the result starts with a heading, it's clean
+        lines = result.splitlines()
+        # Drop leading lines that are leaked instructions (even if they start with #)
+        while lines and self._is_instruction_line(lines[0]):
+            lines.pop(0)
+        result = "\n".join(lines).strip()
+        if not result:
+            return fallback
+        # If the result now starts with a heading, it's clean
         if result.startswith("#"):
             return result
         # Find the first heading line and return from there
         match = re.search(r"^(#|\*\*)", result, re.MULTILINE)
         if match:
             return result[match.start():].strip()
-        return fallback
+        return result if result else fallback
 
     def translate_chapter(
         self,

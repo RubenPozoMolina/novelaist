@@ -367,6 +367,16 @@ class Novelaist:
                 logger.error(f"  - Error during translation: {e}. Using edited content.")
                 translated_content = edited_content
 
+            # Ensure the chapter title was not replaced by the novel title during translation
+            novel_title = self.config.get('novel_title', '')
+            translated_lines = translated_content.splitlines()
+            if translated_lines and translated_lines[0].startswith('# '):
+                translated_title = translated_lines[0][2:].strip()
+                if novel_title and novel_title.lower() in translated_title.lower():
+                    logger.warning(f"  - Translation replaced chapter title with novel title. Restoring original: '# {chapter_header_title}'")
+                    translated_lines[0] = f"# {chapter_header_title}"
+                    translated_content = "\n".join(translated_lines)
+
             # GrammarCorrector agent runs last to check spelling and grammar in target language
             try:
                 corrected_content = self.grammar_corrector.review_chapter(
@@ -468,32 +478,48 @@ class Novelaist:
                 'Portuguese': {'by': 'Por', 'generated_with': 'Gerado com'}
             }
             trans = translations.get(language, translations['English'])
-            
+
+            # Typography configuration from config (with defaults)
+            config_font = self.config.get('cover_font', None)
+            size_title_ratio = float(self.config.get('cover_font_size_title', 0.08))
+            size_author_ratio = float(self.config.get('cover_font_size_author', 0.04))
+            size_model_ratio = float(self.config.get('cover_font_size_model', 0.02))
+            color_title = self.config.get('cover_font_color_title', 'white')
+            color_author = self.config.get('cover_font_color_author', 'white')
+            color_model = self.config.get('cover_font_color_model', 'lightgray')
+
             img = PILImage.open(image_path)
             draw = ImageDraw.Draw(img)
             width, height = img.size
-            
+
+            # Build ordered list of font paths to try
+            font_paths = []
+            if config_font:
+                font_paths.append(config_font)
+            font_paths += [
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                "DejaVuSans-Bold.ttf"
+            ]
+
             # Try to load a font, fallback to default
             try:
-                # Common paths for fonts in Linux
-                font_paths = [
-                    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-                    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-                    "DejaVuSans-Bold.ttf"
-                ]
                 font_title = None
+                selected_font_path = None
                 for path in font_paths:
                     if Path(path).exists():
-                        font_title = ImageFont.truetype(path, int(height * 0.08))
-                        font_author = ImageFont.truetype(path, int(height * 0.04))
-                        font_model = ImageFont.truetype(path, int(height * 0.02))
+                        selected_font_path = path
+                        font_title = ImageFont.truetype(path, int(height * size_title_ratio))
+                        font_author = ImageFont.truetype(path, int(height * size_author_ratio))
+                        font_model = ImageFont.truetype(path, int(height * size_model_ratio))
                         break
-                
+
                 if not font_title:
                     font_title = ImageFont.load_default()
                     font_author = ImageFont.load_default()
                     font_model = ImageFont.load_default()
             except Exception:
+                selected_font_path = None
                 font_title = ImageFont.load_default()
                 font_author = ImageFont.load_default()
                 font_model = ImageFont.load_default()
@@ -502,18 +528,11 @@ class Novelaist:
             title_text = title.upper()
             # If title is too long, wrap it or scale it down
             max_title_width = width * 0.9
-            current_font_size = int(height * 0.08)
-            
-            # Use font_paths[0] if it was found, otherwise fall back to default font
-            selected_font_path = None
-            for path in font_paths:
-                if Path(path).exists():
-                    selected_font_path = path
-                    break
+            current_font_size = int(height * size_title_ratio)
 
             # Initialize w and h to avoid "local variable 'w' referenced before assignment"
             w, h = 0, 0
-            
+
             while current_font_size > 10:
                 try:
                     if selected_font_path:
@@ -522,27 +541,27 @@ class Novelaist:
                         font_title = ImageFont.load_default()
                 except:
                     font_title = ImageFont.load_default()
-                
+
                 left, top, right, bottom = draw.textbbox((0, 0), title_text, font=font_title)
                 w, h = right - left, bottom - top
                 if w <= max_title_width or not selected_font_path:
                     break
                 current_font_size -= 5
 
-            draw.text(((width - w) / 2, height * 0.1), title_text, font=font_title, fill="white", stroke_width=2, stroke_fill="black")
-            
+            draw.text(((width - w) / 2, height * 0.1), title_text, font=font_title, fill=color_title, stroke_width=2, stroke_fill="black")
+
             # Add Author (bottom-ish)
             author_text = f"{trans['by']} {author}"
             left, top, right, bottom = draw.textbbox((0, 0), author_text, font=font_author)
             w, h = right - left, bottom - top
-            draw.text(((width - w) / 2, height * 0.8), author_text, font=font_author, fill="white", stroke_width=1, stroke_fill="black")
-            
+            draw.text(((width - w) / 2, height * 0.8), author_text, font=font_author, fill=color_author, stroke_width=1, stroke_fill="black")
+
             # Add Model (bottom)
             model_text = f"{trans['generated_with']} {model}"
             left, top, right, bottom = draw.textbbox((0, 0), model_text, font=font_model)
             w, h = right - left, bottom - top
-            draw.text(((width - w) / 2, height * 0.9), model_text, font=font_model, fill="lightgray", stroke_width=1, stroke_fill="black")
-            
+            draw.text(((width - w) / 2, height * 0.9), model_text, font=font_model, fill=color_model, stroke_width=1, stroke_fill="black")
+
             img.save(image_path)
             logger.info(f"Text added to cover: {image_path}")
         except Exception as e:
@@ -631,7 +650,7 @@ class Novelaist:
                 content += f"- **{trans['created_at']}:** {timestamp}\n"
                 # Add config entries except 'host'
                 for key, value in self.config.items():
-                    if key == 'host':
+                    if key in ('host', 'api_key'):
                         continue
                     content += f"- **{key}:** {value}\n"
                 

@@ -97,6 +97,10 @@ class EpubConverter(BaseConverter):
             credits_content += f'<p><strong>{project_name} v{project_version}</strong></p>'
             credits_content += f'<p><strong>{self.translations["project_url"]}:</strong> {project_url}</p>'
             credits_content += f'<p><strong>{self.translations["created_at"]}:</strong> {timestamp}</p>'
+            for key, value in self.config.items():
+                if key in ('host', 'api_key'):
+                    continue
+                credits_content += f'<p><strong>{key}:</strong> {value}</p>'
             credits_content += '</body></html>'
             
             credits_chapter = xml2epub.create_chapter_from_string(credits_content, title=credits_title)

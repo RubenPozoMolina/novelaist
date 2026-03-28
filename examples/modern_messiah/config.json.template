@@ -10,5 +10,12 @@
     "chapter_sections": 4,
     "cover_model": "Lykon/DreamShaper",
     "cover_prompt": "Cyborg praying on the Mount of Olives. dressed with only a tunica. Sitting in a meditative position",
-    "cover_negative_prompt": "cartoon, anime, low quality, bad anatomy, naked, text, letters, watermark, words, typography, signature, storyboard, label, quote, heading, script, writing, gold"
+    "cover_negative_prompt": "cartoon, anime, low quality, bad anatomy, naked, text, letters, watermark, words, typography, signature, storyboard, label, quote, heading, script, writing, gold",
+    "cover_font": "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "cover_font_size_title": 0.08,
+    "cover_font_size_author": 0.04,
+    "cover_font_size_model": 0.02,
+    "cover_font_color_title": "white",
+    "cover_font_color_author": "white",
+    "cover_font_color_model": "lightgray"
 }

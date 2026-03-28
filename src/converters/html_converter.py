@@ -64,6 +64,10 @@ class HtmlConverter(BaseConverter):
             html_content += f'<p><strong>{project_name} v{project_version}</strong></p>'
             html_content += f'<p><strong>{self.translations["project_url"]}:</strong> <a href="{project_url}">{project_url}</a></p>'
             html_content += f'<p><strong>{self.translations["created_at"]}:</strong> {timestamp}</p>'
+            for key, value in self.config.items():
+                if key in ('host', 'api_key'):
+                    continue
+                html_content += f'<p><strong>{key}:</strong> {value}</p>'
             html_content += '</div>'
 
             html_content += '</body></html>'
