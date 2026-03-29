@@ -16,7 +16,7 @@ class AnthropicClient(BaseAIClient):
         """Initialize Anthropic client.
         
         Args:
-            model: The Claude model name (e.g., 'claude-3-opus-20240229', 'claude-3-sonnet-20240229')
+            model: The Claude model name (e.g., 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022')
             api_key: Anthropic API key (can also be set via ANTHROPIC_API_KEY env var)
             **kwargs: Additional configuration options
         """
