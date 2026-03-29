@@ -113,5 +113,5 @@ __pycache__/
 # Output directory
 output/
 
-examples/modern_messiah/config.json
+config.json
 /local_scripts/

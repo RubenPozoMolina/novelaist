@@ -665,8 +665,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a novel using local AI.")
     parser.add_argument("examples_dir", help="Path to the directory containing example documents.")
     parser.add_argument("output_dir", help="Path to the directory where output files will be saved.")
-    
+    parser.add_argument("--log", help="Path to a log file where output will be saved.", default=None)
+
     args = parser.parse_args()
+
+    if args.log:
+        file_handler = logging.FileHandler(args.log, encoding="utf-8")
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+        logging.getLogger().addHandler(file_handler)
     
     # Create a Novelaist instance with input parameters
     novelaist = Novelaist(args.examples_dir, args.output_dir)
