@@ -49,7 +49,6 @@ def create_ai_client(
     provider = provider.lower().strip()
     
     if provider == 'ollama':
-        logger.info(f"Creating Ollama client for model: {model}")
         return OllamaClient(model=model, host=host, **kwargs)
     
     elif provider == 'anthropic':
@@ -97,8 +96,8 @@ def _detect_provider_from_model(model: str) -> str:
         return 'ollama'
     
     # Default to Ollama if we can't determine
-    logger.warning(f"Cannot determine provider for model '{model}'. Assuming Ollama.")
-    logger.warning("Explicitly set 'provider' in config.json to avoid this warning.")
+    # Only warn if it really doesn't look like anything else
+    logger.debug(f"Defaulting to Ollama for model '{model}'.")
     return 'ollama'
 
 
