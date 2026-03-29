@@ -22,8 +22,14 @@ class OllamaClient(BaseAIClient):
         super().__init__(model, **kwargs)
         self.host = host
         self._client = None
-        self._import_ollama()
     
+    @property
+    def client(self):
+        """Lazy loader for ollama client."""
+        if self._client is None:
+            self._import_ollama()
+        return self._client
+
     def _import_ollama(self):
         """Import ollama module and initialize client."""
         try:
@@ -49,11 +55,8 @@ class OllamaClient(BaseAIClient):
         Returns:
             Ollama response object with 'message' attribute containing 'content'
         """
-        if self._client is None:
-            raise RuntimeError("Ollama client not initialized")
-        
         try:
-            response = self._client.chat(
+            response = self.client.chat(
                 model=model,
                 messages=messages,
                 **kwargs
@@ -70,11 +73,9 @@ class OllamaClient(BaseAIClient):
             True if Ollama can be reached, False otherwise
         """
         try:
-            if self._client is None:
-                return False
             # Try to list models to verify connection
-            if hasattr(self._client, 'list'):
-                self._client.list()
+            if hasattr(self.client, 'list'):
+                self.client.list()
             return True
         except Exception as e:
             logger.warning(f"Ollama not available: {e}")
