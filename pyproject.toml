@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "novelaist"
-version = "0.1.0"
+version = "1.0.0"
 package-mode = false
 description = "Novel writing application with local AI"
 authors = ["Rubén Pozo <rubenpozomolina@gmail.com>"]
