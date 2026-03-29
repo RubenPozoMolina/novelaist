@@ -95,13 +95,13 @@ class Novelaist:
         self.cover_path = self._discover_cover()
 
         # Editor agent (loads role from agents/editor.md)
-        self.editor = Editor()
+        self.editor = Editor(role_file=self.examples_dir / "agents" / "editor.md")
         
         # Translator agent (loads role from agents/translator.md)
-        self.translator = Translator()
+        self.translator = Translator(role_file=self.examples_dir / "agents" / "translator.md")
         
         # GrammarCorrector agent (loads role from agents/grammar_corrector.md)
-        self.grammar_corrector = GrammarCorrector()
+        self.grammar_corrector = GrammarCorrector(role_file=self.examples_dir / "agents" / "grammar_corrector.md")
     
     def _discover_cover(self):
         """Try to find an existing cover in the output directory."""
