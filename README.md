@@ -136,9 +136,20 @@ ollama pull llama3
     "provider": "ollama",
     "model": "llama3",
     "host": "http://localhost:11434",
-    "language": "English",
+    "source_language": "English",
+    "target_language": "English",
     "minimum_chapter_words_number": "1000",
-    "chapter_sections": 3
+    "chapter_sections": 3,
+    "cover_model": "Lykon/DreamShaper",
+    "cover_prompt": "An oil painting of a futuristic city...",
+    "cover_negative_prompt": "cartoon, anime, watermark, text",
+    "cover_font": "/path/to/font.ttf",
+    "cover_font_size_title": 0.08,
+    "cover_font_size_author": 0.04,
+    "cover_font_size_model": 0.02,
+    "cover_font_color_title": "white",
+    "cover_font_color_author": "white",
+    "cover_font_color_model": "lightgray"
 }
 ```
 
@@ -149,18 +160,31 @@ ollama pull llama3
     "novel_title": "My Novel",
     "author": "Your Name",
     "provider": "anthropic",
-    "model": "claude-3-sonnet-20240229",
+    "model": "claude-3-5-sonnet-20241022",
     "api_key": "your-api-key-here",
-    "language": "English",
+    "source_language": "English",
+    "target_language": "English",
     "minimum_chapter_words_number": "1000",
-    "chapter_sections": 3
+    "chapter_sections": 3,
+    "cover_model": "Lykon/DreamShaper",
+    "cover_prompt": "An oil painting of a futuristic city...",
+    "cover_negative_prompt": "cartoon, anime, watermark, text",
+    "cover_font": "/path/to/font.ttf",
+    "cover_font_size_title": 0.08,
+    "cover_font_size_author": 0.04,
+    "cover_font_size_model": 0.02,
+    "cover_font_color_title": "white",
+    "cover_font_color_author": "white",
+    "cover_font_color_model": "lightgray"
 }
 ```
 
 **Available Claude Models:**
-- `claude-3-opus-20240229` - Most powerful, best for complex tasks
-- `claude-3-sonnet-20240229` - Balanced speed and quality
-- `claude-3-haiku-20240307` - Fastest, good for simple tasks
+- `claude-3-5-sonnet-20241022` - Most intelligent, best for most tasks
+- `claude-3-5-haiku-20241022` - Fastest and most cost-effective
+- `claude-3-opus-20240229` - Most powerful legacy model, best for complex reasoning tasks
+- `claude-3-sonnet-20240229` - Balanced legacy model
+- `claude-3-haiku-20240307` - Fastest legacy model
 
 **Note:** You can also set the API key via environment variable `ANTHROPIC_API_KEY` instead of in the config file.
 
@@ -191,10 +215,11 @@ You can customize the generation process by editing the `config.json` file in yo
 - **`novel_title`**: The title of your novel.
 - **`author`**: The author's name.
 - **`provider`**: The AI provider to use (`ollama` or `anthropic`).
-- **`model`**: The AI model to use (e.g., `llama3`, `claude-3-sonnet-20240229`).
+- **`model`**: The AI model to use (e.g., `llama3`, `claude-3-5-sonnet-20241022`).
 - **`host`**: (Ollama only) The host URL for Ollama (e.g., `http://localhost:11434`).
 - **`api_key`**: (Anthropic only) Your Anthropic API key.
-- **`language`**: The language for the generated content (e.g., `Spanish`, `English`).
+- **`source_language`**: The source language of the original documents (e.g., `Spanish`, `English`). Default: `English`.
+- **`target_language`**: The language for the generated content and translation (e.g., `Spanish`, `English`). Default: same as `source_language`.
 - **`minimum_chapter_words_number`**: Target word count for each chapter.
 - **`chapter_sections`**: Default number of sections to split a chapter into if no `##` headers are found in the chapter outline. If `##` headers are present, they take precedence.
 - **`cover_model`**: Model used for cover generation.
