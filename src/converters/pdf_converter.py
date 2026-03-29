@@ -99,6 +99,12 @@ class PdfConverter(BaseConverter):
             story.append(Paragraph(f"<b>{self.translations['project_url']}:</b> {project_url}", styles['Normal']))
             story.append(Paragraph(f"<b>{self.translations['created_at']}:</b> {timestamp}", styles['Normal']))
             
+            # Add config entries except 'host'
+            for key, value in self.config.items():
+                if key in ('host', 'api_key'):
+                    continue
+                story.append(Paragraph(f"<b>{key}:</b> {value}", styles['Normal']))
+            
             # Building TOC story
             toc_story = []
             for t in toc_entries:

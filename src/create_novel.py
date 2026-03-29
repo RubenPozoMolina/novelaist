@@ -76,7 +76,7 @@ class Novelaist:
         self.examples_dir = Path(examples_directory)
         self.output_dir = Path(output_directory)
         
-        # Ensure the output directory exists from the start
+        # Ensure output directory exists
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         self.config = self._load_config()
@@ -119,10 +119,15 @@ class Novelaist:
         if config_path.exists():
             try:
                 with open(config_path, 'r') as f:
-                    return json.load(f)
+                    config = json.load(f)
+                    if 'novel_title' not in config:
+                        logger.warning(f"Field 'novel_title' is missing in {config_path}. Using 'Generated Novel' as default.")
+                    return config
             except Exception as e:
                 logger.error(f"Error loading config.json: {str(e)}")
                 return {}
+        else:
+            logger.error(f"Configuration file not found: {config_path}")
         return {}
     
     def _load_documents(self):
@@ -670,6 +675,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.log:
+        log_path = Path(args.log)
+        log_path.parent.mkdir(parents=True, exist_ok=True)
         file_handler = logging.FileHandler(args.log, encoding="utf-8")
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
