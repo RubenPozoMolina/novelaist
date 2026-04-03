@@ -89,7 +89,7 @@ class EpubConverter(BaseConverter):
             timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             project_url = "https://github.com/RubenPozoMolina/novelaist"
             project_name = "Novelaist"
-            project_version = "0.1.0"
+            project_version = self.project_version
             credits_title = self.translations["credits"]
             
             credits_content = f'<html><head><style>{style}</style></head><body>'

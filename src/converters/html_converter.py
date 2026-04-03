@@ -57,7 +57,7 @@ class HtmlConverter(BaseConverter):
             timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             project_url = "https://github.com/RubenPozoMolina/novelaist"
             project_name = "Novelaist"
-            project_version = "0.1.0"
+            project_version = self.project_version
             
             html_content += f'<div style="margin-top: 50px; padding: 20px; border-top: 1px solid #eee; font-size: 0.8em; color: #666;">'
             html_content += f'<h2>{self.translations["credits"]}</h2>'

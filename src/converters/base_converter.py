@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+import tomllib
 
 class BaseConverter(ABC):
     def __init__(self, output_dir, config, cover_path=None):
@@ -8,6 +9,24 @@ class BaseConverter(ABC):
         self.cover_path = cover_path
         self.language = self.config.get('language', 'English')
         self.translations = self._get_translations()
+        self.project_version = self._get_project_version()
+
+    def _get_project_version(self):
+        """Read version from pyproject.toml"""
+        try:
+            # The script is usually run from the project root
+            pyproject_path = Path("pyproject.toml")
+            if not pyproject_path.exists():
+                # Try to find it relative to this file
+                pyproject_path = Path(__file__).parent.parent.parent / "pyproject.toml"
+            
+            if pyproject_path.exists():
+                with open(pyproject_path, "rb") as f:
+                    data = tomllib.load(f)
+                    return data.get("tool", {}).get("poetry", {}).get("version", "unknown")
+        except Exception:
+            pass
+        return "unknown"
 
     def _get_translations(self):
         translations = {

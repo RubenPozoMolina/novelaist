@@ -4,6 +4,7 @@ import logging
 import sys
 import subprocess
 import datetime
+import tomllib
 from pathlib import Path
 
 # Configure logging
@@ -44,6 +45,11 @@ try:
     from src.grammar_corrector import GrammarCorrector
 except ImportError:
     from grammar_corrector import GrammarCorrector
+
+try:
+    from src.proofreader import Proofreader
+except ImportError:
+    from proofreader import Proofreader
 
 try:
     from src.clients import create_ai_client
@@ -102,7 +108,29 @@ class Novelaist:
         
         # GrammarCorrector agent (loads role from agents/grammar_corrector.md)
         self.grammar_corrector = GrammarCorrector(role_file=self.examples_dir / "agents" / "grammar_corrector.md")
-    
+
+        # Proofreader agent (loads role from agents/proofreader.md)
+        self.proofreader = Proofreader(role_file=self.examples_dir / "agents" / "proofreader.md")
+        
+        self.project_version = self._get_project_version()
+
+    def _get_project_version(self):
+        """Read version from pyproject.toml"""
+        try:
+            # The script is usually run from the project root
+            pyproject_path = Path("pyproject.toml")
+            if not pyproject_path.exists():
+                # Try to find it relative to this file
+                pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+            
+            if pyproject_path.exists():
+                with open(pyproject_path, "rb") as f:
+                    data = tomllib.load(f)
+                    return data.get("tool", {}).get("poetry", {}).get("version", "unknown")
+        except Exception:
+            pass
+        return "unknown"
+
     def _discover_cover(self):
         """Try to find an existing cover in the output directory."""
         title = self.config.get('novel_title', 'Generated Novel')
@@ -159,9 +187,12 @@ class Novelaist:
         """Get the structure of loaded documents"""
         return self.documents
 
-    def generate_novel_content(self):
+    def generate_novel_content(self, force_regeneration=False, skip_proofread=False):
         """Generate novel content based on loaded documents, chapter by chapter."""
         logger.info("Generating novel content...")
+        
+        if skip_proofread:
+            logger.info("  - Proofreading is DISABLED for this run.")
         
         start_total_time = datetime.datetime.now()
         # Process documents to create context
@@ -216,6 +247,12 @@ class Novelaist:
             api_key=api_key
         )
         logger.info(f"Connected to {client.provider_name} with model: {model_name}")
+
+        # Override skip_proofread from config if not explicitly set to True via parameter
+        if not skip_proofread:
+            skip_proofread = self.config.get('skip_proofread', False)
+            if skip_proofread:
+                logger.info("  - Proofreading is DISABLED via config.json.")
             
         # Include prologue if exists
         if self.documents["prologue"]:
@@ -255,10 +292,52 @@ class Novelaist:
             output_chapter_file = self.output_dir / f"{chapter_name}_generated.md"
             
             start_chapter_time = datetime.datetime.now()
-            if output_chapter_file.exists():
-                logger.info(f"Chapter {chapter_name} ({chapter_index}/{len(sorted_chapters)}) already exists. Loading from file...")
+            if output_chapter_file.exists() and not force_regeneration:
+                logger.info(f"Chapter {chapter_name} ({chapter_index}/{len(sorted_chapters)}) already exists. Loading for proofreading...")
                 with open(output_chapter_file, 'r') as f:
                     chapter_content = f.read()
+                
+                # Proofreader agent runs even for existing chapters (unless skipped)
+                if not skip_proofread:
+                    try:
+                        proofread_content, mods = self.proofreader.review_chapter(
+                            chapter_markdown=chapter_content,
+                            language=target_language,
+                            context=context,
+                            model_name=model_name,
+                            client=client,
+                        )
+                        if proofread_content.strip() != chapter_content.strip():
+                            logger.info(f"  - Proofreader updated existing chapter {chapter_name}:")
+                            for mod in mods.split('\n'):
+                                if mod.strip():
+                                    logger.info(f"    * {mod.strip()}")
+                            chapter_content = proofread_content
+                            with open(output_chapter_file, 'w') as f:
+                                f.write(chapter_content)
+                        else:
+                            logger.info(f"  - Proofreader found no changes for existing chapter {chapter_name}.")
+                            if mods and "No detailed modifications" not in mods:
+                                 logger.info(f"  - Proofreader notes: {mods}")
+                    except Exception as e:
+                        logger.error(f"  - Error during proofreading existing chapter: {e}. Using existing content.")
+                else:
+                    logger.info(f"  - Skipping proofreading for existing chapter {chapter_name}.")
+
+                # Ensure existing chapter has a proper title header
+                if not chapter_content.strip().startswith('# '):
+                    chapter_outline = process_chapter_document(chapter_file)
+                    first_line = chapter_outline.strip().split('\n')[0]
+                    if first_line.startswith('# '):
+                        chapter_header_title = first_line.replace('# ', '').strip()
+                    else:
+                        chapter_header_title = chapter_name
+                    
+                    logger.warning(f"  - Existing chapter {chapter_name} is missing a title header. Adding '# {chapter_header_title}'")
+                    chapter_content = f"# {chapter_header_title}\n\n{chapter_content}"
+                    with open(output_chapter_file, 'w') as f:
+                        f.write(chapter_content)
+
                 full_novel_content.append(chapter_content)
                 continue
                 
@@ -395,15 +474,41 @@ class Novelaist:
                 logger.error(f"  - Error during grammar correction: {e}. Using translated content.")
                 corrected_content = translated_content
 
-            # Save individual chapter (translated)
+            # Proofreader agent runs as the last line of defense (unless skipped)
+            if not skip_proofread:
+                try:
+                    proofread_content, mods = self.proofreader.review_chapter(
+                        chapter_markdown=corrected_content,
+                        language=target_language,
+                        context=context,
+                        model_name=model_name,
+                        client=client,
+                    )
+                    logger.info(f"  - Proofreader modifications for {chapter_name}:")
+                    for mod in mods.split('\n'):
+                        if mod.strip():
+                            logger.info(f"    * {mod.strip()}")
+                except Exception as e:
+                    logger.error(f"  - Error during final proofreading: {e}. Using corrected content.")
+                    proofread_content = corrected_content
+            else:
+                logger.info(f"  - Skipping final proofreading for {chapter_name}.")
+                proofread_content = corrected_content
+
+            # Ensure the final content has the chapter title header (sometimes lost during processing)
+            if not proofread_content.strip().startswith('# '):
+                logger.warning(f"  - Chapter {chapter_name} lost its title header during processing. Restoring '# {chapter_header_title}'")
+                proofread_content = f"# {chapter_header_title}\n\n{proofread_content}"
+
+            # Save individual chapter (translated and proofread)
             with open(output_chapter_file, 'w') as f:
-                f.write(translated_content)
+                f.write(proofread_content)
                 
             end_chapter_time = datetime.datetime.now()
             chapter_duration = end_chapter_time - start_chapter_time
             logger.info(f"  - Chapter generated in {chapter_duration}")
 
-            full_novel_content.append(translated_content)
+            full_novel_content.append(proofread_content)
             
         end_total_time = datetime.datetime.now()
         total_duration = end_total_time - start_total_time
@@ -646,7 +751,7 @@ class Novelaist:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                 project_url = "https://github.com/RubenPozoMolina/novelaist"
                 project_name = "Novelaist"
-                project_version = "0.1.0"
+                project_version = self.project_version
                 
                 content += "\n\n---\n\n"
                 content += f"## {trans['credits']}\n\n"
@@ -671,6 +776,8 @@ if __name__ == "__main__":
     parser.add_argument("examples_dir", help="Path to the directory containing example documents.")
     parser.add_argument("output_dir", help="Path to the directory where output files will be saved.")
     parser.add_argument("--log", help="Path to a log file where output will be saved.", default=None)
+    parser.add_argument("--chapter", help="Generate only the specified chapter (e.g., 001).", default=None)
+    parser.add_argument("--no-proofread", help="Disable the proofreader agent.", action="store_true")
 
     args = parser.parse_args()
 
@@ -693,6 +800,31 @@ if __name__ == "__main__":
         for file in files:
             logger.info(f"    - {file.name}")
     
+    # Filter chapters if --chapter is specified
+    if args.chapter:
+        original_count = len(novelaist.documents["chapters"])
+        
+        # Try exact match first, then try numeric match if it's a number
+        filtered_chapters = [f for f in novelaist.documents["chapters"] if f.stem == args.chapter]
+        
+        if not filtered_chapters and args.chapter.isdigit():
+            # Try to match numeric value (e.g., '8' matches '008')
+            target_num = int(args.chapter)
+            for f in novelaist.documents["chapters"]:
+                # Extract digits from stem
+                import re
+                match = re.search(r'(\d+)', f.stem)
+                if match and int(match.group(1)) == target_num:
+                    filtered_chapters.append(f)
+                    break
+                    
+        novelaist.documents["chapters"] = filtered_chapters
+        
+        if not novelaist.documents["chapters"]:
+            logger.error(f"Chapter '{args.chapter}' not found in chapters directory.")
+            sys.exit(1)
+        logger.info(f"Filtering to process only chapter: {args.chapter} (Found: {novelaist.documents['chapters'][0].name})")
+
     # Test processing of a document
     if docs["characters"]:
         logger.info("\nContent of first character document:")
@@ -703,9 +835,15 @@ if __name__ == "__main__":
     
     # Generate cover
     logger.info("Generating cover...")
-    novelaist.generate_cover()
+    if not args.chapter:
+        novelaist.generate_cover()
+    else:
+        logger.info("Skipping cover generation for single chapter mode.")
     
-    generated_content = novelaist.generate_novel_content()
+    generated_content = novelaist.generate_novel_content(
+        force_regeneration=bool(args.chapter),
+        skip_proofread=args.no_proofread
+    )
     logger.info("Generation completed.")
     
     # Save result in output files
