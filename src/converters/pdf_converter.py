@@ -90,7 +90,7 @@ class PdfConverter(BaseConverter):
             timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             project_url = "https://github.com/RubenPozoMolina/novelaist"
             project_name = "Novelaist"
-            project_version = "0.1.0"
+            project_version = self.project_version
             
             story.append(Spacer(1, 48))
             story.append(Paragraph(self.translations['credits'], styles['ChapterTitle']))
